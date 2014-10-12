@@ -22,6 +22,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Tablica"
+            android:label="@string/title_activity_tablica"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".Tablica2"
+            android:label="@string/title_activity_tablica2" 
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>

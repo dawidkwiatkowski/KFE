@@ -1,17 +1,26 @@
 package com.app.kfe;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 
 public class MainActivity extends Activity {
+	
+	private Button draw_btn;
+	private Button draw2_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        addListenerOnButton();
     }
 
 
@@ -33,4 +42,32 @@ public class MainActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+    
+    public void addListenerOnButton() {
+    	 
+    	draw_btn = (Button) findViewById(R.id.draw_btn);
+    	draw2_btn = (Button) findViewById(R.id.draw2_btn);
+ 
+    	draw_btn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent tablica = new Intent(getApplicationContext(), Tablica.class);
+				startActivity(tablica);
+			}
+    	
+    	});
+    	
+    	draw2_btn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent tablica = new Intent(getApplicationContext(), Tablica2.class);
+				startActivity(tablica);
+			}
+    	
+    	});
+	}
 }
