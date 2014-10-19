@@ -28,7 +28,7 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name=".Tablica2"
+            android:name=".Tablica"
             android:label="@string/title_activity_tablica2" 
             android:screenOrientation="landscape">
         </activity>

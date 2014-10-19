@@ -12,7 +12,6 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 	
-	private Button draw_btn;
 	private Button draw2_btn;
 
     @Override
@@ -45,26 +44,14 @@ public class MainActivity extends Activity {
     
     public void addListenerOnButton() {
     	 
-    	draw_btn = (Button) findViewById(R.id.draw_btn);
     	draw2_btn = (Button) findViewById(R.id.draw2_btn);
- 
-    	draw_btn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent tablica = new Intent(getApplicationContext(), Tablica.class);
-				startActivity(tablica);
-			}
-    	
-    	});
     	
     	draw2_btn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent tablica = new Intent(getApplicationContext(), Tablica2.class);
+				Intent tablica = new Intent(getApplicationContext(), Tablica.class);
 				startActivity(tablica);
 			}
     	

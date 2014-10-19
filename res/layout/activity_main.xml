@@ -10,15 +10,9 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/draw_btn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/draw_btn" />
-
-    <Button
         android:id="@+id/draw2_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/draw2_btn" />
+        android:text="@string/draw_btn" />
 
 </LinearLayout>
