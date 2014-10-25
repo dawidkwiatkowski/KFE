@@ -1,9 +1,14 @@
 package com.app.kfe;
 
+import java.util.UUID;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -14,6 +19,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
+import android.widget.Toast;
 
 
 public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener {
@@ -26,6 +32,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	private Button whiteButton;
 	private Button blackButton;
 	private Paint drawPaint;
+	private ImageButton saveButton;
+	private AlertDialog.Builder saveDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +52,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		blueButton = (Button) findViewById(R.id.blueButton);
 		whiteButton = (Button) findViewById(R.id.whiteButton);
 		blackButton = (Button) findViewById(R.id.blackButton);
+		saveButton = (ImageButton) findViewById(R.id.saveButton);
 		
 		redButton.setOnClickListener(this);
 		yellowButton.setOnClickListener(this);
@@ -51,6 +60,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		whiteButton.setOnClickListener(this);
 		blackButton.setOnClickListener(this);
 		greenButton.setOnClickListener(this);
+		saveButton.setOnClickListener(this);
 		
 		SeekBar brashSize = (SeekBar) findViewById(R.id.brushSize);
 		brashSize.setOnSeekBarChangeListener(this);
@@ -71,7 +81,25 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             }
         });
 		
-
+		saveDialog = new AlertDialog.Builder(this);
+		saveDialog.setTitle("Zapis obraznka");
+		saveDialog.setMessage("Czy zapisaæ obrazek do galerii?");
+		saveDialog.setPositiveButton("Tak", new DialogInterface.OnClickListener() {					
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				saveImage();
+				dialog.cancel();
+			}
+		});
+		saveDialog.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.cancel();
+			}
+		});
 	}
 
 	@Override
@@ -119,10 +147,32 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 				break;
 			case R.id.blackButton:
 				drawPaint.setColor(Color.BLACK);
-				break;				
+				break;			
+			case R.id.saveButton:				
+				saveDialog.show();
+				break;
 		}		
 		paintView.setDrawPaint(drawPaint);
 		
-	}	
+	}
+	
+	public void saveImage(){
+		paintView.setDrawingCacheEnabled(true);
+		
+		String imgSaved = MediaStore.Images.Media.insertImage(
+				getContentResolver(), paintView.getDrawingCache(),
+				UUID.randomUUID().toString()+".png", "drawing");
+		
+		if(imgSaved != null){
+			Toast saveToast = Toast.makeText(getApplicationContext(), "Zapisano do galerii", Toast.LENGTH_SHORT);
+			saveToast.show();
+		}
+		else{
+		Toast unsavedToast = Toast.makeText(getApplicationContext(), "Wyst¹pi³ problem podczas zapisu", Toast.LENGTH_SHORT);
+		unsavedToast.show();
+		}
+		
+		paintView.destroyDrawingCache();
+	}
 
 }

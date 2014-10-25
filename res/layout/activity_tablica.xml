@@ -110,6 +110,23 @@
                 	android:background="@color/blackColor"/>
             </GridLayout>
             
+            <GridLayout
+                android:id="@+id/events"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="1" 
+                android:layout_gravity="center">
+                
+                <ImageButton 
+                   	android:id="@+id/saveButton" 
+                   	android:layout_width="40dp"
+	               	android:layout_height="40dp"
+	               	android:layout_margin="15dp"
+	               	android:src="@drawable/save"/>
+                
+            </GridLayout>
+            
         </LinearLayout>
     </SlidingDrawer>    
 

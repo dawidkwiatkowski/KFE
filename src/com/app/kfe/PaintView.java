@@ -57,7 +57,7 @@ public class PaintView extends View {
 		drawPaint.setStrokeJoin(Paint.Join.ROUND);
 		drawPaint.setStrokeCap(Paint.Cap.ROUND);
 		
-		canvasPaint = new Paint(Paint.DITHER_FLAG);
+		canvasPaint = new Paint(Paint.DITHER_FLAG);		
 	}
 	
 	@Override
@@ -65,6 +65,7 @@ public class PaintView extends View {
 		super.onSizeChanged(w, h, oldw, oldh);
 		canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 		drawCanvas = new Canvas(canvasBitmap);
+		drawCanvas.drawColor(Color.WHITE);
 	}
 	
 	@Override
