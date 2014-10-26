@@ -7,7 +7,10 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="14" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <application
         android:allowBackup="true"
@@ -27,6 +30,10 @@
             android:name=".Tablica"
             android:label="@string/title_activity_tablica"
             android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".Dolacz"
+            android:label="@string/title_activity_dolacz" >
         </activity>
     </application>
 

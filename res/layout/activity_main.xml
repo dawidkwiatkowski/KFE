@@ -14,5 +14,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/draw_btn" />
+    
+    <Button
+        android:id="@+id/dolacz_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dolacz_btn" />
 
 </LinearLayout>

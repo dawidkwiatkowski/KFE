@@ -13,6 +13,7 @@ import android.widget.Button;
 public class MainActivity extends Activity {
 	
 	private Button draw2_btn;
+	private Button dolacz_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class MainActivity extends Activity {
     public void addListenerOnButton() {
     	 
     	draw2_btn = (Button) findViewById(R.id.draw2_btn);
+    	dolacz_btn = (Button) findViewById(R.id.dolacz_btn);
     	
     	draw2_btn.setOnClickListener(new OnClickListener() {
 
@@ -54,6 +56,21 @@ public class MainActivity extends Activity {
 				Intent tablica = new Intent(getApplicationContext(), Tablica.class);
 				startActivity(tablica);
 			}
+			
+			
+    	
+    	});
+    	
+    	dolacz_btn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent dolacz = new Intent(getApplicationContext(), Dolacz.class);
+				startActivity(dolacz);
+			}
+			
+			
     	
     	});
 	}
