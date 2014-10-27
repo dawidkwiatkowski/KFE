@@ -14,6 +14,8 @@ public class MainActivity extends Activity {
 	
 	private Button draw2_btn;
 	private Button dolacz_btn;
+	private Button setting_btn;
+	private Button score_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class MainActivity extends Activity {
     	 
     	draw2_btn = (Button) findViewById(R.id.draw2_btn);
     	dolacz_btn = (Button) findViewById(R.id.dolacz_btn);
+    	setting_btn = (Button) findViewById(R.id.setting_btn);
+    	score_btn = (Button) findViewById(R.id.score_btn);
     	
     	draw2_btn.setOnClickListener(new OnClickListener() {
 
@@ -73,5 +77,49 @@ public class MainActivity extends Activity {
 			
     	
     	});
+    	setting_btn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
+				startActivity(ustawienia);
+			}
+    	
+    	});
+    	
+    	score_btn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
+				startActivity(tablica);
+			}
+    	
+    	});
+    	
+    	setting_btn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
+				startActivity(ustawienia);
+			}
+    	
+    	});
+    	
+    	score_btn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
+				startActivity(tablica);
+			}
+    	
+    	});
+    	
 	}
 }

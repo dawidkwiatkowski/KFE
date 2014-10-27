@@ -20,5 +20,15 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/dolacz_btn" />
+     <Button
+        android:id="@+id/setting_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/setting_btn" />
+     <Button
+        android:id="@+id/score_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/score_btn" />
 
 </LinearLayout>

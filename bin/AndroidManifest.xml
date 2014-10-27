@@ -35,6 +35,16 @@
             android:name=".Dolacz"
             android:label="@string/title_activity_dolacz" >
         </activity>
+        
+        <activity
+            android:name=".Ustawienia"
+            android:label="@string/title_activity_setting">
+        </activity>
+        
+         <activity
+            android:name=".Statystyki"
+            android:label="@string/title_activity_score">
+        </activity>
     </application>
 
 </manifest>
