@@ -5,6 +5,7 @@ import java.util.UUID;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -33,7 +34,12 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	private Button blackButton;
 	private Paint drawPaint;
 	private ImageButton saveButton;
+	private ImageButton brushTool;
+	private ImageButton eraserTool;
+	private ImageButton newImageTool;
 	private AlertDialog.Builder saveDialog;
+	private AlertDialog.Builder newImageDialog;
+	private int brushColor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +59,10 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		whiteButton = (Button) findViewById(R.id.whiteButton);
 		blackButton = (Button) findViewById(R.id.blackButton);
 		saveButton = (ImageButton) findViewById(R.id.saveButton);
+		brushTool = (ImageButton) findViewById(R.id.brushTool);
+		brushColor = drawPaint.getColor();
+		eraserTool = (ImageButton) findViewById(R.id.eraserTool);
+		newImageTool = (ImageButton) findViewById(R.id.newImageTool);
 		
 		redButton.setOnClickListener(this);
 		yellowButton.setOnClickListener(this);
@@ -61,6 +71,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		blackButton.setOnClickListener(this);
 		greenButton.setOnClickListener(this);
 		saveButton.setOnClickListener(this);
+		brushTool.setOnClickListener(this);
+		eraserTool.setOnClickListener(this);
+		newImageTool.setOnClickListener(this);
 		
 		SeekBar brashSize = (SeekBar) findViewById(R.id.brushSize);
 		brashSize.setOnSeekBarChangeListener(this);
@@ -100,6 +113,26 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 				dialog.cancel();
 			}
 		});
+		
+		newImageDialog = new AlertDialog.Builder(this);
+		newImageDialog.setTitle("Czyszczenie tablicy");
+		newImageDialog.setMessage("Czy czy wyczyœciæ tablicê?");
+		newImageDialog.setPositiveButton("Tak", new DialogInterface.OnClickListener() {					
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				newImage();
+				dialog.cancel();
+			}
+		});
+		newImageDialog.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.cancel();
+			}
+		});
 	}
 
 	@Override
@@ -132,24 +165,39 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		switch(v.getId()){
 			case R.id.redButton:
 				drawPaint.setColor(Color.RED);
+				brushColor = drawPaint.getColor();
 				break;
 			case R.id.yellowButton:
 				drawPaint.setColor(Color.YELLOW);
+				brushColor = drawPaint.getColor();
 				break;
 			case R.id.greenButton:
 				drawPaint.setColor(Color.GREEN);
+				brushColor = drawPaint.getColor();
 				break;
 			case R.id.blueButton:
 				drawPaint.setColor(Color.BLUE);
+				brushColor = drawPaint.getColor();
 				break;
 			case R.id.whiteButton:
 				drawPaint.setColor(Color.WHITE);
+				brushColor = drawPaint.getColor();
 				break;
 			case R.id.blackButton:
 				drawPaint.setColor(Color.BLACK);
+				brushColor = drawPaint.getColor();
 				break;			
 			case R.id.saveButton:				
 				saveDialog.show();
+				break;
+			case R.id.brushTool:
+				setBrush();
+				break;
+			case R.id.eraserTool:
+				drawPaint.setColor(Color.WHITE);				
+				break;
+			case R.id.newImageTool:				
+				newImageDialog.show();
 				break;
 		}		
 		paintView.setDrawPaint(drawPaint);
@@ -173,6 +221,14 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		}
 		
 		paintView.destroyDrawingCache();
+	}
+	
+	public void setBrush(){
+		drawPaint.setColor(brushColor);
+	}
+	
+	public void newImage(){
+		paintView.newImage();
 	}
 
 }

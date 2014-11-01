@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">KFE</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="draw_btn">Rysuj</string>
+    <string name="dolacz_btn">Dolacz do gry</string>
+    <string name="title_activity_tablica">Tablica</string>
+    <string name="title_activity_tablica2">Tablica2</string>
+    <string name="draw2_btn">Rysuj 2</string>
+    <string name="brashSizeLabel">Rozmiar pędzla</string>
+    <string name="colorsLabel">Kolor pędzla</string>
+
+    <color name="grayColor">#808080</color>
+    <color name="redColor">#FF0000</color>
+    <color name="yellowColor">#FFFF00</color>
+    <color name="greenColor">#00FF00</color>
+    <color name="blueColor">#0000FF</color>
+    <color name="whiteColor">#FFFFFF</color>
+    <color name="blackColor">#000000</color>
+
+
+    <string name="title_activity_dolacz">Dolacz</string>
+
+</resources>

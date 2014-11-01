@@ -32,6 +32,14 @@ public class PaintView extends View {
 		setupDrawing();
 	}
 	
+	public void setDrawCanvas(Canvas drawCanvas){
+		this.drawCanvas = drawCanvas;
+	}
+	
+	public Canvas getDrawCanvas(){
+		return drawCanvas;
+	}
+	
 	public void setDrawPaint(Paint drawPaint){
 		this.drawPaint = drawPaint;		
 	}
@@ -98,6 +106,11 @@ public class PaintView extends View {
 		}
 		else
 			return false;
+	}
+	
+	public void newImage(){
+		drawCanvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+		invalidate();
 	}
 
 }

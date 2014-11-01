@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="@color/whiteColor"
     tools:context="com.app.kfe.Tablica" >
 
 	<com.app.kfe.PaintView
@@ -32,6 +33,42 @@
             android:layout_height="wrap_content" 
             android:orientation="vertical"
             android:background="@color/grayColor">
+            
+            <GridLayout
+                android:id="@+id/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="4"
+                android:rowCount="1" 
+                android:layout_gravity="center">
+                
+                <ImageButton 
+                   	android:id="@+id/brushTool" 
+                   	android:layout_width="40dp"
+	               	android:layout_height="40dp"
+	               	android:layout_margin="5dp"
+	               	android:src="@drawable/brush"/>
+                
+                <ImageButton 
+                   	android:id="@+id/eraserTool" 
+                   	android:layout_width="40dp"
+	               	android:layout_height="40dp"
+	               	android:layout_margin="5dp"
+	               	android:src="@drawable/eraser"/>
+                <ImageButton 
+                   	android:id="@+id/newImageTool" 
+                   	android:layout_width="40dp"
+	               	android:layout_height="40dp"
+	               	android:layout_margin="5dp"
+	               	android:src="@drawable/new_image"/>
+                <ImageButton 
+                   	android:id="@+id/saveButton" 
+                   	android:layout_width="40dp"
+	               	android:layout_height="40dp"
+	               	android:layout_margin="5dp"
+	               	android:src="@drawable/save"/>
+                
+            </GridLayout>
             
             <TextView
                 android:id="@+id/brushSizeLabel"
@@ -70,14 +107,14 @@
                     android:id="@+id/redButton"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_margin="15dp"
+                    android:layout_margin="5dp"
                     android:background="@color/redColor"/>
                                 
                 <Button 
                     android:id="@+id/yellowButton" 
                     android:layout_width="40dp"
                 	android:layout_height="40dp"
-                	android:layout_margin="15dp"
+                	android:layout_margin="5dp"
                 	android:background="@color/yellowColor"/>
 
                 
@@ -85,47 +122,30 @@
                     android:id="@+id/greenButton" 
                     android:layout_width="40dp"
                 	android:layout_height="40dp"
-                	android:layout_margin="15dp"
+                	android:layout_margin="5dp"
                 	android:background="@color/greenColor"/>
                 
                 <Button 
                     android:id="@+id/blueButton" 
                     android:layout_width="40dp"
                 	android:layout_height="40dp"
-                	android:layout_margin="15dp"
+                	android:layout_margin="5dp"
                 	android:background="@color/blueColor"/>
                 
                 <Button 
                     android:id="@+id/whiteButton" 
                     android:layout_width="40dp"
                 	android:layout_height="40dp"
-                	android:layout_margin="15dp"
+                	android:layout_margin="5dp"
                 	android:background="@color/whiteColor"/>
                 
                 <Button 
                     android:id="@+id/blackButton" 
                     android:layout_width="40dp"
                 	android:layout_height="40dp"
-                	android:layout_margin="15dp"
+                	android:layout_margin="5dp"
                 	android:background="@color/blackColor"/>
-            </GridLayout>
-            
-            <GridLayout
-                android:id="@+id/events"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:rowCount="1" 
-                android:layout_gravity="center">
-                
-                <ImageButton 
-                   	android:id="@+id/saveButton" 
-                   	android:layout_width="40dp"
-	               	android:layout_height="40dp"
-	               	android:layout_margin="15dp"
-	               	android:src="@drawable/save"/>
-                
-            </GridLayout>
+            </GridLayout>            
             
         </LinearLayout>
     </SlidingDrawer>    
