@@ -38,7 +38,6 @@ public final class R {
     }
     public static final class id {
         public static final int action_settings=0x7f09001b;
-        public static final int bConnectNew=0x7f090002;
         public static final int blackButton=0x7f090017;
         public static final int blueButton=0x7f090015;
         public static final int brushSize=0x7f09000f;
@@ -56,6 +55,7 @@ public final class R {
         public static final int handle=0x7f09000d;
         public static final int listView=0x7f090001;
         public static final int redButton=0x7f090012;
+        public static final int refresh_btn=0x7f090002;
         public static final int saveButton=0x7f090019;
         public static final int score_btn=0x7f090006;
         public static final int setting_btn=0x7f090005;

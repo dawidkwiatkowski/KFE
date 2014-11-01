@@ -14,9 +14,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvPD"
-        android:layout_above="@+id/bConnectNew"
+        android:layout_above="@+id/refresh_btn"
 >
     </ListView>
- 
+
+    <Button
+        android:id="@+id/refresh_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+         
+        android:text="Odświerz" />
  
 </RelativeLayout>
