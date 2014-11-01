@@ -31,12 +31,21 @@ public class Ustawienia extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
+        setContentView(R.layout.ustawienia);
    
 
         initUiElements();
         
         db = new DatabaseHelper(getApplicationContext());
+        List<Gracz> allGracze = db.getAllGracze();
+        int ostatniGracz=0;
+        if (allGracze != null && !allGracze.isEmpty()) {
+			 ostatniGracz=allGracze.size()-1;
+			}
+        if(!allGracze.isEmpty()){
+       allGracze.get(ostatniGracz).getName();
+        etName.setText(allGracze.get(ostatniGracz).getName());
+        }
         addListenerOnButton();
         
     }
@@ -80,7 +89,7 @@ public class Ustawienia extends Activity {
 				} else {
 					Gracz player = new Gracz(taskDescription);
 					long player_id = db.createGracz(player);
-					etName.setText("");
+					
 					 Toast.makeText(getBaseContext(),"Gracz zosta³ zapisany", Toast.LENGTH_LONG).show();
 					List<Gracz> allGracze = db.getAllGracze();
 					for (Gracz gracz : allGracze) {

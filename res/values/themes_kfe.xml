@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="KFE" parent="@style/_KFE"/>
+
+  <style name="_KFE" parent="android:Theme.Holo.Light.DarkActionBar">
+
+    <item name="android:editTextBackground">@drawable/kfe_edit_text_holo_light</item>
+
+    <item name="android:textColorHighlight">#990099cc</item>
+    <item name="android:textSelectHandleLeft">@drawable/kfe_text_select_handle_left</item>
+    <item name="android:textSelectHandleRight">@drawable/kfe_text_select_handle_right</item>
+    <item name="android:textSelectHandle">@drawable/kfe_text_select_handle_middle</item>
+
+    <item name="android:listChoiceIndicatorMultiple">@drawable/kfe_btn_check_holo_light</item>
+
+    <item name="android:buttonStyle">@style/ButtonKFE</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonKFE</item>
+
+    <item name="android:dropDownSpinnerStyle">@style/SpinnerKFE</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarKFE</item>
+
+    <item name="android:listChoiceBackgroundIndicator">@drawable/kfe_list_selector_holo_light</item>
+
+    <item name="android:activatedBackgroundIndicator">@drawable/kfe_activated_background_holo_light</item>
+
+  </style>
+  
+  <style name="MyAppTheme" parent="@android:style/Theme.Holo.NoActionBar">
+        <!-- Any customizations for your app running on pre-3.0 devices here -->
+    </style>
+
+</resources>

@@ -16,12 +16,12 @@ public class MainActivity extends Activity {
 	private Button dolacz_btn;
 	private Button setting_btn;
 	private Button score_btn;
+	private Button exit_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        
+        setContentView(R.layout.menu_glowne);
         addListenerOnButton();
     }
 
@@ -51,6 +51,7 @@ public class MainActivity extends Activity {
     	dolacz_btn = (Button) findViewById(R.id.dolacz_btn);
     	setting_btn = (Button) findViewById(R.id.setting_btn);
     	score_btn = (Button) findViewById(R.id.score_btn);
+    	exit_btn = (Button) findViewById(R.id.exit_btn);
     	
     	draw2_btn.setOnClickListener(new OnClickListener() {
 
@@ -72,9 +73,7 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub
 				Intent dolacz = new Intent(getApplicationContext(), Dolacz.class);
 				startActivity(dolacz);
-			}
-			
-			
+			}	
     	
     	});
     	setting_btn.setOnClickListener(new OnClickListener() {
@@ -99,24 +98,14 @@ public class MainActivity extends Activity {
     	
     	});
     	
-    	setting_btn.setOnClickListener(new OnClickListener() {
+    	
+    	exit_btn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
-				startActivity(ustawienia);
-			}
-    	
-    	});
-    	
-    	score_btn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
-				startActivity(tablica);
+				 finish();
+		            System.exit(0);
 			}
     	
     	});

@@ -1,7 +1,14 @@
 package com.app.kfe;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import sqlite.helper.DatabaseHelper;
 import sqlite.model.Gracz;
@@ -26,42 +33,78 @@ public class Statystyki extends Activity  {
 	        setContentView(R.layout.activity_score);
 	        mainListView = (ListView) findViewById( R.id.statListView );  
 	        db = new DatabaseHelper(getApplicationContext());
+	        
+	        List<String> daty = new ArrayList<String>();
+	        List<String> gracze = new ArrayList<String>();
+	        List<Integer> punkty= new ArrayList<Integer>();
+	        List<Rozgrywka> rozgrywki=db.getAllRozgrywka();
+	        List<Stat_gry> statystyki;
+
 	        Rozgrywka gra1 = new Rozgrywka();
-			int punkty=50;
+			int pkt=10;
 			List<Gracz> allGracze = db.getAllGracze();
-			List<Stat_gry> statystyki;
+				
 			int ostatniGracz=0;
-			if (allGracze != null && !allGracze.isEmpty()) {
+						if (allGracze != null && !allGracze.isEmpty()) {
 				 ostatniGracz=allGracze.size()-1;
 				}
 			
-			
+			if(!allGracze.isEmpty()){
 			int id_last_player=allGracze.get(ostatniGracz).getId();
 			
-			long rozgrywka1_id = db.createRozgrywka(gra1, new long[] { id_last_player },new int[]{punkty});
-
-
-			Log.e("Todo Count", "Todo count: " + db.getRozgrywkaCount());
-
-			// "Post new Article" - assigning this under "Important" Tag
-			// Now this will have - "Androidhive" and "Important" Tags
-			//db.createStat_gry(rozgrywka1_id, id_last_player,punkty);
-	        ArrayList<String> allRozgrywki = new ArrayList<String>();
-	      
-	        listAdapter = new ArrayAdapter<String>(this, R.layout.stat_row_list, allRozgrywki);
-	        int i=0;
+			
+			db.createRozgrywka(gra1, new long[] { id_last_player },new int[]{pkt});
+			}
+	       
+	        if (rozgrywki.size() > 0) {// sortowanie listy po datach rozgrywek
+	        	
+	            Collections.sort(rozgrywki, new Comparator<Rozgrywka>() {
+	                @Override
+	                public int compare(final Rozgrywka object1, final Rozgrywka object2) {
+	                	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+	                	Date data1 = new Date();
+	                	Date data2 = new Date();
+	                	dateFormat.format(data1);
+	                	dateFormat.format(data2);
+	                	
+	                
+						try {
+							data1 = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.ENGLISH).parse(object1.getData());
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}       	
+	           
+						try {
+							data2 = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.ENGLISH).parse(object2.getData());
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}  
+	                	return (data1.compareTo(data2))*-1;// aby sortowa³o od najstarszej do najmlodszej rozgywki
+	                }
+	               } );
+	           }
 	        
-	        for (Gracz gracze : db.getAllGracze()) {
-	        	 for (Rozgrywka rozgrywki : db.getAllRozgrywkaByTag(gracze.getName())){
-	        		 
-	        		 statystyki=db.getStat_gry(gracze.getId(), rozgrywki.getId());
-	        		 listAdapter.add(i + "  " + gracze.getName() + "   "+  statystyki.get(1).getPunkty() );
-	        		 i++;
-	        	 }
-	        	 }
-				
+	        
+	        
+	        for (Rozgrywka rozgrywka : rozgrywki){
+	        	daty.add(rozgrywka.getData());
+	        	
+	        	 for ( Gracz gra: db.getAllGraczeByRozgrywka(rozgrywka.getId())){
+	 	        	gracze.add(gra.getName());	
+	 	        	statystyki=db.getStat_gry(gra.getId(), rozgrywka.getId());
+	 	        	punkty.add(statystyki.get(0).getPunkty());
+	 	        	
+	 	        	
+	 	        }
+	        }
+	        CustomListAdapter adapter = new CustomListAdapter(Statystyki.this, daty, gracze,punkty);
+	        
+	             	              
+	       				
 	    	db.closeDB();
-	        mainListView.setAdapter( listAdapter );
+	        mainListView.setAdapter( adapter );
 	    }
 	 
 	 

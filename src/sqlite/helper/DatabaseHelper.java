@@ -281,7 +281,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		return tags;
 	}
+	public List<Gracz> getAllGraczeByRozgrywka(long id_rozgrywki) {
+		List<Gracz> gracze = new ArrayList<Gracz>();
 
+		String selectQuery = "SELECT  * FROM " + GRACZ_TABLE + " gra, "
+				+ STAT_GRY_TABLE + " sta "  + " WHERE sta."
+				+ KEY_ROZGRYWKA_ID + " = '" + id_rozgrywki+ "'" ;
+		
+
+		Log.e(LOG, selectQuery);
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (c.moveToFirst()) {
+			do {
+				Gracz gracz = new Gracz();
+				gracz.setId(c.getInt((c.getColumnIndex(KEY_GRACZ_ID))));
+				gracz.setName(c.getString(c.getColumnIndex(KEY_NAME)));
+
+				// adding to todo list
+				gracze.add(gracz);
+			} while (c.moveToNext());
+		}
+
+		return gracze;
+	}
 	/*
 	 * Updating a tag
 	 */
@@ -347,8 +373,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public List<Stat_gry> getStat_gry(long id_gracza, long id_rozgrywki) {
 		List<Stat_gry> stat_gier = new ArrayList<Stat_gry>();
 
-		String selectQuery = "SELECT  * FROM " + STAT_GRY_TABLE + " st, "
+		/*String selectQuery = "SELECT  * FROM " + STAT_GRY_TABLE + " st, "
 				+ GRACZ_TABLE + " gra, " + ROZGRYWKA_TABLE + " roz WHERE st."
+				+ KEY_GRACZ_ID + " = '" + id_gracza + "'" + " AND st." + KEY_ROZGRYWKA_ID
+				+ " = " + id_rozgrywki;*/
+		String selectQuery = "SELECT  * FROM " + STAT_GRY_TABLE + " st " + " WHERE st."
 				+ KEY_GRACZ_ID + " = '" + id_gracza + "'" + " AND st." + KEY_ROZGRYWKA_ID
 				+ " = " + id_rozgrywki;
 
@@ -362,8 +391,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			do {
 				Stat_gry stat_gry = new Stat_gry();
 				stat_gry.setId(c.getInt((c.getColumnIndex(KEY_ID))));
-			
-				stat_gry.setPunkty(c.getColumnIndex(KEY_PUNKTY));
+				stat_gry.setPunkty(c.getInt(c.getColumnIndex(KEY_PUNKTY)));
 
 				// adding to todo list
 				stat_gier.add(stat_gry);
@@ -372,6 +400,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		return stat_gier;
 	}
+	
 
 	/*
 	 * Updating a todo tag

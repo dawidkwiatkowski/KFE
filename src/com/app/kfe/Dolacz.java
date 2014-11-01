@@ -10,7 +10,6 @@ import java.util.UUID;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,11 +20,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
  
@@ -33,7 +30,6 @@ public class Dolacz extends Activity implements OnItemClickListener {
  
     ArrayAdapter<String> listAdapter;
     ListView listView;
-    private Button refresh_btn;
     BluetoothAdapter btAdapter;
     Set<BluetoothDevice> devicesArray;
     ArrayList<String> pairedDevices;
@@ -71,7 +67,6 @@ public class Dolacz extends Activity implements OnItemClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dolacz);
-        addListenerOnButton();
         init();
         if(btAdapter==null){
             Toast.makeText(getApplicationContext(), "No bluetooth detected", 0).show();
@@ -87,21 +82,6 @@ public class Dolacz extends Activity implements OnItemClickListener {
         }
  
  
-    }
-    
-    public void addListenerOnButton() {
-   	 
-    	refresh_btn = (Button) findViewById(R.id.refresh_btn);
-    	refresh_btn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				listAdapter.clear();
-				getPairedDevices();
-				startDiscovery();
-				
-			}});
     }
     private void startDiscovery() {
         // TODO Auto-generated method stub
@@ -186,15 +166,8 @@ public class Dolacz extends Activity implements OnItemClickListener {
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
-    	try{
-    	unregisterReceiver(receiver);
-    	}
-    	catch(Exception e)
-    	{
-    		Log.i(tag, "refresh");
-    	}
-    	super.onPause();
-       
+        super.onPause();
+        unregisterReceiver(receiver);
     }
  
         @Override
@@ -221,68 +194,10 @@ public class Dolacz extends Activity implements OnItemClickListener {
                 Log.i(tag, "in click listener");
             }
             else{
-            	
-            	AcceptThread accept = new AcceptThread();
-            	accept.start();
-            	
                 Toast.makeText(getApplicationContext(), "device is not paired", 0).show();
             }
         }
          
-        private class AcceptThread extends Thread {
-            private final BluetoothServerSocket mmServerSocket;
-            
-            public AcceptThread() {
-                // Use a temporary object that is later assigned to mmServerSocket,
-                // because mmServerSocket is final
-            	
-                BluetoothServerSocket tmp = null;
-                try {
-                    // MY_UUID is the app's UUID string, also used by the client code
-                    tmp = btAdapter.listenUsingRfcommWithServiceRecord(btAdapter.getName(), MY_UUID);
-                } catch (IOException e) { }
-                mmServerSocket = tmp;
-            }
-         
-            public void run() {
-                BluetoothSocket socket = null;
-                // Keep listening until exception occurs or a socket is returned
-                while (true) {
-                    try {
-                        socket = mmServerSocket.accept();
-                    } catch (IOException e) {
-                        break;
-                    }
-                    // If a connection was accepted
-                    if (socket != null) {
-                        // Do work to manage the connection (in a separate thread)
-                        manageConnectedSocket(socket);
-                        try {
-							mmServerSocket.close();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-                        break;
-                    }
-                }
-            }
-         
-            private void manageConnectedSocket(BluetoothSocket socket) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			/** Will cancel the listening socket, and cause the thread to finish */
-            public void cancel() {
-                try {
-                    mmServerSocket.close();
-                } catch (IOException e) { }
-            }
-        }
-        
-        
-        
         private class ConnectThread extends Thread {
          
             private final BluetoothSocket mmSocket;
@@ -297,27 +212,11 @@ public class Dolacz extends Activity implements OnItemClickListener {
                 // Get a BluetoothSocket to connect with the given BluetoothDevice
                 try {
                     // MY_UUID is the app's UUID string, also used by the server code
-                    tmp = device.createRfcommSocketToServiceRecord(MY_UUID); // tu mo¿e byc problem UUID
+                    tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
                 } catch (IOException e) {
                     Log.i(tag, "get socket failed");
                      
                 }
-                try {
-                    tmp.connect();
-                    Log.e("","Connected");
-                } catch (IOException e) {
-                    Log.e("",e.getMessage());
-                    try {
-                        Log.e("","trying fallback...");
-
-                        tmp =(BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(device,1);
-                        tmp.connect();
-
-                        Log.e("","Connected");
-                    }
-                    catch (Exception e2) {
-                        Log.e("", "Couldn't establish Bluetooth connection!");
-                     }};
                 mmSocket = tmp;
             }
           

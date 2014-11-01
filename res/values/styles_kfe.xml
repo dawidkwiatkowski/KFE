@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="ButtonKFE" parent="android:Widget.Holo.Light.Button">
+	  <item name="android:background">@drawable/kfe_btn_default_holo_light</item>
+  </style>
+
+  <style name="ImageButtonKFE" parent="android:Widget.Holo.Light.ImageButton">
+	  <item name="android:background">@drawable/kfe_btn_default_holo_light</item>
+  </style>
+
+  <style name="SpinnerKFE" parent="android:Widget.Holo.Light.Spinner">
+      <item name="android:background">@drawable/kfe_spinner_background_holo_light</item>
+      <item name="android:dropDownSelector">@drawable/kfe_list_selector_holo_light</item>
+  </style>
+
+  <style name="ProgressBarKFE" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
+      <item name="android:progressDrawable">@drawable/kfe_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/kfe_progress_indeterminate_horizontal_holo_light</item>
+  </style>
+
+</resources>
