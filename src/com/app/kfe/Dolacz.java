@@ -3,6 +3,7 @@ package com.app.kfe;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
@@ -34,10 +35,13 @@ public class Dolacz extends Activity implements OnItemClickListener {
     Set<BluetoothDevice> devicesArray;
     ArrayList<String> pairedDevices;
     ArrayList<BluetoothDevice> devices;
-    public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    
+    public static final UUID MY_UUID = UUID.fromString("3ebcd430-626c-11e4-9803-0800200c9a66");
+    //00001101-0000-1000-8000-00805F9B34FB
     protected static final int SUCCESS_CONNECT = 0;
     protected static final int MESSAGE_READ = 1;
     IntentFilter filter;
+  
     BroadcastReceiver receiver;
     String tag = "debugging";
     Handler mHandler = new Handler(){
@@ -68,6 +72,7 @@ public class Dolacz extends Activity implements OnItemClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dolacz);
         init();
+       
         if(btAdapter==null){
             Toast.makeText(getApplicationContext(), "No bluetooth detected", 0).show();
             finish();
@@ -85,7 +90,7 @@ public class Dolacz extends Activity implements OnItemClickListener {
     }
     private void startDiscovery() {
         // TODO Auto-generated method stub
-        btAdapter.cancelDiscovery();
+        //btAdapter.cancelDiscovery();
         btAdapter.startDiscovery();
          
     }
@@ -111,6 +116,7 @@ public class Dolacz extends Activity implements OnItemClickListener {
         listAdapter= new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,0);
         listView.setAdapter(listAdapter);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
+                
         pairedDevices = new ArrayList<String>();
         filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         devices = new ArrayList<BluetoothDevice>();
@@ -166,8 +172,17 @@ public class Dolacz extends Activity implements OnItemClickListener {
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
-        super.onPause();
-        unregisterReceiver(receiver);
+    	try
+    	{
+        btAdapter.cancelDiscovery();
+    	unregisterReceiver(receiver);
+    	}
+    	catch(Exception e2)
+    	{
+    		
+    	}
+    	super.onPause();
+        
     }
  
         @Override
@@ -180,7 +195,7 @@ public class Dolacz extends Activity implements OnItemClickListener {
             }
         }
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                long arg3) {
+                long arg3)  {
             // TODO Auto-generated method stub
              
             if(btAdapter.isDiscovering()){
@@ -189,8 +204,15 @@ public class Dolacz extends Activity implements OnItemClickListener {
             if(listAdapter.getItem(arg2).contains("Paired")){
          
                 BluetoothDevice selectedDevice = devices.get(arg2);
-                ConnectThread connect = new ConnectThread(selectedDevice);
-                connect.start();
+                ConnectThread connect;
+				try {
+					connect = new ConnectThread(selectedDevice);
+					connect.start();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                
                 Log.i(tag, "in click listener");
             }
             else{
@@ -203,21 +225,42 @@ public class Dolacz extends Activity implements OnItemClickListener {
             private final BluetoothSocket mmSocket;
             private final BluetoothDevice mmDevice;
           
-            public ConnectThread(BluetoothDevice device) {
+            
+            public ConnectThread(BluetoothDevice device) throws Exception {
                 // Use a temporary object that is later assigned to mmSocket,
                 // because mmSocket is final
                 BluetoothSocket tmp = null;
                 mmDevice = device;
+                
                 Log.i(tag, "construct");
                 // Get a BluetoothSocket to connect with the given BluetoothDevice
+              
                 try {
-                    // MY_UUID is the app's UUID string, also used by the server code
                     tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+                } catch (Exception e) {Log.e("","Error creating socket");}
+
+                try {
+                    tmp.connect();
+                    Log.e("","Connected");
                 } catch (IOException e) {
-                    Log.i(tag, "get socket failed");
-                     
+                    Log.e("",e.getMessage());
+                    try {
+                        Log.e("","trying fallback...");
+
+                        Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+                        tmp = (BluetoothSocket) m.invoke(device, 1);
+                        tmp.connect();
+
+                        Log.e("","Connected");
+                    }
+                    catch(Exception z)
+                    {
+                    	Log.e("","Wszystko zawiod³o");
+                    }
+                    
                 }
-                mmSocket = tmp;
+                
+                mmSocket=tmp;
             }
           
             public void run() {
