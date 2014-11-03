@@ -142,15 +142,20 @@ public class Ustawienia extends Activity {
 					for (Gracz gracz : db.getAllGracze()) {
 						if(nazwa_gracza.equals(gracz.getName())){
 							
-							 Toast.makeText(getBaseContext(),"Gracz "+ nazwa_gracza +" " +"istnieje juï¿½ w bazie ", Toast.LENGTH_LONG).show();
+							 Toast.makeText(getBaseContext(),"Gracz "+ nazwa_gracza +" " +"istnieje ju¿½ w bazie ", Toast.LENGTH_LONG).show();
 							 i++;
 							 break;
 						}
 					}
 					if(i==0){
 					Gracz player = new Gracz(nazwa_gracza);
-					db.createGracz(player);
-					 Toast.makeText(getBaseContext(),"Gracz zostaï¿½ zapisany", Toast.LENGTH_LONG).show();}
+					if(db.getAllGracze().isEmpty()){
+					db.createGracz(player);}
+					else{
+						player.setId(1);
+						db.updateGracz(player);
+					}
+					 Toast.makeText(getBaseContext(),"Gracz zosta³½ zapisany", Toast.LENGTH_LONG).show();}
 											
 				}
 				db.closeDB();
