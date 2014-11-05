@@ -12,6 +12,17 @@ import android.view.View;
 
 public class PaintView extends View {
 	
+	 public static final int LINE = 1;
+	 public static final int RECTANGLE = 3;
+	 public static final int SQUARE = 4;
+	 public static final int CIRCLE = 5;
+	 public static final int TRIANGLE = 6;
+	 public static final int SMOOTHLINE = 2;
+	 
+	 public int mCurrentShape;
+	 
+	 public boolean isDrawing = false;
+	
 	//drawing path
 	private Path drawPath;
 	//drawing and canvas paint
@@ -22,6 +33,14 @@ public class PaintView extends View {
 	private Canvas drawCanvas;
 	//canvas bitmap
 	private Bitmap canvasBitmap;
+	
+	private float touchX;
+	
+	private float touchY;
+	
+	private float mx;
+	
+	private float my;
 	
 	private boolean isEnabled;
 
@@ -48,12 +67,28 @@ public class PaintView extends View {
 		return drawPaint;
 	}
 	
+	public void setCanvasPaint(Paint canvasPaint){
+		this.canvasPaint = canvasPaint;
+	}
+	
+	public Paint getCanvasPaint(){
+		return canvasPaint;
+	}
+	
 	public void setIsEnabled(boolean isEnabled){
 		this.isEnabled = isEnabled;
 	}
 	
 	public boolean getIsEnabled(){
 		return isEnabled;
+	}
+	
+	public void setMCurrentShape(int mCurrentShape){
+		this.mCurrentShape = mCurrentShape;
+	}
+	
+	public int getMCurrentShape(){
+		return mCurrentShape;
 	}
 	
 	private void setupDrawing(){
@@ -65,7 +100,14 @@ public class PaintView extends View {
 		drawPaint.setStrokeJoin(Paint.Join.ROUND);
 		drawPaint.setStrokeCap(Paint.Cap.ROUND);
 		
-		canvasPaint = new Paint(Paint.DITHER_FLAG);		
+		canvasPaint = new Paint(Paint.DITHER_FLAG);
+		canvasPaint.setAntiAlias(true);
+		canvasPaint.setStrokeWidth(20);
+		canvasPaint.setStyle(Paint.Style.STROKE);
+		canvasPaint.setStrokeJoin(Paint.Join.ROUND);
+		canvasPaint.setStrokeCap(Paint.Cap.ROUND);
+		
+		mCurrentShape = SMOOTHLINE;
 	}
 	
 	@Override
@@ -79,37 +121,117 @@ public class PaintView extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
-		canvas.drawPath(drawPath, drawPaint);
+		//canvas.drawPath(drawPath, drawPaint);
+		
+		if (isDrawing){
+			switch (mCurrentShape) {
+				case LINE:
+//					onDrawLine(canvas);
+					break;
+				case RECTANGLE:
+					onDrawRectangle(canvas);
+					break;
+				case SQUARE:
+//					onDrawSquare(canvas);
+					break;
+				case CIRCLE:
+//					onDrawCircle(canvas);
+					break;
+				case TRIANGLE:
+//					onDrawTriangle(canvas);
+					break;
+				}
+			}
 	}
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		touchX = event.getX();
+		touchY = event.getY();
 		if( isEnabled){
-			float touchX = event.getX();
-			float touchY = event.getY();
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-			    drawPath.moveTo(touchX, touchY);
-			    break;
-			case MotionEvent.ACTION_MOVE:
-			    drawPath.lineTo(touchX, touchY);
-			    break;
-			case MotionEvent.ACTION_UP:
-			    drawCanvas.drawPath(drawPath, drawPaint);
-			    drawPath.reset();
-			    break;
-			default:
-			    return false;
+			switch (mCurrentShape) {
+				case LINE:
+//					onTouchEventLine(event);
+					break;
+				case SMOOTHLINE:
+					onTouchEventSmoothLine(event);
+					break;
+				case RECTANGLE:
+					onTouchEventRectangle(event);
+					break;
+				case SQUARE:
+//					onTouchEventSquare(event);
+					break;
+				case CIRCLE:
+//					onTouchEventCircle(event);
+					break;
+				case TRIANGLE:
+//					onTouchEventTriangle(event);
+					break;
 			}
-			invalidate();
 			return true;
 		}
 		else
 			return false;
 	}
 	
+	private void onTouchEventSmoothLine(MotionEvent event) {
+		
+		mx = touchX;
+		my = touchY;
+		switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				isDrawing = true;
+			    drawPath.moveTo(mx, my);
+			    invalidate();
+			    break;
+			case MotionEvent.ACTION_MOVE:
+			    drawPath.lineTo(mx, my);
+			    drawCanvas.drawPath(drawPath, drawPaint);
+			    invalidate();
+			    break;
+			case MotionEvent.ACTION_UP:
+				isDrawing = false;
+			    drawCanvas.drawPath(drawPath, drawPaint);
+			    drawPath.reset();
+			    invalidate();
+			    break;
+		}		
+	}
+	
+	private void onDrawRectangle(Canvas canvas) {
+		drawRectangle(canvas,canvasPaint);
+		}
+	
+	private void onTouchEventRectangle(MotionEvent event) {
+		switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				isDrawing = true;
+				mx = touchX;
+				my = touchY;
+				invalidate();
+				break;
+			case MotionEvent.ACTION_MOVE:
+				invalidate();
+				break;
+			case MotionEvent.ACTION_UP:
+				isDrawing = false;
+				drawRectangle(drawCanvas,drawPaint);
+				invalidate();
+				break;
+		}		
+	}
+	
+	private void drawRectangle(Canvas canvas,Paint paint){
+		float right = mx > touchX ? mx : touchX;
+		float left = mx > touchX ? touchX : mx;
+		float bottom = my > touchY ? my : touchY;
+		float top = my > touchY ? touchY : my;
+		canvas.drawRect(left, top , right, bottom, paint);
+	}
+	
 	public void newImage(){
-		drawCanvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+		drawCanvas.drawColor(paintColor, android.graphics.PorterDuff.Mode.CLEAR);
 		invalidate();
 	}
 

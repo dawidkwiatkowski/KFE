@@ -33,13 +33,15 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	private Button whiteButton;
 	private Button blackButton;
 	private Paint drawPaint;
+	private Paint canvasPaint;
 	private ImageButton saveButton;
 	private ImageButton brushTool;
+	private ImageButton rectangleTool;
 	private ImageButton eraserTool;
 	private ImageButton newImageTool;
 	private AlertDialog.Builder saveDialog;
 	private AlertDialog.Builder newImageDialog;
-	private int brushColor;
+	private int brushColor;	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		
 		paintView = (PaintView) findViewById(R.id.drawing);
 		drawPaint = paintView.getDrawPaint();
+		canvasPaint = paintView.getCanvasPaint();
 		redButton = (Button) findViewById(R.id.redButton);
 		yellowButton = (Button) findViewById(R.id.yellowButton);
 		greenButton = (Button) findViewById(R.id.greenButton);
@@ -61,6 +64,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		saveButton = (ImageButton) findViewById(R.id.saveButton);
 		brushTool = (ImageButton) findViewById(R.id.brushTool);
 		brushColor = drawPaint.getColor();
+		rectangleTool = (ImageButton) findViewById(R.id.rectangleTool);
 		eraserTool = (ImageButton) findViewById(R.id.eraserTool);
 		newImageTool = (ImageButton) findViewById(R.id.newImageTool);
 		
@@ -72,6 +76,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		greenButton.setOnClickListener(this);
 		saveButton.setOnClickListener(this);
 		brushTool.setOnClickListener(this);
+		rectangleTool.setOnClickListener(this);
 		eraserTool.setOnClickListener(this);
 		newImageTool.setOnClickListener(this);
 		
@@ -141,8 +146,10 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		// TODO Auto-generated method stub
 		
 		drawPaint.setStrokeWidth((float) progress);
+		canvasPaint.setStrokeWidth((float) progress);
 		
 		paintView.setDrawPaint(drawPaint);
+		paintView.setCanvasPaint(canvasPaint);
 		
 	}
 
@@ -165,36 +172,45 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		switch(v.getId()){
 			case R.id.redButton:
 				drawPaint.setColor(Color.RED);
+				canvasPaint.setColor(Color.RED);
 				brushColor = drawPaint.getColor();
 				break;
 			case R.id.yellowButton:
 				drawPaint.setColor(Color.YELLOW);
+				canvasPaint.setColor(Color.YELLOW);
 				brushColor = drawPaint.getColor();
 				break;
 			case R.id.greenButton:
 				drawPaint.setColor(Color.GREEN);
+				canvasPaint.setColor(Color.GREEN);
 				brushColor = drawPaint.getColor();
 				break;
 			case R.id.blueButton:
 				drawPaint.setColor(Color.BLUE);
+				canvasPaint.setColor(Color.BLUE);
 				brushColor = drawPaint.getColor();
 				break;
 			case R.id.whiteButton:
 				drawPaint.setColor(Color.WHITE);
+				canvasPaint.setColor(Color.WHITE);
 				brushColor = drawPaint.getColor();
 				break;
 			case R.id.blackButton:
 				drawPaint.setColor(Color.BLACK);
+				canvasPaint.setColor(Color.BLACK);
 				brushColor = drawPaint.getColor();
 				break;			
 			case R.id.saveButton:				
 				saveDialog.show();
 				break;
 			case R.id.brushTool:
-				setBrush();
+				setBrushTool();
+				break;
+			case R.id.rectangleTool:
+				setRectangleTool();
 				break;
 			case R.id.eraserTool:
-				drawPaint.setColor(Color.WHITE);				
+				setEraserTool();
 				break;
 			case R.id.newImageTool:				
 				newImageDialog.show();
@@ -223,8 +239,25 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		paintView.destroyDrawingCache();
 	}
 	
-	public void setBrush(){
+	public void setColor(){
 		drawPaint.setColor(brushColor);
+		canvasPaint.setColor(brushColor);
+	}
+	
+	public void setBrushTool(){
+		setColor();
+		paintView.setMCurrentShape(paintView.SMOOTHLINE);
+	}
+	
+	public void setRectangleTool(){
+		setColor();
+		paintView.setMCurrentShape(paintView.RECTANGLE);
+	}
+	
+	public void setEraserTool(){
+		drawPaint.setColor(Color.WHITE);	
+		canvasPaint.setColor(Color.WHITE);
+		paintView.setMCurrentShape(paintView.SMOOTHLINE);
 	}
 	
 	public void newImage(){

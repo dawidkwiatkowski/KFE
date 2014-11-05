@@ -38,7 +38,7 @@
                 android:id="@+id/tools"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="4"
+                android:columnCount="5"
                 android:rowCount="1" 
                 android:layout_gravity="center">
                 
@@ -48,6 +48,13 @@
 	               	android:layout_height="40dp"
 	               	android:layout_margin="5dp"
 	               	android:src="@drawable/brush"/>
+                
+                <ImageButton 
+                   	android:id="@+id/rectangleTool" 
+                   	android:layout_width="40dp"
+	               	android:layout_height="40dp"
+	               	android:layout_margin="5dp"
+	               	android:src="@drawable/rectangle"/>
                 
                 <ImageButton 
                    	android:id="@+id/eraserTool" 
