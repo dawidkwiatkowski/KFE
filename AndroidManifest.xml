@@ -45,6 +45,11 @@
             android:name=".Statystyki"
             android:label="@string/title_activity_score">
         </activity>
+         <activity
+            android:name=".StatActivity"
+            android:label="@string/title_stat_activity">
+        </activity>
+        
     </application>
 
 </manifest>

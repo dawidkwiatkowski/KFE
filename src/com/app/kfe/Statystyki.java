@@ -15,16 +15,20 @@ import sqlite.model.Gracz;
 import sqlite.model.Rozgrywka;
 import sqlite.model.Stat_gry;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.view.View;
 
 public class Statystyki extends Activity  {
 
 	  private ListView mainListView ;  
-	  private ArrayAdapter<String> listAdapter ; 
+	 private ArrayAdapter<String> listAdapter ; 
 		DatabaseHelper db;
 		
 	 @Override
@@ -34,12 +38,9 @@ public class Statystyki extends Activity  {
 	        mainListView = (ListView) findViewById( R.id.statListView );  
 	        db = new DatabaseHelper(getApplicationContext());
 	        
-	        List<String> daty = new ArrayList<String>();
-	        List<String> gracze = new ArrayList<String>();
-	        List<Integer> punkty= new ArrayList<Integer>();
-	        List<Rozgrywka> rozgrywki=db.getAllRozgrywka();
-	        List<Stat_gry> statystyki;
-
+	        final List<Rozgrywka> rozgrywki=db.getAllRozgrywka();
+	    
+	       
 	        Rozgrywka gra1 = new Rozgrywka();
 			int pkt=10;
 			List<Gracz> allGracze = db.getAllGracze();
@@ -88,7 +89,7 @@ public class Statystyki extends Activity  {
 	        
 	        
 	        
-	        for (Rozgrywka rozgrywka : rozgrywki){
+	     /*   for (Rozgrywka rozgrywka : rozgrywki){
 	        	daty.add(rozgrywka.getData());
 	        	
 	        	 for ( Gracz gra: db.getAllGraczeByRozgrywka(rozgrywka.getId())){
@@ -98,13 +99,31 @@ public class Statystyki extends Activity  {
 	 	        	
 	 	        	
 	 	        }
-	        }
-	        CustomListAdapter adapter = new CustomListAdapter(Statystyki.this, daty, gracze,punkty);
+	        }*/
 	        
+	        listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow);  
+	        //CustomListAdapter adapter = new CustomListAdapter(Statystyki.this, daty, gracze,punkty);
+	        int i=0;
+	        for (Rozgrywka rozgrywka : rozgrywki){
+	        	 listAdapter.add( i+"   "+rozgrywka.getData());
+	        	 i++;
+	        }
 	             	              
-	       				
+	    
+	     
+	        mainListView.setOnItemClickListener(new OnItemClickListener()
+	        {
+	            @Override 
+	            public void onItemClick(AdapterView<?> parent, View v, int position, long id)
+	            { 
+	            	Intent stat = new Intent(getApplicationContext(), StatActivity.class);
+	            	int id_rozgrywki= rozgrywki.size()-position;
+	            	stat.putExtra("idRozgrywki",Integer.toString(id_rozgrywki));
+					startActivity(stat);
+	            }
+	        });			
 	    	db.closeDB();
-	        mainListView.setAdapter( adapter );
+	    	 mainListView.setAdapter( listAdapter );  
 	    }
 	 
 	 

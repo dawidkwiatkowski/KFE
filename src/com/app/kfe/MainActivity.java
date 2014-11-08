@@ -1,7 +1,10 @@
 package com.app.kfe;
 
+import sqlite.helper.DatabaseHelper;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,11 +20,22 @@ public class MainActivity extends Activity {
 	private Button setting_btn;
 	private Button score_btn;
 	private Button exit_btn;
+	MediaPlayer mpButtonClick;
+	 public static final String PREFS_NAME = "MyPrefsFile";
+	DatabaseHelper db;
+	boolean silent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_glowne);
+        mpButtonClick = MediaPlayer.create(this, R.raw.button);
+        db = new DatabaseHelper(getApplicationContext());
+        SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        silent = settings.getBoolean("silentMode", true);
+        if(db.isEmpty("hasla")){
+        db.createHasla();
+        }
         addListenerOnButton();
     }
 
@@ -58,6 +72,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				if((mpButtonClick != null) && silent){
+					mpButtonClick.start();
+					}
 				Intent tablica = new Intent(getApplicationContext(), Tablica.class);
 				startActivity(tablica);
 			}
@@ -71,6 +88,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				if(mpButtonClick != null && silent){
+					mpButtonClick.start();
+					}
 				Intent dolacz = new Intent(getApplicationContext(), Dolacz.class);
 				startActivity(dolacz);
 			}	
@@ -81,6 +101,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				if(mpButtonClick != null && silent){
+					mpButtonClick.start();
+					}
 				Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
 				startActivity(ustawienia);
 			}
@@ -92,6 +115,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				if(mpButtonClick != null && silent){
+					mpButtonClick.start();
+					}
 				Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
 				startActivity(tablica);
 			}
@@ -104,6 +130,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				if(mpButtonClick != null && silent){
+					mpButtonClick.start();
+					}
 				 finish();
 		            System.exit(0);
 			}

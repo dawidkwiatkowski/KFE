@@ -2,24 +2,41 @@ package sqlite.helper;
 
 
 import sqlite.model.Gracz;
-
+import sqlite.model.Haslo;
 import sqlite.model.Rozgrywka;
 import sqlite.model.Stat_gry;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import android.content.ContentValues;
 import android.content.Context;
+
+import com.app.kfe.MainActivity;
+import com.app.kfe.R;
+
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+
+	private Context context; 
+	
 	// Logcat tag
 	private static final String LOG = "DatabaseHelper";
 
@@ -33,10 +50,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String GRACZ_TABLE = "gracz";
 	public static final String ROZGRYWKA_TABLE = "rozgrywka";
 	public static final String STAT_GRY_TABLE = "stat_gry";
+	public static final String HASLA_TABLE = "hasla";
+
 
 	// Common column names
 	private static final String KEY_ID = "id";
 	private static final String KEY_DATA = "data";
+	private static final String KEY_HASLO = "haslo";
 
 	// NOTES Table - column nmaes
 	
@@ -51,7 +71,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String CREATE_TABLE_ROZGRYWKA = "CREATE TABLE "
 			+ ROZGRYWKA_TABLE + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_DATA
 			+ " DATETIME" + ")";
-
+	
+	private static final String CREATE_TABLE_HASLA = "CREATE TABLE "
+			+ HASLA_TABLE + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_HASLO
+			+ " TEXT" + ")";
 	// Tag table create statement
 	private static final String CREATE_TABLE_GRACZ = "CREATE TABLE " + GRACZ_TABLE
 			+ "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT"
@@ -65,6 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		this.context = context;
 	}
 
 	@Override
@@ -74,6 +98,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_TABLE_ROZGRYWKA);
 		db.execSQL(CREATE_TABLE_GRACZ);
 		db.execSQL(CREATE_TABLE_STAT_GRY);
+		db.execSQL(CREATE_TABLE_HASLA);
+	}
+	public boolean isEmpty(String table) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor mcursor = db.rawQuery("SELECT * FROM " + table, null);
+		mcursor.moveToFirst();
+		if(mcursor.getCount()>0)return false;
+		else return true;
+	         
+	   
 	}
 
 	@Override
@@ -82,6 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + ROZGRYWKA_TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + GRACZ_TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + STAT_GRY_TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + HASLA_TABLE);
 
 		// create new tables
 		onCreate(db);
@@ -92,6 +127,58 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	/*
 	 * Creating a todo
 	 */
+	
+	public void createHasla() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		Charset ch = Charset.forName("UTF-8");
+		 InputStream inputStream = context.getResources().openRawResource(R.raw.hasla);
+		  InputStreamReader input = new InputStreamReader(inputStream,ch);
+	        BufferedReader buffreader = new BufferedReader(input,2*1024);
+       String line;
+       try {
+			while ((line = buffreader.readLine()) != null) {
+				values.put(KEY_HASLO,line );
+				 db.insert(HASLA_TABLE, null, values);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       try {
+			inputStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       
+	}
+	public ArrayList<Haslo> getAllHasla() {
+		ArrayList<Haslo> hasla = new ArrayList<Haslo>();
+		String selectQuery = "SELECT  * FROM " + HASLA_TABLE;
+
+		Log.e(LOG, selectQuery);
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (c.moveToFirst()) {
+			do {
+					Haslo td = new Haslo();
+				td.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+				
+				td.setHaslo(c.getString(c.getColumnIndex(KEY_HASLO)));
+
+				// adding to todo list
+				hasla.add(td);
+			} while (c.moveToNext());
+		}
+
+		return hasla;
+	}
+	
+	
 	public long createRozgrywka(Rozgrywka rozgrywka, long[] gracz_ids,int[] punkty) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -286,7 +373,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		String selectQuery = "SELECT  * FROM " + GRACZ_TABLE + " gra, "
 				+ STAT_GRY_TABLE + " sta "  + " WHERE sta."
-				+ KEY_ROZGRYWKA_ID + " = '" + id_rozgrywki+ "'" ;
+				+ KEY_ROZGRYWKA_ID + " = '" + id_rozgrywki+"'"+ " AND gra."+KEY_ID + "= sta."+KEY_GRACZ_ID ;
 		
 
 		Log.e(LOG, selectQuery);

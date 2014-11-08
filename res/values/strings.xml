@@ -17,6 +17,8 @@
       <string name="score_btn">Statystyki</string>
       <string name="title_activity_setting">Ustawienia</string>
      <string name="title_activity_score">Statystyki</string>
+       <string name="title_stat_activity">Statystki Rozgrywki</string>
+     
 
     <color name="grayColor">#808080</color>
     <color name="redColor">#FF0000</color>
