@@ -3,9 +3,6 @@ package com.app.kfe.rysowanie;
 import java.util.UUID;
 
 import com.app.kfe.R;
-import com.app.kfe.R.drawable;
-import com.app.kfe.R.id;
-import com.app.kfe.R.layout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -41,7 +38,11 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	private Paint canvasPaint;
 	private ImageButton saveButton;
 	private ImageButton brushTool;
+	private ImageButton lineTool;
 	private ImageButton rectangleTool;
+	private ImageButton squareTool;
+	private ImageButton circleTool;
+	private ImageButton triangleTool;
 	private ImageButton eraserTool;
 	private ImageButton newImageTool;
 	private AlertDialog.Builder saveDialog;
@@ -69,7 +70,11 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		saveButton = (ImageButton) findViewById(R.id.saveButton);
 		brushTool = (ImageButton) findViewById(R.id.brushTool);
 		brushColor = drawPaint.getColor();
+		lineTool = (ImageButton) findViewById(R.id.lineTool);
 		rectangleTool = (ImageButton) findViewById(R.id.rectangleTool);
+		squareTool = (ImageButton) findViewById(R.id.squareTool);
+		circleTool = (ImageButton) findViewById(R.id.circleTool);
+		triangleTool = (ImageButton) findViewById(R.id.triangleTool);
 		eraserTool = (ImageButton) findViewById(R.id.eraserTool);
 		newImageTool = (ImageButton) findViewById(R.id.newImageTool);
 		
@@ -81,7 +86,11 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		greenButton.setOnClickListener(this);
 		saveButton.setOnClickListener(this);
 		brushTool.setOnClickListener(this);
+		lineTool.setOnClickListener(this);
 		rectangleTool.setOnClickListener(this);
+		squareTool.setOnClickListener(this);
+		circleTool.setOnClickListener(this);
+		triangleTool.setOnClickListener(this);
 		eraserTool.setOnClickListener(this);
 		newImageTool.setOnClickListener(this);
 		
@@ -211,8 +220,20 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 			case R.id.brushTool:
 				setBrushTool();
 				break;
+			case R.id.lineTool:
+				setLineTool();
+				break;
 			case R.id.rectangleTool:
 				setRectangleTool();
+				break;
+			case R.id.squareTool:
+				setSquareTool();
+				break;
+			case R.id.circleTool:
+				setCircleTool();
+				break;
+			case R.id.triangleTool:
+				setTriangleTool();
 				break;
 			case R.id.eraserTool:
 				setEraserTool();
@@ -254,9 +275,30 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		paintView.setMCurrentShape(paintView.SMOOTHLINE);
 	}
 	
+	public void setLineTool(){
+		setColor();
+		paintView.setMCurrentShape(paintView.LINE);
+	}
+	
 	public void setRectangleTool(){
 		setColor();
 		paintView.setMCurrentShape(paintView.RECTANGLE);
+	}
+	
+	public void setCircleTool(){
+		setColor();
+		paintView.setMCurrentShape(paintView.CIRCLE);
+	}
+	
+	public void setSquareTool(){
+		setColor();
+		paintView.setMCurrentShape(paintView.SQUARE);
+	}
+	
+	public void setTriangleTool(){
+		setColor();
+		paintView.setMCurrentShape(paintView.TRIANGLE);
+		paintView.resetTriangle();
 	}
 	
 	public void setEraserTool(){

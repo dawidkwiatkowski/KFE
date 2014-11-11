@@ -126,19 +126,19 @@ public class PaintView extends View {
 		if (isDrawing){
 			switch (mCurrentShape) {
 				case LINE:
-//					onDrawLine(canvas);
+					onDrawLine(canvas);
 					break;
 				case RECTANGLE:
 					onDrawRectangle(canvas);
 					break;
 				case SQUARE:
-//					onDrawSquare(canvas);
+					onDrawSquare(canvas);
 					break;
 				case CIRCLE:
-//					onDrawCircle(canvas);
+					onDrawCircle(canvas);
 					break;
 				case TRIANGLE:
-//					onDrawTriangle(canvas);
+					onDrawTriangle(canvas);
 					break;
 				}
 			}
@@ -151,7 +151,7 @@ public class PaintView extends View {
 		if( isEnabled){
 			switch (mCurrentShape) {
 				case LINE:
-//					onTouchEventLine(event);
+					onTouchEventLine(event);
 					break;
 				case SMOOTHLINE:
 					onTouchEventSmoothLine(event);
@@ -160,13 +160,13 @@ public class PaintView extends View {
 					onTouchEventRectangle(event);
 					break;
 				case SQUARE:
-//					onTouchEventSquare(event);
+					onTouchEventSquare(event);
 					break;
 				case CIRCLE:
-//					onTouchEventCircle(event);
+					onTouchEventCircle(event);
 					break;
 				case TRIANGLE:
-//					onTouchEventTriangle(event);
+					onTouchEventTriangle(event);
 					break;
 			}
 			return true;
@@ -201,7 +201,33 @@ public class PaintView extends View {
 	
 	private void onDrawRectangle(Canvas canvas) {
 		drawRectangle(canvas,canvasPaint);
-		}
+	}
+	
+	private void onDrawLine(Canvas canvas) {
+        canvas.drawLine(mx, my, touchX, touchY, canvasPaint);        
+    }
+	
+	private void onDrawCircle(Canvas canvas){
+        canvas.drawCircle(mx, my, calculateRadius(mx, my, touchX, touchY), canvasPaint);
+    }
+	
+	private void onDrawSquare(Canvas canvas) {
+        onDrawRectangle(canvas);
+    }
+	
+	int countTouch = 0;
+    float basexTriangle = 0;
+    float baseyTriangle = 0;
+
+    private void onDrawTriangle(Canvas canvas){
+
+        if (countTouch<3){
+            canvas.drawLine(mx,my,touchX,touchY,canvasPaint);
+        }else if (countTouch==3){
+            canvas.drawLine(touchX,touchY,mx,my,canvasPaint);
+            canvas.drawLine(touchX,touchY,basexTriangle,baseyTriangle,canvasPaint);
+        }
+    }
 	
 	private void onTouchEventRectangle(MotionEvent event) {
 		switch (event.getAction()) {
@@ -222,6 +248,102 @@ public class PaintView extends View {
 		}		
 	}
 	
+	private void onTouchEventLine(MotionEvent event) {
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                isDrawing = true;
+                mx = touchX;
+                my = touchY;
+                invalidate();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                invalidate();
+                break;
+            case MotionEvent.ACTION_UP:
+                isDrawing = false;
+                drawCanvas.drawLine(mx, my, touchX, touchY, drawPaint);
+                invalidate();
+                break;
+        }
+    }
+	
+	private void onTouchEventCircle(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                isDrawing = true;
+                mx = touchX;
+                my = touchY;
+                invalidate();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                invalidate();
+                break;
+            case MotionEvent.ACTION_UP:
+                isDrawing = false;
+                drawCanvas.drawCircle(mx, my,
+                     calculateRadius(mx,my,touchX,touchY), drawPaint);
+                invalidate();
+                break;
+        }
+    }
+	
+	private void onTouchEventSquare(MotionEvent event) {
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                isDrawing = true;
+                mx = touchX;
+                my = touchY;
+                invalidate();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                adjustSquare(touchX, touchY);
+                invalidate();
+                break;
+            case MotionEvent.ACTION_UP:
+                isDrawing = false;
+                adjustSquare(touchX, touchY);
+                drawRectangle(drawCanvas,drawPaint);
+                invalidate();
+                break;
+        }
+    }
+	
+	private void onTouchEventTriangle(MotionEvent event) {
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                countTouch++;
+                if (countTouch==1){
+                    isDrawing = true;
+                    mx = touchX;
+                    my = touchY;
+                } else if (countTouch==3){
+                    isDrawing = true;
+                }
+                invalidate();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                invalidate();
+                break;
+            case MotionEvent.ACTION_UP:
+                countTouch++;
+                isDrawing = false;
+                if (countTouch<3){
+                    basexTriangle=touchX;
+                    baseyTriangle=touchY;
+                    drawCanvas.drawLine(mx,my,touchX,touchY,drawPaint);
+                } else if (countTouch>=3){
+                	drawCanvas.drawLine(touchX,touchY,mx,my,drawPaint);
+                	drawCanvas.drawLine(touchX,touchY,basexTriangle,baseyTriangle,drawPaint);
+                    countTouch = 0;
+                }
+                invalidate();
+                break;
+        }
+    }
+	
 	private void drawRectangle(Canvas canvas,Paint paint){
 		float right = mx > touchX ? mx : touchX;
 		float left = mx > touchX ? touchX : mx;
@@ -230,9 +352,33 @@ public class PaintView extends View {
 		canvas.drawRect(left, top , right, bottom, paint);
 	}
 	
+	protected float calculateRadius(float x1, float y1, float x2, float y2) {
+
+        return (float) Math.sqrt(
+                Math.pow(x1 - x2, 2) +
+                        Math.pow(y1 - y2, 2)
+        );
+    }
+	
+	protected void adjustSquare(float x, float y) {
+        float deltaX = Math.abs(mx - x);
+        float deltaY = Math.abs(my - y);
+
+        float max = Math.max(deltaX, deltaY);
+
+        touchX = mx - x < 0 ? mx + max : mx - max;
+        touchY = my - y < 0 ? my + max : my - max;
+    }
+	
 	public void newImage(){
 		drawCanvas.drawColor(paintColor, android.graphics.PorterDuff.Mode.CLEAR);
 		invalidate();
+	}
+	
+	public void resetTriangle(){
+		countTouch = 0;
+	    basexTriangle = 0;
+	    baseyTriangle = 0;
 	}
 
 }
