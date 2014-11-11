@@ -4,9 +4,9 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@color/whiteColor"
-    tools:context="com.app.kfe.Tablica" >
+    tools:context="com.app.kfe.rysowanie.Tablica" >
 
-	<com.app.kfe.PaintView
+	<com.app.kfe.rysowanie.PaintView
 	    android:id="@+id/drawing"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent" 

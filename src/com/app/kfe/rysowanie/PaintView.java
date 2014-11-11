@@ -1,4 +1,4 @@
-package com.app.kfe;
+package com.app.kfe.rysowanie;
 
 import android.content.Context;
 import android.graphics.Bitmap;

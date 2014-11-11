@@ -18,6 +18,7 @@
     </style>
 
     <style name="MyAppTheme" parent="android:style/Theme.Holo.NoActionBar">
+        <item name="android:windowActionBar">true</item>
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 </resources>

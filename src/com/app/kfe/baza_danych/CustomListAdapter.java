@@ -1,6 +1,10 @@
-package com.app.kfe;
+package com.app.kfe.baza_danych;
 
 import java.util.List;
+
+import com.app.kfe.R;
+import com.app.kfe.R.id;
+import com.app.kfe.R.layout;
 
 import android.app.Activity;
 import android.view.LayoutInflater;

@@ -1,5 +1,9 @@
 package com.app.kfe;
 
+import com.app.kfe.baza_danych.Statystyki;
+import com.app.kfe.baza_danych.Ustawienia;
+import com.app.kfe.rysowanie.Tablica;
+
 import sqlite.helper.DatabaseHelper;
 import android.app.Activity;
 import android.content.Intent;
@@ -91,7 +95,7 @@ public class MainActivity extends Activity {
 				if(mpButtonClick != null && silent){
 					mpButtonClick.start();
 					}
-				Intent dolacz = new Intent(getApplicationContext(), Dolacz.class);
+				Intent dolacz = new Intent(getApplicationContext(), com.app.kfe.wifi.WiFiDirectActivity.class);
 				startActivity(dolacz);
 			}	
     	

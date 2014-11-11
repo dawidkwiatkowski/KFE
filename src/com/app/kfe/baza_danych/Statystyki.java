@@ -1,4 +1,4 @@
-package com.app.kfe;
+package com.app.kfe.baza_danych;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -9,6 +9,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import com.app.kfe.R;
+import com.app.kfe.R.id;
+import com.app.kfe.R.layout;
+import com.app.kfe.R.menu;
 
 import sqlite.helper.DatabaseHelper;
 import sqlite.model.Gracz;
