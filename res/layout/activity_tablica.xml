@@ -6,7 +6,7 @@
     android:background="@color/whiteColor"
     tools:context="com.app.kfe.Tablica" >
 
-	<com.app.kfe.PaintView
+	<com.app.kfe.rysowanie.PaintView
 	    android:id="@+id/drawing"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent" 
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" 
             android:orientation="vertical"
-            android:background="@color/grayColor">
+            android:background="@drawable/kfe_list_selector_background_transition_holo_light">
             
             <GridLayout
                 android:id="@+id/tools"
@@ -47,61 +47,72 @@
                    	android:layout_width="40dp"
 	               	android:layout_height="40dp"
 	               	android:layout_margin="5dp"
-	               	android:src="@drawable/brush"/>
+	               	android:src="@drawable/brush"
+	               	android:background="@drawable/button"/>
                 
                 <ImageButton 
                    	android:id="@+id/lineTool" 
                    	android:layout_width="40dp"
 	               	android:layout_height="40dp"
 	               	android:layout_margin="5dp"
-	               	android:src="@drawable/rectangle"/>
+	               	android:src="@drawable/rectangle"
+	               	android:background="@drawable/button"/>
                 
                 <ImageButton 
                    	android:id="@+id/rectangleTool" 
                    	android:layout_width="40dp"
 	               	android:layout_height="40dp"
 	               	android:layout_margin="5dp"
-	               	android:src="@drawable/rectangle"/>
+	               	android:src="@drawable/rectangle"
+	               	android:background="@drawable/button"/>
                 
                 <ImageButton 
                    	android:id="@+id/squareTool" 
                    	android:layout_width="40dp"
 	               	android:layout_height="40dp"
 	               	android:layout_margin="5dp"
-	               	android:src="@drawable/rectangle"/>
+	               	android:src="@drawable/rectangle"
+	               	android:background="@drawable/button"/>
                 
                 <ImageButton
                    	android:id="@+id/circleTool" 
                    	android:layout_width="40dp"
 	               	android:layout_height="40dp"
 	               	android:layout_margin="5dp"
-	               	android:src="@drawable/rectangle"/>
+	               	android:src="@drawable/rectangle"
+	               	android:background="@drawable/button"/>
                 
                 <ImageButton
                    	android:id="@+id/triangleTool" 
                    	android:layout_width="40dp"
 	               	android:layout_height="40dp"
 	               	android:layout_margin="5dp"
-	               	android:src="@drawable/rectangle"/>
+	               	android:src="@drawable/rectangle"
+	               	android:background="@drawable/button"/>
                 
                 <ImageButton 
                    	android:id="@+id/eraserTool" 
                    	android:layout_width="40dp"
 	               	android:layout_height="40dp"
 	               	android:layout_margin="5dp"
-	               	android:src="@drawable/eraser"/>
+	               	android:src="@drawable/eraser"
+	               	android:background="@drawable/button"/>
+                
                 <ImageButton 
                    	android:id="@+id/newImageTool" 
                    	android:layout_width="40dp"
 	               	android:layout_height="40dp"
 	               	android:layout_margin="5dp"
-	               	android:src="@drawable/new_image"/>
+	               	android:src="@drawable/new_image"
+	               	android:background="@drawable/button"/>
+                
                 <ImageButton 
                    	android:id="@+id/saveButton" 
                    	android:layout_width="40dp"
 	               	android:layout_height="40dp"
 	               	android:layout_margin="5dp"
-	               	android:src="@drawable/save"/>
+	               	android:src="@drawable/save"
+	               	android:background="@drawable/button"/>
                 
             </GridLayout>
             
