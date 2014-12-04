@@ -1,6 +1,8 @@
 package com.app.kfe.rysowanie;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -18,9 +20,9 @@ public class PaintView extends View {
 	 public static final int CIRCLE = 5;
 	 public static final int TRIANGLE = 6;
 	 public static final int SMOOTHLINE = 2;
-	 
+	 private BroadcastReceiver receiver = null;
 	 public int mCurrentShape;
-	 
+	 private IntentFilter intentFilter = new IntentFilter();
 	 public boolean isDrawing = false;
 	
 	//drawing path
@@ -117,6 +119,22 @@ public class PaintView extends View {
 		drawCanvas = new Canvas(canvasBitmap);
 		drawCanvas.drawColor(Color.WHITE);
 	}
+	
+	public void odbieraj(Bitmap bm)
+	{
+		Bitmap workingBitmap = Bitmap.createBitmap(bm);
+		Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+		//drawCanvas = new Canvas(mutableBitmap);
+		//drawCanvas.setBitmap(mutableBitmap);
+		//canvas.drawBitmap(myBitmap, 0, 0, null);
+		receiver=com.app.kfe.wifi.WiFiDirectActivity.receiver;
+		intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
+		drawCanvas.drawBitmap(mutableBitmap, 0, 0,null);
+		invalidate();
+		Tablica.tablica.registerReceiver(receiver, intentFilter);
+			
+	}
+	
 	
 	@Override
 	protected void onDraw(Canvas canvas) {

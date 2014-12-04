@@ -1,15 +1,21 @@
 package com.app.kfe.rysowanie;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 import com.app.kfe.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -48,7 +54,10 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	private AlertDialog.Builder saveDialog;
 	private AlertDialog.Builder newImageDialog;
 	private int brushColor;	
-
+	public static Tablica tablica = null;
+	static public final IntentFilter intentFilter = new IntentFilter();
+	private Channel channel;
+	static public BroadcastReceiver receiver = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -166,7 +175,35 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		paintView.setCanvasPaint(canvasPaint);
 		
 	}
-
+	
+	public static byte[] convertInputStreamToByteArray(InputStream inputStream)
+	 {
+		 byte[] bytes= null;
+		 
+		 try
+		 {
+		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		 
+		 byte data[] = new byte[1024];
+		 int count;
+		 
+		 while ((count = inputStream.read(data)) != -1)
+		 {
+		 bos.write(data, 0, count);
+		 }
+		 
+		bos.flush();
+		 bos.close();
+		 inputStream.close();
+		 
+		bytes = bos.toByteArray();
+		 }
+		 catch (IOException e)
+		 {
+		 e.printStackTrace();
+		 }
+		 return bytes;
+	 }
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {
 		// TODO Auto-generated method stub

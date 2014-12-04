@@ -54,9 +54,9 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     private boolean isWifiP2pEnabled = false;
     private boolean retryChannel = false;
 
-    private final IntentFilter intentFilter = new IntentFilter();
+    public static final IntentFilter intentFilter = new IntentFilter();
     private Channel channel;
-    private BroadcastReceiver receiver = null;
+    public static BroadcastReceiver receiver = null;
 
     /**
      * @param isWifiP2pEnabled the isWifiP2pEnabled to set

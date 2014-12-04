@@ -21,6 +21,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -37,6 +39,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.app.kfe.R;
+import com.app.kfe.rysowanie.PaintView;
 import com.app.kfe.rysowanie.Tablica;
 import com.app.kfe.wifi.FileTransferService;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
@@ -60,8 +63,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     private View mContentView = null;
     private WifiP2pDevice device;
     private WifiP2pInfo info;
+    public static Intent serviceIntent;
     ProgressDialog progressDialog = null;
-
+    public static Bitmap bm = null;
+    public static PaintView pv;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -112,13 +117,22 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     public void onClick(View v) {
                         // Allow user to pick an image from Gallery or other
                         // registered apps
-                    	Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    	//Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     	//Intent intent = new Intent(getActivity(),Tablica.class);
-                        intent.setType("image/*");
+                        //intent.setType("image/*");
                     	//intent.setClass(getActivity(), Tablica.class);
                     	
+                    	serviceIntent = new Intent(getActivity(), FileTransferService.class);
+                        serviceIntent.setAction(FileTransferService.ACTION_OPEN_TABLICA);
+                        serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
+                        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+                                info.groupOwnerAddress.getHostAddress());
+                        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+                         
+                        getActivity().startService(serviceIntent); 
                         
-                       startActivityForResult(intent, CHOOSE_FILE_RESULT_CODE);
+                        Intent intent = new Intent(getActivity(),Tablica.class);
+                        startActivity(intent);
                     	
                     	
                     }
@@ -167,7 +181,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         // server. The file server is single threaded, single connection server
         // socket.
         if (info.groupFormed && info.isGroupOwner) {
-            new FileServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
+            new TextServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
                     .execute();
         } else if (info.groupFormed) {
             // The other device acts as the client. In this case, we enable the
@@ -284,7 +298,101 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         }
 
     }
+    
+    /**
+     * A simple server socket that accepts connection and writes some data on
+     * the stream.
+     */
+    public static class TextServerAsyncTask extends AsyncTask<Void, Void, String> {
 
+        private Context context;
+        private TextView statusText;
+
+        /**
+         * @param context
+         * @param statusText
+         */
+        public TextServerAsyncTask(Context context, View statusText) {
+            this.context = context;
+            this.statusText = (TextView) statusText;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                ServerSocket serverSocket = new ServerSocket(8988);
+                Log.d(WiFiDirectActivity.TAG, "Server: Socket opened");
+                Socket client = serverSocket.accept();
+
+                InputStream inputstream = client.getInputStream();
+//                String result = getStringFromInputStream(inputstream);
+                String result = "Przyjêto dane";                
+                if(FileTransferService.co_przesylamy=="canva")
+                { 
+                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
+	                
+	                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
+	                
+	                if( DeviceDetailFragment.bm != null)
+	                	result = "canva";
+	                            
+	             }
+                else if(FileTransferService.co_przesylamy=="tablica")
+        		{
+        			result="open";
+        		}
+                serverSocket.close();
+                return result;
+                
+            } catch (IOException e) {
+                Log.e(WiFiDirectActivity.TAG, e.getMessage());
+                return null;
+            }
+        }
+
+        /*
+         * (non-Javadoc)
+         * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            
+        	if(result=="canva")
+        	{
+        		if (!result.isEmpty()) {
+        	
+	                statusText.setText("Otrzymany tekst - " + result);
+	
+	                DeviceDetailFragment.pv = ((PaintView) Tablica.tablica.findViewById(R.id.drawing));
+	                if(DeviceDetailFragment.bm == null)
+	                	statusText.setText("null");
+	          
+	                DeviceDetailFragment.pv.odbieraj(bm);          
+        		}
+                
+            }
+        	else if(result=="open")
+        	{
+        		open_tablica(context);
+        	}
+        }
+
+        /*
+         * (non-Javadoc)
+         * @see android.os.AsyncTask#onPreExecute()
+         */
+        @Override
+        protected void onPreExecute() {
+            statusText.setText("Opening a server socket");
+        }
+    }
+    
+    static void open_tablica(Context context)
+    {
+    	Intent dolacz = new Intent(context.getApplicationContext(), com.app.kfe.rysowanie.Tablica.class);
+		context.startActivity(dolacz);
+    }
+    
     public static boolean copyFile(InputStream inputStream, OutputStream out) {
         byte buf[] = new byte[1024];
         int len;
