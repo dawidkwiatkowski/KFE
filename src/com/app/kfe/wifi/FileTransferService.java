@@ -99,7 +99,7 @@ public class FileTransferService extends IntentService {
 
         }
         else if (intent.getAction().equals(ACTION_OPEN_TABLICA)) {
-        	String text = "open";
+        	String text = "tablica";
         	co_przesylamy="tablica";
             String host = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
             Socket socket = new Socket();

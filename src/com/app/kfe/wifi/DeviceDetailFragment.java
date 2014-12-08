@@ -16,6 +16,7 @@
 
 package com.app.kfe.wifi;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -39,15 +40,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.app.kfe.R;
+import com.app.kfe.bluetooth.Dolacz;
 import com.app.kfe.rysowanie.PaintView;
 import com.app.kfe.rysowanie.Tablica;
 import com.app.kfe.wifi.FileTransferService;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -64,9 +68,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     private WifiP2pDevice device;
     private WifiP2pInfo info;
     public static Intent serviceIntent;
-    ProgressDialog progressDialog = null;
+    public ProgressDialog progressDialog = null;
     public static Bitmap bm = null;
     public static PaintView pv;
+    public static Activity activity;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -129,7 +134,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                                 info.groupOwnerAddress.getHostAddress());
                         serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
                          
-                        getActivity().startService(serviceIntent); 
+                        getActivity().startService(serviceIntent);
+                        
+                        activity = getActivity();
                         
                         Intent intent = new Intent(getActivity(),Tablica.class);
                         startActivity(intent);
@@ -181,7 +188,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         // server. The file server is single threaded, single connection server
         // socket.
         if (info.groupFormed && info.isGroupOwner) {
-            new TextServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
+        	new TextServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
                     .execute();
         } else if (info.groupFormed) {
             // The other device acts as the client. In this case, we enable the
@@ -325,9 +332,17 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 Socket client = serverSocket.accept();
 
                 InputStream inputstream = client.getInputStream();
-//                String result = getStringFromInputStream(inputstream);
-                String result = "Przyjêto dane";                
-                if(FileTransferService.co_przesylamy=="canva")
+                String result;
+                try
+                {
+                	result = getStringFromInputStream(inputstream);
+                }
+                catch(Exception e){
+                	result = "canva";
+                }
+                
+                //String result = "Przyjêto dane";                
+                if(result.equalsIgnoreCase("canva"))
                 { 
                 	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
 	                
@@ -337,10 +352,12 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	                	result = "canva";
 	                            
 	             }
-                else if(FileTransferService.co_przesylamy=="tablica")
+                else if(result.equalsIgnoreCase("tablica"))
         		{
         			result="open";
         		}
+                Log.e(WiFiDirectActivity.TAG, "Result = " + result);
+                
                 serverSocket.close();
                 return result;
                 
@@ -373,7 +390,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             }
         	else if(result=="open")
         	{
-        		open_tablica(context);
+        		open_tablica();
         	}
         }
 
@@ -385,13 +402,44 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         protected void onPreExecute() {
             statusText.setText("Opening a server socket");
         }
+        
+        private static String getStringFromInputStream(InputStream is) {
+       	 
+    		BufferedReader br = null;
+    		StringBuilder sb = new StringBuilder();
+     
+    		String line;
+    		try {
+     
+    			br = new BufferedReader(new InputStreamReader(is));
+    			while ((line = br.readLine()) != null) {
+    				sb.append(line);
+    			}
+     
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		} finally {
+    			if (br != null) {
+    				try {
+    					br.close();
+    				} catch (IOException e) {
+    					e.printStackTrace();
+    				}
+    			}
+    		}
+     
+    		return sb.toString();
+     
+    	}
+        
+        public void open_tablica()
+        {
+        	Intent dolacz = new Intent(context, com.app.kfe.rysowanie.Tablica.class);
+        	context.startActivity(dolacz);
+        }
     }
     
-    static void open_tablica(Context context)
-    {
-    	Intent dolacz = new Intent(context.getApplicationContext(), com.app.kfe.rysowanie.Tablica.class);
-		context.startActivity(dolacz);
-    }
+    
     
     public static boolean copyFile(InputStream inputStream, OutputStream out) {
         byte buf[] = new byte[1024];
