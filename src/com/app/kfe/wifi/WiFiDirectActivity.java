@@ -57,6 +57,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     public static final IntentFilter intentFilter = new IntentFilter();
     private Channel channel;
     public static BroadcastReceiver receiver = null;
+    public static Activity activity;
 
     /**
      * @param isWifiP2pEnabled the isWifiP2pEnabled to set
@@ -69,6 +70,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        activity = this;
 
         // add necessary intent values to be matched.
 

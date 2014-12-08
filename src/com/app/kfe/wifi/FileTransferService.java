@@ -41,8 +41,7 @@ public class FileTransferService extends IntentService {
     public static final String EXTRAS_FILE_PATH = "file_url";
     public static final String EXTRAS_GROUP_OWNER_ADDRESS = "go_host";
     public static final String EXTRAS_GROUP_OWNER_PORT = "go_port";
-    static Boolean czy_tak=false;
-    static public String co_przesylamy;
+    public static Boolean czy_tak=false;
     public FileTransferService(String name) {
         super(name);
     }
@@ -100,7 +99,6 @@ public class FileTransferService extends IntentService {
         }
         else if (intent.getAction().equals(ACTION_OPEN_TABLICA)) {
         	String text = "tablica";
-        	co_przesylamy="tablica";
             String host = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
             Socket socket = new Socket();
             int port = intent.getExtras().getInt(EXTRAS_GROUP_OWNER_PORT);
@@ -136,7 +134,6 @@ public class FileTransferService extends IntentService {
         }
         else if (intent.getAction().equals(ACTION_SEND_CANVAS)) {
         	String text = "XXXXXX";
-        	co_przesylamy="canva";
             String host = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
             
             int port = intent.getExtras().getInt(EXTRAS_GROUP_OWNER_PORT); 

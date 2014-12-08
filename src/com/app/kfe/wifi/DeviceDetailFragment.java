@@ -66,12 +66,11 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     protected static final int CHOOSE_FILE_RESULT_CODE = 20;
     private View mContentView = null;
     private WifiP2pDevice device;
-    private WifiP2pInfo info;
+    public static WifiP2pInfo info;
     public static Intent serviceIntent;
     public ProgressDialog progressDialog = null;
     public static Bitmap bm = null;
     public static PaintView pv;
-    public static Activity activity;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -136,9 +135,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                          
                         getActivity().startService(serviceIntent);
                         
-                        activity = getActivity();
-                        
                         Intent intent = new Intent(getActivity(),Tablica.class);
+                        intent.putExtra("isGame", true);
                         startActivity(intent);
                     	
                     	
@@ -233,6 +231,18 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         mContentView.findViewById(R.id.btn_start_client).setVisibility(View.GONE);
         this.getView().setVisibility(View.GONE);
     }
+    
+	public static void sendCanvasService(){
+		Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
+        serviceIntent.setAction(FileTransferService.ACTION_SEND_CANVAS);
+        serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
+        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+        		DeviceDetailFragment.info.groupOwnerAddress.getHostAddress());
+        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+         
+        Tablica.activity.startService(serviceIntent); 
+	}
+    
 
     /**
      * A simple server socket that accepts connection and writes some data on
@@ -341,22 +351,21 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 	result = "canva";
                 }
                 
-                //String result = "Przyjêto dane";                
-                if(result.equalsIgnoreCase("canva"))
+                //String result = "Przyjêto dane";                                
+                if(result.equalsIgnoreCase("tablica"))
+        		{
+        			result="open";
+        		}
+                else
                 { 
                 	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
 	                
 	                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
 	                
 	                if( DeviceDetailFragment.bm != null)
-	                	result = "canva";
-	                            
+	                	result = "canva";	                           
 	             }
-                else if(result.equalsIgnoreCase("tablica"))
-        		{
-        			result="open";
-        		}
-                Log.e(WiFiDirectActivity.TAG, "Result = " + result);
+                //Log.e(WiFiDirectActivity.TAG, "Result = " + result);
                 
                 serverSocket.close();
                 return result;
@@ -435,6 +444,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         public void open_tablica()
         {
         	Intent dolacz = new Intent(context, com.app.kfe.rysowanie.Tablica.class);
+        	dolacz.putExtra("isGame", true);
         	context.startActivity(dolacz);
         }
     }

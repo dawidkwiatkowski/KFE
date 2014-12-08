@@ -1,7 +1,12 @@
 package com.app.kfe.rysowanie;
 
+import com.app.kfe.wifi.DeviceDetailFragment;
+import com.app.kfe.wifi.FileTransferService;
+import com.app.kfe.wifi.WiFiDirectActivity;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -131,15 +136,13 @@ public class PaintView extends View {
 		intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
 		drawCanvas.drawBitmap(mutableBitmap, 0, 0,null);
 		invalidate();
-		Tablica.tablica.registerReceiver(receiver, intentFilter);
-			
+		Tablica.tablica.registerReceiver(receiver, intentFilter);			
 	}
 	
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
 		canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
-		//canvas.drawPath(drawPath, drawPaint);
 		
 		if (isDrawing){
 			switch (mCurrentShape) {
@@ -158,8 +161,14 @@ public class PaintView extends View {
 				case TRIANGLE:
 					onDrawTriangle(canvas);
 					break;
-				}
 			}
+			if(Tablica.isGame){
+				receiver=com.app.kfe.wifi.WiFiDirectActivity.receiver;
+				intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
+				WiFiDirectActivity.activity.registerReceiver(receiver, intentFilter);	
+				DeviceDetailFragment.sendCanvasService();
+			}
+		}
 	}
 	
 	@Override
@@ -398,5 +407,4 @@ public class PaintView extends View {
 	    basexTriangle = 0;
 	    baseyTriangle = 0;
 	}
-
 }

@@ -6,16 +6,21 @@ import java.io.InputStream;
 import java.util.UUID;
 
 import com.app.kfe.R;
+import com.app.kfe.wifi.DeviceDetailFragment;
+import com.app.kfe.wifi.FileTransferService;
+import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -57,12 +62,23 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	public static Tablica tablica = null;
 	static public final IntentFilter intentFilter = new IntentFilter();
 	private Channel channel;
-	static public BroadcastReceiver receiver = null;
+	public static BroadcastReceiver receiver = null;
+	public static Activity activity;
+	
+	public static boolean isGame = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_tablica);
+		activity = this;
+		tablica = this;
+		
+		if(getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")){
+			isGame = getIntent().getExtras().getBoolean("isGame");		
+		}
+		
 		
 		SlidingDrawer toolsPanel = (SlidingDrawer) findViewById(R.id.toolsPanel);
 		final ImageButton handle = (ImageButton) findViewById(R.id.handle);				
