@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.menu_glowne);
+        setContentView(R.layout.main_menu);
         mpButtonClick = MediaPlayer.create(this, R.raw.button);
         db = new DatabaseHelper(getApplicationContext());
         SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
