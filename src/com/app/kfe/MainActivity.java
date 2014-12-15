@@ -82,6 +82,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				v.startAnimation(animAlpha);
+				//zmiana
 				   silent = settings.getBoolean("silentMode", true);
 				if((mpButtonClick != null) && silent){
 					mpButtonClick.start();
