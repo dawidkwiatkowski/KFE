@@ -16,11 +16,9 @@
 
 package com.app.kfe.wifi;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -40,10 +38,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.app.kfe.R;
-import com.app.kfe.bluetooth.Dolacz;
 import com.app.kfe.rysowanie.PaintView;
 import com.app.kfe.rysowanie.Tablica;
-import com.app.kfe.wifi.FileTransferService;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
 
 import java.io.BufferedReader;
@@ -351,7 +347,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 	result = "canva";
                 }
                 
-                //String result = "Przyjêto dane";                                
+                //String result = "Przyjï¿½to dane";                                
                 if(result.equalsIgnoreCase("tablica"))
         		{
         			result="open";

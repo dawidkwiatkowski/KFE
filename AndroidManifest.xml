@@ -45,28 +45,20 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name=".Dolacz"
+            android:name="com.app.kfe.bluetooth.BluetoothMainActivity"
             android:label="@string/title_activity_dolacz" >
         </activity>
+        <activity
+                android:name="com.app.kfe.bluetooth.DeviceListActivity"
+                android:configChanges="orientation|keyboardHidden"
+                android:label="@string/select_device"
+                android:theme="@android:style/Theme.Holo.Dialog"/>
          <activity
             android:name="com.app.kfe.wifi.WiFiDirectActivity"
             android:icon="@drawable/ic_launcher"
            
             android:launchMode="singleTask"
             android:theme="@android:style/Theme.Holo" >
-        </activity>
-        <activity
-            android:name="com.app.kfe.bluetooth.DeviceListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/select_device"
-            android:theme="@android:style/Theme.Holo.Dialog" >
-        </activity>
-        <activity
-            android:name="com.app.kfe.bluetooth.Dolacz"
-            android:configChanges="orientation|keyboardHidden"
-            android:icon="@drawable/app_icon"
-            android:label="@string/title_activity_dolacz"
-            android:theme="@android:style/Theme.Holo.Light" >
         </activity>
         <activity
             android:name="com.app.kfe.baza_danych.Ustawienia"

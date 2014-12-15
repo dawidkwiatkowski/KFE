@@ -2,6 +2,7 @@ package com.app.kfe;
 
 import com.app.kfe.baza_danych.Statystyki;
 import com.app.kfe.baza_danych.Ustawienia;
+import com.app.kfe.bluetooth.BluetoothMainActivity;
 import com.app.kfe.rysowanie.Tablica;
 
 import sqlite.helper.DatabaseHelper;
@@ -53,14 +54,17 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+		boolean result = false;
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        switch(item.getItemId()) {
+			case R.id.action_settings:
+				startActivity(new Intent(getApplicationContext(), BluetoothMainActivity.class));
+				result = true;
+				break;
+		}
+		return result | super.onOptionsItemSelected(item);
     }
     
     public void addListenerOnButton() {
