@@ -5,22 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import com.app.kfe.R;
-import com.app.kfe.wifi.DeviceDetailFragment;
-import com.app.kfe.wifi.DeviceListFragment;
-import com.app.kfe.wifi.FileTransferService;
-import com.app.kfe.wifi.WiFiDirectActivity;
-import com.app.kfe.wifi.WiFiDirectBroadcastReceiver;
-import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
-import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -36,12 +24,19 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import android.widget.Toast;
+
+import com.app.kfe.R;
+import com.app.kfe.wifi.DeviceDetailFragment;
+import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
+import com.app.kfe.wifi.DeviceListFragment;
+import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
+import com.app.kfe.wifi.WiFiDirectActivity;
+import com.app.kfe.wifi.WiFiDirectBroadcastReceiver;
 
 
 public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener,ChannelListener, DeviceActionListener {
@@ -85,6 +80,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		
 		if(getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")){
 			isGame = getIntent().getExtras().getBoolean("isGame");		
+			WiFiDirectActivity.co_to="cos";
 			channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
 			receiver2 = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, channel2, this);
 		        registerReceiver(receiver2, WiFiDirectActivity.intentFilter);

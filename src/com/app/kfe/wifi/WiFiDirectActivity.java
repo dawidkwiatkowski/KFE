@@ -59,7 +59,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     public static Channel channel;
     public static BroadcastReceiver receiver = null;
     public static Activity activity;
-
+    public static String co_to="tablica";
     /**
      * @param isWifiP2pEnabled the isWifiP2pEnabled to set
      */
@@ -90,6 +90,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         super.onResume();
         receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
         registerReceiver(receiver, intentFilter);
+        co_to="tablica";
     }
 
     @Override

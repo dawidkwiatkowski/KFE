@@ -342,13 +342,17 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 Socket client = serverSocket.accept();
 
                 InputStream inputstream = client.getInputStream();
-                String result;
-                try
+                InputStream inputStream2 = inputstream;
+                String result="";
+                if(WiFiDirectActivity.co_to.equals("tablica"))
                 {
-                	result = getStringFromInputStream(inputstream);
-                }
-                catch(Exception e){
-                	result = "canva";
+	                	try                
+	                {
+	                	result = getStringFromInputStream(inputstream);
+	                }
+	                catch(Exception e){
+	                	result = "canva";
+	                }
                 }
                 
                 //String result = "Przyjêto dane";                                
@@ -357,7 +361,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         			result="open";
         		}
                 else
-                { 
+                {                 
                 	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
 	                
 	                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
