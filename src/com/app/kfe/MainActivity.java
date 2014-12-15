@@ -11,10 +11,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 
@@ -29,18 +32,20 @@ public class MainActivity extends Activity {
 	 public static final String PREFS_NAME = "MyPrefsFile";
 	DatabaseHelper db;
 	boolean silent;
+	SharedPreferences settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.menu_glowne);
+        setContentView(R.layout.main_menu);
         mpButtonClick = MediaPlayer.create(this, R.raw.button);
         db = new DatabaseHelper(getApplicationContext());
-        SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        silent = settings.getBoolean("silentMode", true);
+         settings = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+     
         if(db.isEmpty("hasla")){
         db.createHasla();
         }
+       
         addListenerOnButton();
     }
 
@@ -74,17 +79,25 @@ public class MainActivity extends Activity {
     	setting_btn = (Button) findViewById(R.id.setting_btn);
     	score_btn = (Button) findViewById(R.id.score_btn);
     	exit_btn = (Button) findViewById(R.id.exit_btn);
-    	
-    	draw2_btn.setOnClickListener(new OnClickListener() {
+    	 final Animation animAlpha = AnimationUtils.loadAnimation(this, R.layout.anim_alpha);
+    	draw2_btn.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				v.startAnimation(animAlpha);
+				   silent = settings.getBoolean("silentMode", true);
 				if((mpButtonClick != null) && silent){
 					mpButtonClick.start();
 					}
-				Intent tablica = new Intent(getApplicationContext(), Tablica.class);
-				startActivity(tablica);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable(){
+				    public void run() {
+				    	Intent tablica = new Intent(getApplicationContext(), Tablica.class);
+						startActivity(tablica);
+				        }
+				}, 600);
+				
 			}
 			
 			
@@ -96,11 +109,19 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(mpButtonClick != null && silent){
+				
+				v.startAnimation(animAlpha);
+				silent = settings.getBoolean("silentMode", true);
+				if((mpButtonClick != null) && silent){
 					mpButtonClick.start();
 					}
-				Intent dolacz = new Intent(getApplicationContext(), com.app.kfe.wifi.WiFiDirectActivity.class);
-				startActivity(dolacz);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable(){
+				    public void run() {
+				    	Intent dolacz = new Intent(getApplicationContext(), com.app.kfe.wifi.WiFiDirectActivity.class);
+						startActivity(dolacz);
+				        }
+				}, 600);
 			}	
     	
     	});
@@ -109,11 +130,19 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(mpButtonClick != null && silent){
+				v.startAnimation(animAlpha);
+				silent = settings.getBoolean("silentMode", true);
+				if((mpButtonClick != null) && silent){
 					mpButtonClick.start();
 					}
-				Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
-				startActivity(ustawienia);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable(){
+				    public void run() {
+				    	Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
+						startActivity(ustawienia);
+				        }
+				}, 600);
+				
 			}
     	
     	});
@@ -123,11 +152,19 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(mpButtonClick != null && silent){
+				v.startAnimation(animAlpha);
+				silent = settings.getBoolean("silentMode", true);
+				if((mpButtonClick != null) && silent){
 					mpButtonClick.start();
 					}
-				Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
-				startActivity(tablica);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable(){
+				    public void run() {
+				    	Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
+						startActivity(tablica);
+				        }
+				}, 600);
+				
 			}
     	
     	});
@@ -138,11 +175,19 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(mpButtonClick != null && silent){
+				v.startAnimation(animAlpha);
+				silent = settings.getBoolean("silentMode", true);
+				if((mpButtonClick != null) && silent){
 					mpButtonClick.start();
 					}
-				 finish();
-		            System.exit(0);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable(){
+				    public void run() {
+				    	finish();
+			            System.exit(0);
+				        }
+				}, 600);
+				 
 			}
     	
     	});

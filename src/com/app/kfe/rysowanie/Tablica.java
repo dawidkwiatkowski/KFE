@@ -5,20 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import com.app.kfe.R;
-import com.app.kfe.wifi.DeviceDetailFragment;
-import com.app.kfe.wifi.FileTransferService;
-import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.wifi.p2p.WifiP2pConfig;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
 import android.os.Bundle;
@@ -35,8 +30,16 @@ import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import android.widget.Toast;
 
+import com.app.kfe.R;
+import com.app.kfe.wifi.DeviceDetailFragment;
+import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
+import com.app.kfe.wifi.DeviceListFragment;
+import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
+import com.app.kfe.wifi.WiFiDirectActivity;
+import com.app.kfe.wifi.WiFiDirectBroadcastReceiver;
 
-public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener {
+
+public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener,ChannelListener, DeviceActionListener {
 	
 	private PaintView paintView;
 	private Button yellowButton;
@@ -60,9 +63,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	private AlertDialog.Builder newImageDialog;
 	private int brushColor;	
 	public static Tablica tablica = null;
-	static public final IntentFilter intentFilter = new IntentFilter();
-	private Channel channel;
-	public static BroadcastReceiver receiver = null;
+	public static Channel channel2;
+    public static BroadcastReceiver receiver2 = null;
+	
 	public static Activity activity;
 	
 	public static boolean isGame = false;
@@ -77,6 +80,15 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		
 		if(getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")){
 			isGame = getIntent().getExtras().getBoolean("isGame");		
+			WiFiDirectActivity.co_to="cos";
+			channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
+			receiver2 = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, channel2, this);
+		        registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
+		        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+		        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+		                    .execute();
+		        }
+		       
 		}
 		
 		
@@ -363,5 +375,77 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	public void newImage(){
 		paintView.newImage();
 	}
+	
+	 @Override
+	    public void onResume() {
+	        super.onResume();
+	       // WiFiDirectActivity.receiver = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, WiFiDirectActivity.channel, this);
+	        //registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);
+	       
+	    }
+	 public void setIsWifiP2pEnabled(boolean isWifiP2pEnabled) {
+	        WiFiDirectActivity.isWifiP2pEnabled = isWifiP2pEnabled;
+	    }
+	 public void resetData() {
+	        DeviceListFragment fragmentList = (DeviceListFragment) getFragmentManager()
+	                .findFragmentById(R.id.frag_list);
+	        DeviceDetailFragment fragmentDetails = (DeviceDetailFragment) getFragmentManager()
+	                .findFragmentById(R.id.frag_detail);
+	        if (fragmentList != null) {
+	            fragmentList.clearPeers();
+	        }
+	        if (fragmentDetails != null) {
+	            fragmentDetails.resetViews();
+	        }
+	    }
+
+	@Override
+	public void showDetails(WifiP2pDevice device) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cancelDisconnect() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void connect(WifiP2pConfig config) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void disconnect() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onChannelDisconnected() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+    public void onConnectionInfoAvailable(final WifiP2pInfo info) {
+     
+
+       
+
+        
+
+        // After the group negotiation, we assign the group owner as the file
+        // server. The file server is single threaded, single connection server
+        // socket.
+        if (info.groupFormed && info.isGroupOwner) {
+        	new TextServerAsyncTask(this, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+            .execute();
+        } 
+
+      
+    }
 
 }

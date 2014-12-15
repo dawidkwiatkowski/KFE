@@ -1,8 +1,11 @@
 package com.app.kfe.rysowanie;
 
+import com.app.kfe.R;
 import com.app.kfe.wifi.DeviceDetailFragment;
 import com.app.kfe.wifi.FileTransferService;
 import com.app.kfe.wifi.WiFiDirectActivity;
+import com.app.kfe.wifi.WiFiDirectBroadcastReceiver;
+import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +14,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -25,11 +29,12 @@ public class PaintView extends View {
 	 public static final int CIRCLE = 5;
 	 public static final int TRIANGLE = 6;
 	 public static final int SMOOTHLINE = 2;
-	 private BroadcastReceiver receiver = null;
+	 
 	 public int mCurrentShape;
 	 private IntentFilter intentFilter = new IntentFilter();
 	 public boolean isDrawing = false;
-	
+	 public static int canvasHeight;
+	 public static int canvasWidth;
 	//drawing path
 	private Path drawPath;
 	//drawing and canvas paint
@@ -123,20 +128,34 @@ public class PaintView extends View {
 		canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 		drawCanvas = new Canvas(canvasBitmap);
 		drawCanvas.drawColor(Color.WHITE);
+		canvasHeight = h;
+		canvasWidth = w;
 	}
 	
 	public void odbieraj(Bitmap bm)
 	{
+		try
+		{
 		Bitmap workingBitmap = Bitmap.createBitmap(bm);
-		Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
-		//drawCanvas = new Canvas(mutableBitmap);
-		//drawCanvas.setBitmap(mutableBitmap);
-		//canvas.drawBitmap(myBitmap, 0, 0, null);
-		receiver=com.app.kfe.wifi.WiFiDirectActivity.receiver;
-		intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
+		workingBitmap = getResizedBitmap(workingBitmap,canvasHeight,canvasWidth);
+		
+		Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);		
 		drawCanvas.drawBitmap(mutableBitmap, 0, 0,null);
 		invalidate();
-		Tablica.tablica.registerReceiver(receiver, intentFilter);			
+		}
+		catch(Exception kurcze)
+		{
+			Tablica.tablica.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);		
+			 if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+		        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+		                    .execute();
+		        }
+		}
+		Tablica.tablica.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);		
+		 if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+	        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+	                    .execute();
+	        }
 	}
 	
 	
@@ -163,9 +182,11 @@ public class PaintView extends View {
 					break;
 			}
 			if(Tablica.isGame){
-				receiver=com.app.kfe.wifi.WiFiDirectActivity.receiver;
-				intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
-				WiFiDirectActivity.activity.registerReceiver(receiver, intentFilter);	
+				//receiver=com.app.kfe.wifi.WiFiDirectActivity.receiver;
+				//intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
+				//WiFiDirectActivity.receiver = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, WiFiDirectActivity.channel, Tablica.tablica);
+				//Tablica.activity.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);	
+				
 				DeviceDetailFragment.sendCanvasService();
 			}
 		}
@@ -406,5 +427,19 @@ public class PaintView extends View {
 		countTouch = 0;
 	    basexTriangle = 0;
 	    baseyTriangle = 0;
+	}
+	public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+	    int width = bm.getWidth();
+	    int height = bm.getHeight();
+	    float scaleWidth = ((float) newWidth) / width;
+	    float scaleHeight = ((float) newHeight) / height;
+	    // CREATE A MATRIX FOR THE MANIPULATION
+	    Matrix matrix = new Matrix();
+	    // RESIZE THE BIT MAP
+	    matrix.postScale(scaleWidth, scaleHeight);
+	
+	    // "RECREATE" THE NEW BITMAP
+	    Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+	    return resizedBitmap;
 	}
 }
