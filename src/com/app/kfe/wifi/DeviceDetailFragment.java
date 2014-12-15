@@ -64,7 +64,7 @@ import java.net.Socket;
 public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener {
 
     protected static final int CHOOSE_FILE_RESULT_CODE = 20;
-    private View mContentView = null;
+    public static View mContentView = null;
     private WifiP2pDevice device;
     public static WifiP2pInfo info;
     public static Intent serviceIntent;
@@ -342,13 +342,17 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 Socket client = serverSocket.accept();
 
                 InputStream inputstream = client.getInputStream();
-                String result;
-                try
+                InputStream inputStream2 = inputstream;
+                String result="";
+                if(WiFiDirectActivity.co_to.equals("tablica"))
                 {
-                	result = getStringFromInputStream(inputstream);
-                }
-                catch(Exception e){
-                	result = "canva";
+	                	try                
+	                {
+	                	result = getStringFromInputStream(inputstream);
+	                }
+	                catch(Exception e){
+	                	result = "canva";
+	                }
                 }
                 
                 //String result = "Przyjêto dane";                                
@@ -357,11 +361,11 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         			result="open";
         		}
                 else
-                { 
+                {                 
                 	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
 	                
 	                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
-	                
+	                result = "canva";
 	                if( DeviceDetailFragment.bm != null)
 	                	result = "canva";	                           
 	             }
@@ -383,7 +387,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         @Override
         protected void onPostExecute(String result) {
             
-        	if(result=="canva")
+        	if(result.equals("canva"))
         	{
         		if (!result.isEmpty()) {
         	
@@ -397,7 +401,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         		}
                 
             }
-        	else if(result=="open")
+        	else if(result.equals("open"))
         	{
         		open_tablica();
         	}

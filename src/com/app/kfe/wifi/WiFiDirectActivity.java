@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
@@ -50,15 +51,15 @@ import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
 public class WiFiDirectActivity extends Activity implements ChannelListener, DeviceActionListener {
 
     public static final String TAG = "wifidirectdemo";
-    private WifiP2pManager manager;
-    private boolean isWifiP2pEnabled = false;
+    public static WifiP2pManager manager;
+    public static boolean isWifiP2pEnabled = false;
     private boolean retryChannel = false;
-
+    DeviceListFragment fragment ;
     public static final IntentFilter intentFilter = new IntentFilter();
-    private Channel channel;
+    public static Channel channel;
     public static BroadcastReceiver receiver = null;
     public static Activity activity;
-
+    public static String co_to="tablica";
     /**
      * @param isWifiP2pEnabled the isWifiP2pEnabled to set
      */
@@ -89,12 +90,13 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         super.onResume();
         receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
         registerReceiver(receiver, intentFilter);
+        co_to="tablica";
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        unregisterReceiver(receiver);
+      unregisterReceiver(receiver);
     }
 
     /**
@@ -147,7 +149,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                final DeviceListFragment fragment = (DeviceListFragment) getFragmentManager()
+               DeviceListFragment fragment = (DeviceListFragment) getFragmentManager()
                         .findFragmentById(R.id.frag_list);
                 fragment.onInitiateDiscovery();
                 manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
@@ -270,4 +272,10 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         }
 
     }
+
+	@Override
+	public void onConnectionInfoAvailable(WifiP2pInfo info) {
+		// TODO Auto-generated method stub
+		
+	}
 }

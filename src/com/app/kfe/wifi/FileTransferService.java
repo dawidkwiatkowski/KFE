@@ -135,11 +135,11 @@ public class FileTransferService extends IntentService {
         else if (intent.getAction().equals(ACTION_SEND_CANVAS)) {
         	String text = "XXXXXX";
             String host = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
-            
+            Socket socket = new Socket();
             int port = intent.getExtras().getInt(EXTRAS_GROUP_OWNER_PORT); 
-            Socket socket = null;
+            
             try {
-            	socket = new Socket();
+            	
             
                 Log.d(WiFiDirectActivity.TAG, "Opening client socket - ");
 
