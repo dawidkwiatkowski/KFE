@@ -16,18 +16,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/secure_connect_scan"
-        android:showAsAction="ifRoom"
-        android:title="@string/secure_connect"/>
+            android:id="@+id/secure_connect_scan"
+            android:showAsAction="ifRoom"
+            android:title="@string/secure_connect"/>
 
     <item
-        android:id="@+id/insecure_connect_scan"
-        android:showAsAction="never"
-        android:title="@string/insecure_connect"/>
+            android:id="@+id/insecure_connect_scan"
+            android:showAsAction="never"
+            android:title="@string/insecure_connect"/>
 
     <item
-        android:id="@+id/discoverable"
-        android:showAsAction="never"
-        android:title="@string/discoverable"/>
+            android:id="@+id/discoverable"
+            android:showAsAction="never"
+            android:title="@string/discoverable"/>
 
 </menu>

@@ -14,11 +14,11 @@
     <string name="edittext_hint_Gracz">Nazwa Gracza</string>
     <string name="button_save">Zapisz</string>
     <string name="setting_btn">Ustwienia</string>
-      <string name="score_btn">Statystyki</string>
-      <string name="title_activity_setting">Ustawienia</string>
-     <string name="title_activity_score">Statystyki</string>
-       <string name="title_stat_activity">Statystki Rozgrywki</string>
-     
+    <string name="score_btn">Statystyki</string>
+    <string name="title_activity_setting">Ustawienia</string>
+    <string name="title_activity_score">Statystyki</string>
+    <string name="title_stat_activity">Statystki Rozgrywki</string>
+
 
     <color name="grayColor">#808080</color>
     <color name="redColor">#FF0000</color>
@@ -34,9 +34,9 @@
 
     <string name="Dzwiek">Włączyć efekty dzwiękowe</string>
 
-     <!-- Bluetooth -->
+    <!-- Bluetooth -->
     <string name="title_activity_device_list">DeviceListActivity</string>
-    
+
     <string name="send">Send</string>
     <string name="not_connected">You are not connected to a device</string>
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving Bluetooth Chat.</string>
@@ -75,5 +75,6 @@
     <string name="label_me">ME</string>
     <string name="label_peers">PEERS</string>
     <string name="title_activity_wifi_act">Wifi_act</string>
-    
+    <string name="action_bluetooth_connect">Connect Bluetooth device</string>
+
 </resources>

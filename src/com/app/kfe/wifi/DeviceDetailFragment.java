@@ -36,19 +36,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.app.kfe.R;
 import com.app.kfe.rysowanie.PaintView;
 import com.app.kfe.rysowanie.Tablica;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -67,6 +60,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     public ProgressDialog progressDialog = null;
     public static Bitmap bm = null;
     public static PaintView pv;
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -77,7 +71,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
         mContentView = inflater.inflate(R.layout.device_detail, null);
         mContentView.findViewById(R.id.btn_connect).setOnClickListener(new View.OnClickListener() {
-        
+
             @Override
             public void onClick(View v) {
                 WifiP2pConfig config = new WifiP2pConfig();
@@ -95,7 +89,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 //                                ((DeviceActionListener) getActivity()).cancelDisconnect();
 //                            }
 //                        }
-                        );
+                );
                 ((DeviceActionListener) getActivity()).connect(config);
 
             }
@@ -117,25 +111,25 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     public void onClick(View v) {
                         // Allow user to pick an image from Gallery or other
                         // registered apps
-                    	//Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    	//Intent intent = new Intent(getActivity(),Tablica.class);
+                        //Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        //Intent intent = new Intent(getActivity(),Tablica.class);
                         //intent.setType("image/*");
-                    	//intent.setClass(getActivity(), Tablica.class);
-                    	
-                    	serviceIntent = new Intent(getActivity(), FileTransferService.class);
+                        //intent.setClass(getActivity(), Tablica.class);
+
+                        serviceIntent = new Intent(getActivity(), FileTransferService.class);
                         serviceIntent.setAction(FileTransferService.ACTION_OPEN_TABLICA);
                         serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
                         serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
                                 info.groupOwnerAddress.getHostAddress());
                         serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
-                         
+
                         getActivity().startService(serviceIntent);
-                        
-                        Intent intent = new Intent(getActivity(),Tablica.class);
+
+                        Intent intent = new Intent(getActivity(), Tablica.class);
                         intent.putExtra("isGame", true);
                         startActivity(intent);
-                    	
-                    	
+
+
                     }
                 });
 
@@ -172,7 +166,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         TextView view = (TextView) mContentView.findViewById(R.id.group_owner);
         view.setText(getResources().getString(R.string.group_owner_text)
                 + ((info.isGroupOwner == true) ? getResources().getString(R.string.yes)
-                        : getResources().getString(R.string.no)));
+                : getResources().getString(R.string.no)));
 
         // InetAddress from WifiP2pInfo struct.
         view = (TextView) mContentView.findViewById(R.id.device_info);
@@ -182,9 +176,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         // server. The file server is single threaded, single connection server
         // socket.
         if (info.groupFormed && info.isGroupOwner) {
-        	new TextServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
+            new TextServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
                     .execute();
-        } else if (info.groupFormed) {
+        }
+        else if (info.groupFormed) {
             // The other device acts as the client. In this case, we enable the
             // get file button.
             mContentView.findViewById(R.id.btn_start_client).setVisibility(View.VISIBLE);
@@ -198,7 +193,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
     /**
      * Updates the UI with device data
-     * 
+     *
      * @param device the device to be displayed
      */
     public void showDetails(WifiP2pDevice device) {
@@ -227,18 +222,18 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         mContentView.findViewById(R.id.btn_start_client).setVisibility(View.GONE);
         this.getView().setVisibility(View.GONE);
     }
-    
-	public static void sendCanvasService(){
-		Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
+
+    public static void sendCanvasService() {
+        Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
         serviceIntent.setAction(FileTransferService.ACTION_SEND_CANVAS);
         serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
         serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
-        		DeviceDetailFragment.info.groupOwnerAddress.getHostAddress());
+                DeviceDetailFragment.info.groupOwnerAddress.getHostAddress());
         serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
-         
-        Tablica.activity.startService(serviceIntent); 
-	}
-    
+
+        Tablica.activity.startService(serviceIntent);
+    }
+
 
     /**
      * A simple server socket that accepts connection and writes some data on
@@ -270,8 +265,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                         + ".jpg");
 
                 File dirs = new File(f.getParent());
-                if (!dirs.exists())
+                if (!dirs.exists()) {
                     dirs.mkdirs();
+                }
                 f.createNewFile();
 
                 Log.d(WiFiDirectActivity.TAG, "server: copying files " + f.toString());
@@ -279,7 +275,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 copyFile(inputstream, new FileOutputStream(f));
                 serverSocket.close();
                 return f.getAbsolutePath();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e(WiFiDirectActivity.TAG, e.getMessage());
                 return null;
             }
@@ -311,7 +308,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         }
 
     }
-    
+
     /**
      * A simple server socket that accepts connection and writes some data on
      * the stream.
@@ -339,38 +336,36 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
                 InputStream inputstream = client.getInputStream();
                 InputStream inputStream2 = inputstream;
-                String result="";
-                if(WiFiDirectActivity.co_to.equals("tablica"))
-                {
-	                	try                
-	                {
-	                	result = getStringFromInputStream(inputstream);
-	                }
-	                catch(Exception e){
-	                	result = "canva";
-	                }
+                String result = "";
+                if (WiFiDirectActivity.co_to.equals("tablica")) {
+                    try {
+                        result = getStringFromInputStream(inputstream);
+                    }
+                    catch (Exception e) {
+                        result = "canva";
+                    }
                 }
-                
+
                 //String result = "Przyj�to dane";                                
-                if(result.equalsIgnoreCase("tablica"))
-        		{
-        			result="open";
-        		}
-                else
-                {                 
-                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
-	                
-	                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
-	                result = "canva";
-	                if( DeviceDetailFragment.bm != null)
-	                	result = "canva";	                           
-	             }
+                if (result.equalsIgnoreCase("tablica")) {
+                    result = "open";
+                }
+                else {
+                    byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
+
+                    DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array, 0, array.length);
+                    result = "canva";
+                    if (DeviceDetailFragment.bm != null) {
+                        result = "canva";
+                    }
+                }
                 //Log.e(WiFiDirectActivity.TAG, "Result = " + result);
-                
+
                 serverSocket.close();
                 return result;
-                
-            } catch (IOException e) {
+
+            }
+            catch (IOException e) {
                 Log.e(WiFiDirectActivity.TAG, e.getMessage());
                 return null;
             }
@@ -382,25 +377,24 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
          */
         @Override
         protected void onPostExecute(String result) {
-            
-        	if(result.equals("canva"))
-        	{
-        		if (!result.isEmpty()) {
-        	
-	                statusText.setText("Otrzymany tekst - " + result);
-	
-	                DeviceDetailFragment.pv = ((PaintView) Tablica.tablica.findViewById(R.id.drawing));
-	                if(DeviceDetailFragment.bm == null)
-	                	statusText.setText("null");
-	          
-	                DeviceDetailFragment.pv.odbieraj(bm);          
-        		}
-                
+
+            if (result.equals("canva")) {
+                if (!result.isEmpty()) {
+
+                    statusText.setText("Otrzymany tekst - " + result);
+
+                    DeviceDetailFragment.pv = ((PaintView) Tablica.tablica.findViewById(R.id.drawing));
+                    if (DeviceDetailFragment.bm == null) {
+                        statusText.setText("null");
+                    }
+
+                    DeviceDetailFragment.pv.odbieraj(bm);
+                }
+
             }
-        	else if(result.equals("open"))
-        	{
-        		open_tablica();
-        	}
+            else if (result.equals("open")) {
+                open_tablica();
+            }
         }
 
         /*
@@ -411,46 +405,47 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         protected void onPreExecute() {
             statusText.setText("Opening a server socket");
         }
-        
+
         private static String getStringFromInputStream(InputStream is) {
-       	 
-    		BufferedReader br = null;
-    		StringBuilder sb = new StringBuilder();
-     
-    		String line;
-    		try {
-     
-    			br = new BufferedReader(new InputStreamReader(is));
-    			while ((line = br.readLine()) != null) {
-    				sb.append(line);
-    			}
-     
-    		} catch (IOException e) {
-    			e.printStackTrace();
-    		} finally {
-    			if (br != null) {
-    				try {
-    					br.close();
-    				} catch (IOException e) {
-    					e.printStackTrace();
-    				}
-    			}
-    		}
-     
-    		return sb.toString();
-     
-    	}
-        
-        public void open_tablica()
-        {
-        	Intent dolacz = new Intent(context, com.app.kfe.rysowanie.Tablica.class);
-        	dolacz.putExtra("isGame", true);
-        	context.startActivity(dolacz);
+
+            BufferedReader br = null;
+            StringBuilder sb = new StringBuilder();
+
+            String line;
+            try {
+
+                br = new BufferedReader(new InputStreamReader(is));
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return sb.toString();
+
+        }
+
+        public void open_tablica() {
+            Intent dolacz = new Intent(context, com.app.kfe.rysowanie.Tablica.class);
+            dolacz.putExtra("isGame", true);
+            context.startActivity(dolacz);
         }
     }
-    
-    
-    
+
+
     public static boolean copyFile(InputStream inputStream, OutputStream out) {
         byte buf[] = new byte[1024];
         int len;
@@ -461,7 +456,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             }
             out.close();
             inputStream.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Log.d(WiFiDirectActivity.TAG, e.toString());
             return false;
         }

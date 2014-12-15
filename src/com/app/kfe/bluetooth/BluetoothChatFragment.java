@@ -26,20 +26,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.app.kfe.R;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,9 +40,9 @@ public class BluetoothChatFragment extends Fragment {
     private static final String TAG = "BluetoothChatFragment";
 
     // Intent request codes
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
-    private static final int REQUEST_ENABLE_BT = 3;
+    public static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    public static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
+    public static final int REQUEST_ENABLE_BT = 3;
 
     // Layout Views
     private ListView mConversationView;
@@ -110,7 +99,8 @@ public class BluetoothChatFragment extends Fragment {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
-        } else if (mBluetoothTransferService == null) {
+        }
+        else if (mBluetoothTransferService == null) {
             setupChat();
         }
     }
@@ -343,7 +333,8 @@ public class BluetoothChatFragment extends Fragment {
                 if (resultCode == Activity.RESULT_OK) {
                     // Bluetooth is now enabled, so set up a chat session
                     setupChat();
-                } else {
+                }
+                else {
                     // User did not enable Bluetooth or an error occurred
                     Log.d(TAG, "BT not enabled");
                     Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,

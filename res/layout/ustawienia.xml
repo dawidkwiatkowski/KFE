@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/kfe_list_selector_background_transition_holo_light"
-    android:orientation="vertical" >
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/kfe_list_selector_background_transition_holo_light"
+                android:orientation="vertical">
 
     <Button
-        android:id="@+id/btnSave"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:text="@string/button_save" />
+            android:id="@+id/btnSave"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:text="@string/button_save"/>
 
     <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/radioDzwiek"
-        android:src="@drawable/logo" />
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/radioDzwiek"
+            android:src="@drawable/logo"/>
 
     <EditText
-        android:id="@+id/etName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="@dimen/text_button_size"
-        android:ems="10" >
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/text_button_size"
+            android:ems="10">
 
-        <requestFocus />
+        <requestFocus/>
     </EditText>
 
     <CheckBox
-        android:id="@+id/radioDzwiek"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/etName"
-        android:text="@string/Dzwiek" />
+            android:id="@+id/radioDzwiek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/etName"
+            android:text="@string/Dzwiek"/>
 
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/etName"
-        android:layout_alignRight="@+id/imageView1"
-        android:layout_marginBottom="@dimen/text_button_size"
-        android:text="@string/edittext_hint_Gracz"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="25dp" />
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/etName"
+            android:layout_alignRight="@+id/imageView1"
+            android:layout_marginBottom="@dimen/text_button_size"
+            android:text="@string/edittext_hint_Gracz"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25dp"/>
 
 </RelativeLayout>

@@ -1,199 +1,199 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@color/whiteColor"
-    tools:context="com.app.kfe.Tablica" >
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/whiteColor"
+                tools:context="com.app.kfe.Tablica">
 
-	<com.app.kfe.rysowanie.PaintView
-	    android:id="@+id/drawing"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent" 
-	    android:layout_marginRight="65dp"/>
-    
+    <com.app.kfe.rysowanie.PaintView
+            android:id="@+id/drawing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="65dp"/>
+
     <SlidingDrawer
-        android:id="@+id/toolsPanel"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:content="@+id/content"
-        android:handle="@+id/handle"
-        android:orientation="horizontal" >
+            android:id="@+id/toolsPanel"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:content="@+id/content"
+            android:handle="@+id/handle"
+            android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/handle"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:background="@drawable/left" />
-               
-        <LinearLayout
-            android:id="@+id/content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:orientation="vertical"
-            android:background="@drawable/kfe_list_selector_background_transition_holo_light">
-            
-            <GridLayout
-                android:id="@+id/tools"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="6"
-                android:rowCount="2" 
-                android:layout_gravity="center">
-                
-                <ImageButton 
-                   	android:id="@+id/brushTool" 
-                   	android:layout_width="40dp"
-	               	android:layout_height="40dp"
-	               	android:layout_margin="5dp"
-	               	android:src="@drawable/brush"
-	               	android:background="@drawable/button"/>
-                
-                <ImageButton 
-                   	android:id="@+id/lineTool" 
-                   	android:layout_width="40dp"
-	               	android:layout_height="40dp"
-	               	android:layout_margin="5dp"
-	               	android:src="@drawable/rectangle"
-	               	android:background="@drawable/button"/>
-                
-                <ImageButton 
-                   	android:id="@+id/rectangleTool" 
-                   	android:layout_width="40dp"
-	               	android:layout_height="40dp"
-	               	android:layout_margin="5dp"
-	               	android:src="@drawable/rectangle"
-	               	android:background="@drawable/button"/>
-                
-                <ImageButton 
-                   	android:id="@+id/squareTool" 
-                   	android:layout_width="40dp"
-	               	android:layout_height="40dp"
-	               	android:layout_margin="5dp"
-	               	android:src="@drawable/rectangle"
-	               	android:background="@drawable/button"/>
-                
-                <ImageButton
-                   	android:id="@+id/circleTool" 
-                   	android:layout_width="40dp"
-	               	android:layout_height="40dp"
-	               	android:layout_margin="5dp"
-	               	android:src="@drawable/rectangle"
-	               	android:background="@drawable/button"/>
-                
-                <ImageButton
-                   	android:id="@+id/triangleTool" 
-                   	android:layout_width="40dp"
-	               	android:layout_height="40dp"
-	               	android:layout_margin="5dp"
-	               	android:src="@drawable/rectangle"
-	               	android:background="@drawable/button"/>
-                
-                <ImageButton 
-                   	android:id="@+id/eraserTool" 
-                   	android:layout_width="40dp"
-	               	android:layout_height="40dp"
-	               	android:layout_margin="5dp"
-	               	android:src="@drawable/eraser"
-	               	android:background="@drawable/button"/>
-                
-                <ImageButton 
-                   	android:id="@+id/newImageTool" 
-                   	android:layout_width="40dp"
-	               	android:layout_height="40dp"
-	               	android:layout_margin="5dp"
-	               	android:src="@drawable/new_image"
-	               	android:background="@drawable/button"/>
-                
-                <ImageButton 
-                   	android:id="@+id/saveButton" 
-                   	android:layout_width="40dp"
-	               	android:layout_height="40dp"
-	               	android:layout_margin="5dp"
-	               	android:src="@drawable/save"
-	               	android:background="@drawable/button"/>
-                
-            </GridLayout>
-            
-            <TextView
-                android:id="@+id/brushSizeLabel"
-                android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text="@string/brashSizeLabel"
-		        android:textColor="#ffffff"
-		        android:textSize="20dp" 
-		        android:gravity="center"/>
-            
-            <SeekBar
-		        android:id="@+id/brushSize"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"		        
-		        android:max="80" 
-		        android:progress="20"/>
-            
-             <TextView
-                android:id="@+id/colorsLabel"
-                android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text="@string/colorsLabel"
-		        android:textColor="#ffffff"
-		        android:textSize="20dp" 
-		        android:gravity="center"/>
-            
-            <GridLayout
-                android:id="@+id/colors"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="4"
-                android:rowCount="2" 
-                android:layout_gravity="center">
-                
-                <Button
-                    android:id="@+id/redButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="5dp"
-                    android:background="@color/redColor"/>
-                                
-                <Button 
-                    android:id="@+id/yellowButton" 
-                    android:layout_width="40dp"
-                	android:layout_height="40dp"
-                	android:layout_margin="5dp"
-                	android:background="@color/yellowColor"/>
+                android:id="@+id/handle"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/left"/>
 
-                
-                <Button 
-                    android:id="@+id/greenButton" 
-                    android:layout_width="40dp"
-                	android:layout_height="40dp"
-                	android:layout_margin="5dp"
-                	android:background="@color/greenColor"/>
-                
-                <Button 
-                    android:id="@+id/blueButton" 
-                    android:layout_width="40dp"
-                	android:layout_height="40dp"
-                	android:layout_margin="5dp"
-                	android:background="@color/blueColor"/>
-                
-                <Button 
-                    android:id="@+id/whiteButton" 
-                    android:layout_width="40dp"
-                	android:layout_height="40dp"
-                	android:layout_margin="5dp"
-                	android:background="@color/whiteColor"/>
-                
-                <Button 
-                    android:id="@+id/blackButton" 
-                    android:layout_width="40dp"
-                	android:layout_height="40dp"
-                	android:layout_margin="5dp"
-                	android:background="@color/blackColor"/>
-            </GridLayout>            
-            
+        <LinearLayout
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/kfe_list_selector_background_transition_holo_light">
+
+            <GridLayout
+                    android:id="@+id/tools"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="6"
+                    android:rowCount="2"
+                    android:layout_gravity="center">
+
+                <ImageButton
+                        android:id="@+id/brushTool"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/brush"
+                        android:background="@drawable/button"/>
+
+                <ImageButton
+                        android:id="@+id/lineTool"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/rectangle"
+                        android:background="@drawable/button"/>
+
+                <ImageButton
+                        android:id="@+id/rectangleTool"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/rectangle"
+                        android:background="@drawable/button"/>
+
+                <ImageButton
+                        android:id="@+id/squareTool"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/rectangle"
+                        android:background="@drawable/button"/>
+
+                <ImageButton
+                        android:id="@+id/circleTool"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/rectangle"
+                        android:background="@drawable/button"/>
+
+                <ImageButton
+                        android:id="@+id/triangleTool"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/rectangle"
+                        android:background="@drawable/button"/>
+
+                <ImageButton
+                        android:id="@+id/eraserTool"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/eraser"
+                        android:background="@drawable/button"/>
+
+                <ImageButton
+                        android:id="@+id/newImageTool"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/new_image"
+                        android:background="@drawable/button"/>
+
+                <ImageButton
+                        android:id="@+id/saveButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/save"
+                        android:background="@drawable/button"/>
+
+            </GridLayout>
+
+            <TextView
+                    android:id="@+id/brushSizeLabel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/brashSizeLabel"
+                    android:textColor="#ffffff"
+                    android:textSize="20dp"
+                    android:gravity="center"/>
+
+            <SeekBar
+                    android:id="@+id/brushSize"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:max="80"
+                    android:progress="20"/>
+
+            <TextView
+                    android:id="@+id/colorsLabel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/colorsLabel"
+                    android:textColor="#ffffff"
+                    android:textSize="20dp"
+                    android:gravity="center"/>
+
+            <GridLayout
+                    android:id="@+id/colors"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="4"
+                    android:rowCount="2"
+                    android:layout_gravity="center">
+
+                <Button
+                        android:id="@+id/redButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/redColor"/>
+
+                <Button
+                        android:id="@+id/yellowButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/yellowColor"/>
+
+
+                <Button
+                        android:id="@+id/greenButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/greenColor"/>
+
+                <Button
+                        android:id="@+id/blueButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/blueColor"/>
+
+                <Button
+                        android:id="@+id/whiteButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/whiteColor"/>
+
+                <Button
+                        android:id="@+id/blackButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/blackColor"/>
+            </GridLayout>
+
         </LinearLayout>
-    </SlidingDrawer>    
+    </SlidingDrawer>
 
 </RelativeLayout>

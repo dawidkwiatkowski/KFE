@@ -244,7 +244,9 @@ public class BluetoothTransferService {
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
         synchronized (this) {
-            if (mState != STATE_CONNECTED) return;
+            if (mState != STATE_CONNECTED) {
+                return;
+            }
             r = mConnectedThread;
         }
         // Perform the write unsynchronized
@@ -300,11 +302,13 @@ public class BluetoothTransferService {
                 if (secure) {
                     tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE,
                             MY_UUID_SECURE);
-                } else {
+                }
+                else {
                     tmp = mAdapter.listenUsingInsecureRfcommWithServiceRecord(
                             NAME_INSECURE, MY_UUID_INSECURE);
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
             }
             mmServerSocket = tmp;
@@ -323,7 +327,8 @@ public class BluetoothTransferService {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
                     socket = mmServerSocket.accept();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed", e);
                     break;
                 }
@@ -343,7 +348,8 @@ public class BluetoothTransferService {
                                 // Either not ready or already connected. Terminate new socket.
                                 try {
                                     socket.close();
-                                } catch (IOException e) {
+                                }
+                                catch (IOException e) {
                                     Log.e(TAG, "Could not close unwanted socket", e);
                                 }
                                 break;
@@ -359,7 +365,8 @@ public class BluetoothTransferService {
             Log.d(TAG, "Socket Type" + mSocketType + "cancel " + this);
             try {
                 mmServerSocket.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e(TAG, "Socket Type" + mSocketType + "close() of server failed", e);
             }
         }
@@ -387,11 +394,13 @@ public class BluetoothTransferService {
                 if (secure) {
                     tmp = device.createRfcommSocketToServiceRecord(
                             MY_UUID_SECURE);
-                } else {
+                }
+                else {
                     tmp = device.createInsecureRfcommSocketToServiceRecord(
                             MY_UUID_INSECURE);
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
             }
             mmSocket = tmp;
@@ -409,11 +418,13 @@ public class BluetoothTransferService {
                 // This is a blocking call and will only return on a
                 // successful connection or an exception
                 mmSocket.connect();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 // Close the socket
                 try {
                     mmSocket.close();
-                } catch (IOException e2) {
+                }
+                catch (IOException e2) {
                     Log.e(TAG, "unable to close() " + mSocketType +
                             " socket during connection failure", e2);
                 }
@@ -433,7 +444,8 @@ public class BluetoothTransferService {
         public void cancel() {
             try {
                 mmSocket.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e(TAG, "close() of connect " + mSocketType + " socket failed", e);
             }
         }
@@ -458,7 +470,8 @@ public class BluetoothTransferService {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e(TAG, "temp sockets not created", e);
             }
 
@@ -480,7 +493,8 @@ public class BluetoothTransferService {
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
                     // Start the service over to restart listening mode
@@ -502,7 +516,8 @@ public class BluetoothTransferService {
                 // Share the sent message back to the UI Activity
                 mHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }
         }
@@ -510,7 +525,8 @@ public class BluetoothTransferService {
         public void cancel() {
             try {
                 mmSocket.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e(TAG, "close() of connect socket failed", e);
             }
         }

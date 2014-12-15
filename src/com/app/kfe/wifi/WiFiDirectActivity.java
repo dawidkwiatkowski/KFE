@@ -36,9 +36,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
 import com.app.kfe.R;
-import com.app.kfe.rysowanie.Tablica;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
 
 /**
@@ -54,12 +52,13 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     public static WifiP2pManager manager;
     public static boolean isWifiP2pEnabled = false;
     private boolean retryChannel = false;
-    DeviceListFragment fragment ;
+    DeviceListFragment fragment;
     public static final IntentFilter intentFilter = new IntentFilter();
     public static Channel channel;
     public static BroadcastReceiver receiver = null;
     public static Activity activity;
-    public static String co_to="tablica";
+    public static String co_to = "tablica";
+
     /**
      * @param isWifiP2pEnabled the isWifiP2pEnabled to set
      */
@@ -84,19 +83,21 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         channel = manager.initialize(this, getMainLooper(), null);
     }
 
-    /** register the BroadcastReceiver with the intent values to be matched */
+    /**
+     * register the BroadcastReceiver with the intent values to be matched
+     */
     @Override
     public void onResume() {
         super.onResume();
         receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
         registerReceiver(receiver, intentFilter);
-        co_to="tablica";
+        co_to = "tablica";
     }
 
     @Override
     public void onPause() {
         super.onPause();
-      unregisterReceiver(receiver);
+        unregisterReceiver(receiver);
     }
 
     /**
@@ -138,7 +139,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
                     // WiFiDeviceBroadcastReceiver instead.
 
                     startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                } else {
+                }
+                else {
                     Log.e(TAG, "channel or manager is null");
                 }
                 return true;
@@ -149,7 +151,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-               DeviceListFragment fragment = (DeviceListFragment) getFragmentManager()
+                DeviceListFragment fragment = (DeviceListFragment) getFragmentManager()
                         .findFragmentById(R.id.frag_list);
                 fragment.onInitiateDiscovery();
                 manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
@@ -187,9 +189,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
             @Override
             public void onSuccess() {
                 // WiFiDirectBroadcastReceiver will notify us. Ignore for now.
-        
-            	
-            	
+
+
             }
 
             @Override
@@ -229,7 +230,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
             resetData();
             retryChannel = true;
             manager.initialize(this, getMainLooper(), this);
-        } else {
+        }
+        else {
             Toast.makeText(this,
                     "Severe! Channel is probably lost premanently. Try Disable/Re-Enable P2P.",
                     Toast.LENGTH_LONG).show();
@@ -250,7 +252,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
             if (fragment.getDevice() == null
                     || fragment.getDevice().status == WifiP2pDevice.CONNECTED) {
                 disconnect();
-            } else if (fragment.getDevice().status == WifiP2pDevice.AVAILABLE
+            }
+            else if (fragment.getDevice().status == WifiP2pDevice.AVAILABLE
                     || fragment.getDevice().status == WifiP2pDevice.INVITED) {
 
                 manager.cancelConnect(channel, new ActionListener() {
@@ -273,9 +276,6 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 
     }
 
-	@Override
-	public void onConnectionInfoAvailable(WifiP2pInfo info) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void onConnectionInfoAvailable(WifiP2pInfo info) {}
 }

@@ -33,11 +33,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.app.kfe.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.app.kfe.R;
 
 /**
  * A ListFragment that displays available peers on discovery and requests the
@@ -111,7 +110,7 @@ public class DeviceListFragment extends ListFragment implements PeerListListener
          * @param objects
          */
         public WiFiPeerListAdapter(Context context, int textViewResourceId,
-                List<WifiP2pDevice> objects) {
+                                   List<WifiP2pDevice> objects) {
             super(context, textViewResourceId, objects);
             items = objects;
 
@@ -144,7 +143,7 @@ public class DeviceListFragment extends ListFragment implements PeerListListener
 
     /**
      * Update UI for this device.
-     * 
+     *
      * @param device WifiP2pDevice object
      */
     public void updateThisDevice(WifiP2pDevice device) {
@@ -176,7 +175,7 @@ public class DeviceListFragment extends ListFragment implements PeerListListener
     }
 
     /**
-     * 
+     *
      */
     public void onInitiateDiscovery() {
         if (progressDialog != null && progressDialog.isShowing()) {
@@ -187,7 +186,7 @@ public class DeviceListFragment extends ListFragment implements PeerListListener
 
                     @Override
                     public void onCancel(DialogInterface dialog) {
-                        
+
                     }
                 });
     }
@@ -206,7 +205,7 @@ public class DeviceListFragment extends ListFragment implements PeerListListener
 
         void disconnect();
 
-		void onConnectionInfoAvailable(WifiP2pInfo info);
+        void onConnectionInfoAvailable(WifiP2pInfo info);
     }
 
 }
