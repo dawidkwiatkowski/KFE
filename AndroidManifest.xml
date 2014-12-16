@@ -43,7 +43,7 @@
         <activity
                 android:name="com.app.kfe.rysowanie.Tablica"
                 android:label="@string/title_activity_tablica"
-                android:screenOrientation="landscape">
+                android:screenOrientation="sensorLandscape">
         </activity>
         <activity
                 android:name="com.app.kfe.bluetooth.BluetoothMainActivity"

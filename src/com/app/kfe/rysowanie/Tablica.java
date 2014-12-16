@@ -2,8 +2,11 @@ package com.app.kfe.rysowanie;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -12,7 +15,11 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -21,6 +28,9 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import com.app.kfe.R;
+import com.app.kfe.bluetooth.BluetoothTransferService;
+import com.app.kfe.bluetooth.Constants;
+import com.app.kfe.bluetooth.DeviceListActivity;
 import com.app.kfe.wifi.DeviceDetailFragment;
 import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
 import com.app.kfe.wifi.DeviceListFragment;
@@ -35,6 +45,9 @@ import java.util.UUID;
 
 
 public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener, ChannelListener, DeviceActionListener {
+    public static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    public static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
+    public static final int REQUEST_ENABLE_BT = 3;
 
     private PaintView paintView;
     private Button yellowButton;
@@ -60,10 +73,38 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     public static Tablica tablica = null;
     public static Channel channel2;
     public static BroadcastReceiver receiver2 = null;
+    private String mConnectedDeviceName;
+    private BluetoothTransferService mBluetoothTransferService;
+
+    private BluetoothAdapter mBluetoothAdapter;
 
     public static Activity activity;
 
     public static boolean isGame = false;
+
+    /**
+     * The Handler that gets information back from the BluetoothChatService
+     */
+    private final Handler mHandler;
+
+    public Tablica() {
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Activity activity = Tablica.this;
+                switch (msg.what) {
+                    case Constants.MESSAGE_DEVICE_NAME:
+                        // save the connected device's name
+                        mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
+                        Toast.makeText(activity, "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                        break;
+                    case Constants.MESSAGE_TOAST:
+                        Toast.makeText(activity, msg.getData().getString(Constants.TOAST), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +114,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         activity = this;
         tablica = this;
 
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothTransferService = new BluetoothTransferService(getApplicationContext(), mHandler);
+
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")) {
             isGame = getIntent().getExtras().getBoolean("isGame");
             WiFiDirectActivity.co_to = "cos";
@@ -80,8 +124,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             receiver2 = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, channel2, this);
             registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
             if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
-                new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-                        .execute();
+                new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text)).execute();
             }
 
         }
@@ -368,6 +411,82 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.tablica, menu);
+        return true;
+    }
+
+    private void openDevicesList() {
+        if(mBluetoothAdapter != null) {
+            if(!mBluetoothAdapter.isEnabled()) {
+                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+            }
+            else {
+                Intent discoverBtDevicesIntent = new Intent(this, DeviceListActivity.class);
+                startActivityForResult(discoverBtDevicesIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean result;
+        switch(item.getItemId()) {
+            case R.id.action_connect_bluetooth_device:
+                Toast.makeText(this, "Connecting to bluetooth device...", Toast.LENGTH_LONG).show();
+                openDevicesList();
+                result = true;
+                break;
+            case R.id.action_mark_discoverable:
+                ensureDiscoverable();
+                result = true;
+                break;
+            default:
+                result = super.onOptionsItemSelected(item);
+        }
+        return result;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CONNECT_DEVICE_INSECURE:
+                switch(resultCode) {
+                    case RESULT_OK:
+                        connectDevice(data, false);
+                        break;
+                }
+                break;
+            case REQUEST_ENABLE_BT:
+                switch(resultCode) {
+                    case RESULT_OK:
+                        openDevicesList();
+                        break;
+                    default:
+                        Toast.makeText(this, "Bluetooth is not enabled!", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
+
+    /**
+     * Establish connection with other device
+     *
+     * @param data   An {@link android.content.Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+     * @param secure Socket Security type - Secure (true) , Insecure (false)
+     */
+    private void connectDevice(Intent data, boolean secure) {
+        // Get the device MAC address
+        String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+        // Get the BluetoothDevice object
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        // Attempt to connect to the device
+        mBluetoothTransferService.connect(device, secure);
+    }
+
     public void setIsWifiP2pEnabled(boolean isWifiP2pEnabled) {
         WiFiDirectActivity.isWifiP2pEnabled = isWifiP2pEnabled;
     }
@@ -402,8 +521,6 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
     @Override
     public void onConnectionInfoAvailable(final WifiP2pInfo info) {
-
-
         // After the group negotiation, we assign the group owner as the file
         // server. The file server is single threaded, single connection server
         // socket.
@@ -411,8 +528,16 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             new TextServerAsyncTask(this, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                     .execute();
         }
-
-
     }
 
+    /**
+     * Makes this device discoverable.
+     */
+    private void ensureDiscoverable() {
+        if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+            startActivity(discoverableIntent);
+        }
+    }
 }

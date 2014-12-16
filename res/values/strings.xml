@@ -76,5 +76,6 @@
     <string name="label_peers">PEERS</string>
     <string name="title_activity_wifi_act">Wifi_act</string>
     <string name="action_bluetooth_connect">Connect Bluetooth device</string>
+    <string name="action_mark_discoverable">Mark discoverable</string>
 
 </resources>

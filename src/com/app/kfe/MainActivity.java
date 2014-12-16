@@ -28,6 +28,8 @@ import sqlite.helper.DatabaseHelper;
 
 public class MainActivity extends Activity {
 
+    public static final String TAG = "MainActivity";
+
     private Button draw2_btn;
     private Button dolacz_btn;
     private Button setting_btn;
@@ -52,31 +54,6 @@ public class MainActivity extends Activity {
         }
 
         addListenerOnButton();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean result = false;
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            case R.id.action_connect_bluetooth_device:
-                Intent serverIntent = new Intent(this, DeviceListActivity.class);
-                startActivityForResult(serverIntent, BluetoothChatFragment.REQUEST_CONNECT_DEVICE_SECURE);
-//				startActivity(new Intent(getApplicationContext(), BluetoothMainActivity.class));
-                result = true;
-                break;
-        }
-        return result | super.onOptionsItemSelected(item);
     }
 
     public void addListenerOnButton() {
@@ -192,5 +169,10 @@ public class MainActivity extends Activity {
 
         });
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, String.format("%d -> %d", requestCode, resultCode));
     }
 }
