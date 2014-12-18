@@ -53,7 +53,7 @@
                 android:name="com.app.kfe.bluetooth.DeviceListActivity"
                 android:configChanges="orientation|keyboardHidden"
                 android:label="@string/select_device"
-                android:theme="@android:style/Theme.Holo.Dialog"/>
+                android:theme="@android:style/Theme.Holo"/>
         <activity
                 android:name="com.app.kfe.wifi.WiFiDirectActivity"
                 android:icon="@drawable/ic_launcher"

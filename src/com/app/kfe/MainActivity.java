@@ -29,6 +29,7 @@ import sqlite.helper.DatabaseHelper;
 public class MainActivity extends Activity {
 
     public static final String TAG = "MainActivity";
+    public static final int REQUEST_ENABLE_BT = 3;
 
     private Button draw2_btn;
     private Button dolacz_btn;
@@ -40,6 +41,7 @@ public class MainActivity extends Activity {
     DatabaseHelper db;
     boolean silent;
     SharedPreferences settings;
+    private BluetoothAdapter mBluetoothAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class MainActivity extends Activity {
         mpButtonClick = MediaPlayer.create(this, R.raw.button);
         db = new DatabaseHelper(getApplicationContext());
         settings = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         if (db.isEmpty("hasla")) {
             db.createHasla();
@@ -171,8 +174,26 @@ public class MainActivity extends Activity {
 
     }
 
+
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, String.format("%d -> %d", requestCode, resultCode));
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.tablica, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean result;
+        switch(item.getItemId()) {
+            case R.id.action_connect_bluetooth_device:
+                startActivity(new Intent(this, DeviceListActivity.class));
+                result = true;
+                break;
+            default:
+                result = super.onOptionsItemSelected(item);
+        }
+        return result;
     }
 }

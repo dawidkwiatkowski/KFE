@@ -45,9 +45,6 @@ import java.util.UUID;
 
 
 public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener, ChannelListener, DeviceActionListener {
-    public static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    public static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
-    public static final int REQUEST_ENABLE_BT = 3;
 
     private PaintView paintView;
     private Button yellowButton;
@@ -409,82 +406,6 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         // WiFiDirectActivity.receiver = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, WiFiDirectActivity.channel, this);
         //registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.tablica, menu);
-        return true;
-    }
-
-    private void openDevicesList() {
-        if(mBluetoothAdapter != null) {
-            if(!mBluetoothAdapter.isEnabled()) {
-                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-            }
-            else {
-                Intent discoverBtDevicesIntent = new Intent(this, DeviceListActivity.class);
-                startActivityForResult(discoverBtDevicesIntent, REQUEST_CONNECT_DEVICE_INSECURE);
-            }
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean result;
-        switch(item.getItemId()) {
-            case R.id.action_connect_bluetooth_device:
-                Toast.makeText(this, "Connecting to bluetooth device...", Toast.LENGTH_LONG).show();
-                openDevicesList();
-                result = true;
-                break;
-            case R.id.action_mark_discoverable:
-                ensureDiscoverable();
-                result = true;
-                break;
-            default:
-                result = super.onOptionsItemSelected(item);
-        }
-        return result;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CONNECT_DEVICE_INSECURE:
-                switch(resultCode) {
-                    case RESULT_OK:
-                        connectDevice(data, false);
-                        break;
-                }
-                break;
-            case REQUEST_ENABLE_BT:
-                switch(resultCode) {
-                    case RESULT_OK:
-                        openDevicesList();
-                        break;
-                    default:
-                        Toast.makeText(this, "Bluetooth is not enabled!", Toast.LENGTH_LONG).show();
-                }
-                break;
-        }
-    }
-
-    /**
-     * Establish connection with other device
-     *
-     * @param data   An {@link android.content.Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
-     * @param secure Socket Security type - Secure (true) , Insecure (false)
-     */
-    private void connectDevice(Intent data, boolean secure) {
-        // Get the device MAC address
-        String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-        // Get the BluetoothDevice object
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        // Attempt to connect to the device
-        mBluetoothTransferService.connect(device, secure);
     }
 
     public void setIsWifiP2pEnabled(boolean isWifiP2pEnabled) {
