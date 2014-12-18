@@ -18,15 +18,15 @@ public class Room {
 	 */
 	private String _name;
 	/**
-	 * Minimalna liczba graczy, wymagana do rozpocz�cia rozgrywki w tym pokoju.
+	 * Minimalna liczba graczy, wymagana do rozpoczęcia rozgrywki w tym pokoju.
 	 */
 	private int _minPlayers;
 	/**
-	 * Maksymalna liczba graczy, dozwolona do rozpocz�cia rozgrywki w tym pokoju.
+	 * Maksymalna liczba graczy, dozwolona do rozpoczęcia rozgrywki w tym pokoju.
 	 */
 	private int _maxPlayers;
 	/**
-	 * Lista wszystkich graczy, znajduj�cych si� w pokoju.
+	 * Lista wszystkich graczy, znajdujących się w pokoju.
 	 */
 	private List<Player> _players;
 	/**

@@ -6,10 +6,7 @@ import com.app.kfe.main.KFE;
 import com.app.kfe.model.Player;
 import com.app.kfe.model.Room;
 import com.app.kfe.model.Server;
-import com.app.kfe.model.messages.LobbyMessage;
-import com.app.kfe.model.messages.Message;
-import com.app.kfe.model.messages.ServerMessage;
-import com.app.kfe.model.messages.ServerMessageType;
+import com.app.kfe.model.messages.*;
 import com.app.kfe.utils.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,8 +20,6 @@ public class RoomManager {
 
 	private static RoomManager singleton;
 	private Room _roomInstance;
-	private PlayersFragment _playersListView;
-	private LobbyFragment _lobbyView;
 	private Player _player;
 
 	public static RoomManager getInstance() {
@@ -69,22 +64,10 @@ public class RoomManager {
 			Logger.debug("RoomManager", "Sending player booted info to lobby");
 			Message message = new SystemMessage(KFE.getContext().getString(R.string.player_boot_message, player.getLogin()));
 			MessagesManager.getInstance().sendMessage(message);
-			_playersListView.refreshPlayersList();
 		} else {
 			return false;
 		}
 		return true;
-	}
-
-	public void closeRoom() {
-		Logger.info("RoomManager", "[closeRoom] Clearing room and players data");
-		GameplayManager.getInstance().clearGameResources();
-		_roomInstance.removeAllPlayers();
-		_player = null;
-		if(_playersListView!=null) {
-			_playersListView.refreshPlayersList();
-		}
-		_roomInstance = null;
 	}
 
 	public Room createRoom(Server server, String roomName) {
@@ -106,7 +89,6 @@ public class RoomManager {
 				Logger.debug("RoomManager", "Sending player exited info to lobby");
 				Message message = new SystemMessage(KFE.getContext().getString(R.string.room_player_exited_message, player.getLogin()));
 				MessagesManager.getInstance().sendMessage(message);
-				_playersListView.refreshPlayersList();
 			}
 		}
 	}
@@ -123,9 +105,6 @@ public class RoomManager {
 		if(ServerManager.getInstance().isConnectedToServer(server) && _roomInstance != null) {
 			Logger.debug("RoomManager", player.getLogin() + " has joined the room!");
 			_roomInstance.addPlayer(player);
-			if(_playersListView != null) {
-				_playersListView.refreshPlayersList();
-			}
 			if(!player.equals(_player)) {
 				Message message = new SystemMessage(KFE.getContext().getString(R.string.room_player_joined_message, player.getLogin()));
 				MessagesManager.getInstance().sendMessage(message);
@@ -149,39 +128,12 @@ public class RoomManager {
 		}
 	}
 
-	public void sendMessageToLobby(LobbyMessage message) {
-		if(_roomInstance != null) {
-			_roomInstance.getLobby().addMessage(message);
-			_lobbyView.refreshMessages();
-		}
-	}
-
-	public void setCurrentPlayersListView(PlayersFragment fragment) {
-		_playersListView = fragment;
-	}
-
-	public void setCurrentLobbyView(LobbyFragment fragment) {
-		_lobbyView = fragment;
-	}
-
-	public LobbyFragment getCurrentLobbyView() {
-		return _lobbyView;
-	}
-
-	public boolean validateRoomName(String name) {
-		return name!=null && name.matches("^[A-Za-z]{1}[\\w<>()\\[\\] ]{2,19}+$");
-	}
-
 	private Player createPlayer(String mac, String ip) {
 		return new Player(mac, ip, SettingsManager.getInstance().getSettingValue(SettingsManager.SETTING_PLAYERNAME));
 	}
 
 	private void initializeRoomSettings(Room room) {
 		room.setMaxPlayers(Integer.parseInt(SettingsManager.getInstance().getSettingValue("setting_room_maxPlayers")));
-	}
-
-	public void onGameStartMessageReceived(JSONObject gameState) {
-		_playersListView.onGameStartMessageReceived(gameState);
 	}
 
 }

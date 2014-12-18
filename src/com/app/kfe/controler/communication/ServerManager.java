@@ -605,7 +605,7 @@ public class ServerManager {
         protected void onPostExecute(Void result) {
 			if(_connectionState==SUCCESS) {
 				Logger.debug("ServerManager", "[EXECUTOR] Connected successfully!");
-				_requester.onConnectionEstabilished();
+				_requester.onConnectionEstablished();
 			} else {
 				int msgResId = -1;
 				if(_connectionState==ERROR) {
@@ -706,7 +706,7 @@ public class ServerManager {
 
 	public interface ConnectionRequester {
 		public void showProgress(int taskResId);
-		public void onConnectionEstabilished();
+		public void onConnectionEstablished();
 		public void onConnectionFailed(int msgResId);
 	}
 

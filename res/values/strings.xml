@@ -75,5 +75,16 @@
     <string name="label_me">ME</string>
     <string name="label_peers">PEERS</string>
     <string name="title_activity_wifi_act">Wifi_act</string>
-    
+    <string name="room_selection_creating_room">Trwa tworzenie pokoju</string>
+    <string name="room_selection_connecting">Trwa łączenie do serwera</string>
+    <string name="room_selection_connecting_error">Wystąpił błąd połączenia</string>
+    <string name="room_selection_connecting_timeout">Serwer nie odpowiada</string>
+    <string name="room_selection_disconnecting">Trwa rozłączanie z serwerem</string>
+    <string name="room_selection_connection_broken">Połączenie z serwerem zostało przerwane</string>
+    <string name="room_player_booted">Zostałeś wyproszony z tego pokoju</string>
+    <string name="room_closed">Pokój został zamknięty</string>
+    <string name="room_player_joined_message">Gracz %1$s dołączył do pokoju</string>
+    <string name="player_boot_message">Gracz %1$s został wyproszony z pokoju</string>
+    <string name="room_player_exited_message">Gracz %1$s opuścił pokój</string>
+
 </resources>
