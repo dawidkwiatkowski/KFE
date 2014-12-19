@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory 
+        android:title="@string/settings_group_general"
+        android:key="setting_group_general">
+
+		<EditTextPreference
+			android:key="setting_username"
+			android:title="@string/settings_playerName"
+			android:summary="@string/settings_playerName_tip"
+			android:defaultValue="Player"
+		/>
+
+	</PreferenceCategory>
+
+    <PreferenceCategory 
+        android:title="@string/settings_group_room"
+        android:key="setting_group_gameplay">
+
+        <ListPreference
+	        android:key="setting_room_maxPlayers"
+	        android:title="@string/settings_room_maxPlayers"
+	        android:dialogTitle="@string/settings_room_maxPlayers"
+	        android:entries="@array/settings_room_maxPlayers_entries"
+	        android:entryValues="@array/settings_room_maxPlayers_values"
+	        android:defaultValue="4"
+		/>
+
+	</PreferenceCategory>
+
+	<!--
+	<PreferenceCategory 
+		android:title="@string/settings_group_rules"
+		android:key="setting_group_rules">
+
+		<CheckBoxPreference
+			android:key="pref_sync"
+			android:title="@string/pref_sync"
+			android:summary="@string/pref_sync_summ"
+			android:defaultValue="true"
+		/>
+	</PreferenceCategory>
+
+	
+	<ListPreference
+		android:dependency="pref_sync"
+		android:key="pref_syncConnectionType"
+		android:title="@string/pref_syncConnectionType"
+		android:dialogTitle="@string/pref_syncConnectionType"
+		android:entries="@array/pref_syncConnectionTypes_entries"
+		android:entryValues="@array/pref_syncConnectionTypes_values"
+		android:defaultValue="@string/pref_syncConnectionTypes_default"
+	/>
+	-->
+
+</PreferenceScreen>

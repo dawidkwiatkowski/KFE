@@ -1,8 +1,8 @@
 package com.app.kfe.utils;
 
 import android.util.Log;
-import app.main.MultiplayerMakao;
-import app.main.R;
+import com.app.kfe.R;
+import com.app.kfe.main.KFE;
 
 
 /**
@@ -15,7 +15,7 @@ public class Logger {
 	private static final boolean LOG_ENABLED = true;
 
 	private static String getCommonTag() {
-		return MultiplayerMakao.getContext().getResources().getString(R.string.app_name);
+		return KFE.getContext().getResources().getString(R.string.app_name);
 	}
 
 	public static void debug(String message) {
