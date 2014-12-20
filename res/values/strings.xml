@@ -92,6 +92,7 @@
     <string name="settings_playerName_tip">Nazwa, która będzie widoczna w pokoju rozgrywki</string>
     <string name="settings_group_room">Tworzenie pokoju</string>
     <string name="settings_room_maxPlayers">Maksymalna ilość graczy</string>
+    <string name="start_game">Start game</string>
 
     <string-array name="settings_room_maxPlayers_entries">
         <item>2</item>

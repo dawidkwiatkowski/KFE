@@ -25,10 +25,6 @@ import android.content.Context;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 
-/**
- * Class responsible for listening for servers broadcasts.
- * @author Damian Kaczybura
- */
 public class ServerBroadcastListener implements Runnable {
 
 	private static final int READ_TIMEOUT = 500;

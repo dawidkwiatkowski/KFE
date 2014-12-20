@@ -29,14 +29,6 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 
-/**
- * Adam Szeremeta
- * 
- * 12-10-2013
- * 
- * Klasa zarządzająca tworzeniem serwera, rozgłaszaniem i podłączeniem. 
- * Dodatkowo jest tu realizowana wymiana wszystkich komunikatów
- */
 public class ServerManager {
 
 	private static final int DISCONNECT_BOOT = 3;

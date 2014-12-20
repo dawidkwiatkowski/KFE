@@ -80,6 +80,7 @@
                 android:label="@string/title_stat_activity">
         </activity>
         <activity android:name=".activities.RoomSelectionActivity"/>
+        <activity android:name=".activities.RoomActivity"/>
         <!-- Used for transferring files  after a successful connection -->
         <service
                 android:name="com.app.kfe.wifi.FileTransferService"

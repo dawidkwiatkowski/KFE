@@ -1,6 +1,7 @@
 package com.app.kfe.controler;
 
 import com.app.kfe.controler.communication.ServerManager;
+import com.app.kfe.model.messages.GameMessage;
 import com.app.kfe.model.messages.Message;
 import com.app.kfe.model.messages.MessageType;
 import com.app.kfe.utils.Logger;
@@ -32,6 +33,9 @@ public class MessagesManager {
 			type = MessageType.valueOf(message.getString("type"));
 			Logger.debug("MessagesManager", "Handling message (" + type + "): " + message);
 			switch(type){
+				case GAME:
+					handleMessage(new GameMessage(message));
+					break;
 				default:
 					break;
 			}
@@ -48,4 +52,11 @@ public class MessagesManager {
 		}
 	}
 
+	public void handleMessage(GameMessage message) {
+		switch(message.getGameMessageType()) {
+			case GAME_START:
+				RoomManager.getInstance().onGameStartMessageReceived();
+				break;
+		}
+	}
 }

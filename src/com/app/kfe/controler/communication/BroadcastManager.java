@@ -13,11 +13,6 @@ import com.app.kfe.model.Server;
 import com.app.kfe.model.ServerBasicInfo;
 import com.app.kfe.utils.Logger;
 
-/**
- * Klasa wykorzystywana do rozglaszania w sieci informacji o stworzonym serwerze oraz do odnajdywania rozgloszen w sieci.
- * 
- * Adam Szeremeta
- */
 public class BroadcastManager {
 
 	private static final int BROADCAST_PORT = 0xBAB8;

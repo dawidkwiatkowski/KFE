@@ -21,6 +21,7 @@ public class RoomManager {
 	private static RoomManager singleton;
 	private Room _roomInstance;
 	private Player _player;
+	private RoomMessagesListener mRoomMessagesListener;
 
 	public static RoomManager getInstance() {
 		if(singleton == null) {
@@ -34,6 +35,10 @@ public class RoomManager {
 
 	private RoomManager() {
 		_roomInstance = null;
+	}
+
+	public void setRoomMessagesListener(RoomMessagesListener listener) {
+		mRoomMessagesListener = listener;
 	}
 
 	public boolean allowPlayerJoin() {
@@ -136,4 +141,13 @@ public class RoomManager {
 		room.setMaxPlayers(Integer.parseInt(SettingsManager.getInstance().getSettingValue("setting_room_maxPlayers")));
 	}
 
+	public void onGameStartMessageReceived() {
+		if(mRoomMessagesListener != null) {
+			mRoomMessagesListener.onGameStartMessageReceived();
+		}
+	}
+
+	public interface RoomMessagesListener {
+		public void onGameStartMessageReceived();
+	}
 }

@@ -38,7 +38,6 @@ public class RoomSelectionActivity extends Activity implements RoomSelectionFrag
 
     @Override
     public void onRoomHost() {
-        Toast.makeText(KFE.getContext(), "Tworzenie pokoju...", Toast.LENGTH_LONG).show();
         Logger.debug("StartupActivity", "[hostRoom] Stoping to listen for server broadcast");
         BroadcastManager.getInstance().stopListeningServerBroadcast();
         ServerManager.getInstance().startServer("test", this);
@@ -78,9 +77,7 @@ public class RoomSelectionActivity extends Activity implements RoomSelectionFrag
 
     @Override
     public void onConnectionEstablished() {
-        mRoomSelectionFragment.onServerInfoUpdated();
-        Intent gameActivityIntent = new Intent(KFE.getContext(), Tablica.class);
-        startActivity(gameActivityIntent);
+        startActivity(new Intent(this, RoomActivity.class));
     }
 
     @Override

@@ -31,6 +31,7 @@ import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import android.widget.Toast;
 
 import com.app.kfe.R;
+import com.app.kfe.controler.GameManager;
 import com.app.kfe.wifi.DeviceDetailFragment;
 import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
 import com.app.kfe.wifi.DeviceListFragment;
@@ -152,7 +153,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		
 		saveDialog = new AlertDialog.Builder(this);
 		saveDialog.setTitle("Zapis obraznka");
-		saveDialog.setMessage("Czy zapisaæ obrazek do galerii?");
+		saveDialog.setMessage("Czy zapisaï¿½ obrazek do galerii?");
 		saveDialog.setPositiveButton("Tak", new DialogInterface.OnClickListener() {					
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -172,7 +173,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		
 		newImageDialog = new AlertDialog.Builder(this);
 		newImageDialog.setTitle("Czyszczenie tablicy");
-		newImageDialog.setMessage("Czy czy wyczyœciæ tablicê?");
+		newImageDialog.setMessage("Czy czy wyczyï¿½ciï¿½ tablicï¿½?");
 		newImageDialog.setPositiveButton("Tak", new DialogInterface.OnClickListener() {					
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -323,7 +324,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 			saveToast.show();
 		}
 		else{
-		Toast unsavedToast = Toast.makeText(getApplicationContext(), "Wyst¹pi³ problem podczas zapisu", Toast.LENGTH_SHORT);
+		Toast unsavedToast = Toast.makeText(getApplicationContext(), "Wystï¿½piï¿½ problem podczas zapisu", Toast.LENGTH_SHORT);
 		unsavedToast.show();
 		}
 		
