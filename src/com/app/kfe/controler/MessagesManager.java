@@ -1,7 +1,6 @@
 package com.app.kfe.controler;
 
 import com.app.kfe.controler.communication.ServerManager;
-import com.app.kfe.model.messages.LobbyMessage;
 import com.app.kfe.model.messages.Message;
 import com.app.kfe.model.messages.MessageType;
 import com.app.kfe.utils.Logger;

@@ -1,11 +1,9 @@
 package com.app.kfe.activities;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.widget.Toast;
 import com.app.kfe.R;
-import com.app.kfe.adapters.ServersListAdapter;
 import com.app.kfe.controler.communication.BroadcastManager;
 import com.app.kfe.controler.communication.ServerManager;
 import com.app.kfe.fragments.RoomSelectionFragment;
@@ -22,12 +20,12 @@ public class RoomSelectionActivity extends Activity implements RoomSelectionFrag
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.room_selection);
-        mRoomSelectionFragment = (RoomSelectionFragment)(getFragmentManager().findFragmentById(R.id.fragment_room_selection));
+        mRoomSelectionFragment = (RoomSelectionFragment) (getFragmentManager().findFragmentById(R.id.fragment_room_selection));
         mRoomSelectionFragment.setRoomSelectionListener(this);
     }
 
     @Override
-    public void onNewRoomDiscovered(ServersListAdapter serverList, ServerBasicInfo server) {
+    public void onNewRoomDiscovered(ServerBasicInfo server) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -45,12 +43,12 @@ public class RoomSelectionActivity extends Activity implements RoomSelectionFrag
     }
 
     @Override
-    public void onRoomInfoUpdated(ServersListAdapter serverList) {
+    public void onRoomInfoUpdated() {
 
     }
 
     @Override
-    public void onRoomLost(ServersListAdapter serverList, ServerBasicInfo server) {
+    public void onRoomLost(ServerBasicInfo server) {
 
     }
 
@@ -60,13 +58,15 @@ public class RoomSelectionActivity extends Activity implements RoomSelectionFrag
     }
 
     @Override
-    public void onRoomSearchStarted(ServersListAdapter serverList) {
+    public void onRoomSearchStarted() {
 
     }
 
     @Override
     public void onRoomSelected(ServerBasicInfo server) {
-
+        Logger.trace("StartupActivity","[onRoomSelected] Room selected: "+server.getName());
+        BroadcastManager.getInstance().stopListeningServerBroadcast();
+        ServerManager.getInstance().connectToServer(server, this);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class RoomSelectionActivity extends Activity implements RoomSelectionFrag
 
     @Override
     public void onConnectionEstablished() {
-
+        mRoomSelectionFragment.onServerInfoUpdated();
     }
 
     @Override

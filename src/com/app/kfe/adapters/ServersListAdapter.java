@@ -1,7 +1,5 @@
 package com.app.kfe.adapters;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,26 +8,31 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.app.kfe.R;
 import com.app.kfe.controler.communication.BroadcastManager;
-import com.app.kfe.model.Room;
 import com.app.kfe.model.ServerBasicInfo;
-import com.app.kfe.utils.Logger;
+
+import java.util.List;
 
 public class ServersListAdapter extends BaseAdapter {
 
 	private Context mContext;
-	private List<Room> mRoomsList;
+	private List<ServerBasicInfo> mServersList;
 
-	public ServersListAdapter(Context context, List<Room> roomsList) {
+	public ServersListAdapter(Context context, List<ServerBasicInfo> serversList) {
 		mContext = context;
-		mRoomsList = roomsList;
+		mServersList = serversList;
 	}
 
-	public List<Room> getRoomsList() {
-		return mRoomsList;
+	public List<ServerBasicInfo> getServersList() {
+		return mServersList;
 	}
 
-	public void setRoomsList(List<Room> roomsList) {
-		mRoomsList = roomsList;
+	public void setServersList(List<ServerBasicInfo> serversList) {
+		mServersList = serversList;
+		notifyDataSetChanged();
+	}
+
+	public void addServerInfo(ServerBasicInfo server) {
+		mServersList.add(server);
 		notifyDataSetChanged();
 	}
 
@@ -40,7 +43,7 @@ public class ServersListAdapter extends BaseAdapter {
 	 */
 	@Override
 	public int getCount() {
-		return mRoomsList.size();
+		return mServersList.size();
 	}
 
 	/**
@@ -51,8 +54,8 @@ public class ServersListAdapter extends BaseAdapter {
 	 * @return The data at the specified position.
 	 */
 	@Override
-	public Room getItem(int position) {
-		return mRoomsList.get(position);
+	public ServerBasicInfo getItem(int position) {
+		return BroadcastManager.getInstance().getAllServers().get(position);
 	}
 
 	/**
@@ -72,8 +75,8 @@ public class ServersListAdapter extends BaseAdapter {
 			LayoutInflater inflater = (LayoutInflater)(mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
 			convertView = inflater.inflate(R.layout.listitem_room, null, false);
 		}
-		Room room = getItem(position);
-		((TextView)(convertView)).setText(room.getName() + "[" + room.numberOfPlayers() + "]");
+		ServerBasicInfo room = getItem(position);
+		((TextView) (convertView)).setText(room.getName() + " [" + room.getPlayersCount() + "]");
 		return convertView;
 	}
 }
