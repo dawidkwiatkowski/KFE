@@ -109,7 +109,11 @@ public class RoomManager {
 	public void joinPlayer(Server server, Player player) {
 		if(ServerManager.getInstance().isConnectedToServer(server) && _roomInstance != null) {
 			Logger.debug("RoomManager", player.getLogin() + " has joined the room!");
-			_roomInstance.addPlayer(player);
+			if(_roomInstance.addPlayer(player)) {
+				if(mRoomMessagesListener != null) {
+					mRoomMessagesListener.onPlayerJoinedRoom(player);
+				}
+			}
 			if(!player.equals(_player)) {
 				Message message = new SystemMessage(KFE.getContext().getString(R.string.room_player_joined_message, player.getLogin()));
 				MessagesManager.getInstance().sendMessage(message);
@@ -148,6 +152,7 @@ public class RoomManager {
 	}
 
 	public interface RoomMessagesListener {
+		public void onPlayerJoinedRoom(Player player);
 		public void onGameStartMessageReceived();
 	}
 }

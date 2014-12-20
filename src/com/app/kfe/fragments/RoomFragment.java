@@ -7,20 +7,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 import com.app.kfe.R;
+import com.app.kfe.adapters.PlayersListAdapter;
 import com.app.kfe.controler.GameManager;
 import com.app.kfe.controler.RoomManager;
 import com.app.kfe.controler.communication.ServerManager;
 import com.app.kfe.main.KFE;
+import com.app.kfe.model.Player;
 import com.app.kfe.rysowanie.Tablica;
 
 /**
  * Created by tobikster on 20.12.14.
  */
 public class RoomFragment extends Fragment implements RoomManager.RoomMessagesListener {
+    PlayersListAdapter mPlayersListAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_room, container, false);
+        ListView playersList = (ListView)(view.findViewById(R.id.players_list));
+        mPlayersListAdapter = new PlayersListAdapter(KFE.getContext());
+        playersList.setAdapter(mPlayersListAdapter);
         Button startGameButton = (Button)(view.findViewById(R.id.start_game_button));
         if(ServerManager.getInstance().isServerHost()) {
             startGameButton.setOnClickListener(new View.OnClickListener() {
@@ -37,6 +45,11 @@ public class RoomFragment extends Fragment implements RoomManager.RoomMessagesLi
             RoomManager.getInstance().setRoomMessagesListener(this);
         }
         return view;
+    }
+
+    @Override
+    public void onPlayerJoinedRoom(Player player) {
+        mPlayersListAdapter.notifyDataSetChanged();
     }
 
     @Override
