@@ -9,8 +9,9 @@
 	<com.app.kfe.rysowanie.PaintView
 	    android:id="@+id/drawing"
 	    android:layout_width="match_parent"
-	    android:layout_height="match_parent" 
-	    android:layout_marginRight="65dp"/>
+	    android:layout_height="match_parent"
+	    android:layout_above="@+id/RelativeLayout"
+	    android:layout_marginRight="65dp" />
     
     <SlidingDrawer
         android:id="@+id/toolsPanel"
@@ -194,6 +195,35 @@
             </GridLayout>            
             
         </LinearLayout>
-    </SlidingDrawer>    
+    </SlidingDrawer>
+    
+    <RelativeLayout
+        android:id="@+id/answerRelativeLayout"
+	    android:layout_width="fill_parent"
+	    android:layout_height="30dp"
+	    android:layout_alignParentBottom="true"
+	    android:background="@color/blackColor">
+	    
+	    <Button 
+		    android:id="@+id/confirmAnswer" 
+		   	android:background="@drawable/button"
+		   	android:layout_width="wrap_content"
+	        android:layout_height="30dp"
+	        android:layout_alignParentRight="true"
+		   	android:text="@string/sendAnswer"/>
+
+	    <EditText
+	        android:id="@+id/answer"
+	        android:layout_width="fill_parent"
+	        android:layout_height="30dp"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_toLeftOf="@+id/confirmAnswer"
+	        android:ems="10"
+	        android:hint="@string/answerText"
+	        android:textSize="15dp" />
+        
+    </RelativeLayout>
 
 </RelativeLayout>
