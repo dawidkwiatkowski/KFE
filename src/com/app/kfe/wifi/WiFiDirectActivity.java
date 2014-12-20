@@ -38,7 +38,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.app.kfe.R;
-import com.app.kfe.rysowanie.Tablica;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
 
 /**

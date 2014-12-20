@@ -2,7 +2,6 @@
 
 package com.app.kfe.wifi;
 
-import android.R.bool;
 import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -20,7 +19,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 
 import com.app.kfe.R;
 import com.app.kfe.rysowanie.PaintView;

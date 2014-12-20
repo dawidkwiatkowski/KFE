@@ -6,22 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.app.kfe.R;
-import com.app.kfe.R.id;
-import com.app.kfe.R.layout;
-import com.app.kfe.R.menu;
 
 import sqlite.helper.DatabaseHelper;
 import sqlite.model.Gracz;
 import sqlite.model.Stat_gry;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 

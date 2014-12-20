@@ -9,7 +9,6 @@ import android.widget.ListView;
 import com.app.kfe.R;
 import com.app.kfe.adapters.ServersListAdapter;
 import com.app.kfe.controler.communication.BroadcastManager;
-import com.app.kfe.controler.communication.ServerManager;
 import com.app.kfe.main.KFE;
 import com.app.kfe.model.ServerBasicInfo;
 import com.app.kfe.utils.Logger;

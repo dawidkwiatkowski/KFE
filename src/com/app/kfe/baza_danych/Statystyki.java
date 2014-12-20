@@ -3,7 +3,6 @@ package com.app.kfe.baza_danych;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -11,18 +10,13 @@ import java.util.List;
 import java.util.Locale;
 
 import com.app.kfe.R;
-import com.app.kfe.R.id;
-import com.app.kfe.R.layout;
-import com.app.kfe.R.menu;
 
 import sqlite.helper.DatabaseHelper;
 import sqlite.model.Gracz;
 import sqlite.model.Rozgrywka;
-import sqlite.model.Stat_gry;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -87,7 +81,7 @@ public class Statystyki extends Activity  {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}  
-	                	return (data1.compareTo(data2))*-1;// aby sortowa³o od najstarszej do najmlodszej rozgywki
+	                	return (data1.compareTo(data2))*-1;// aby sortowaï¿½o od najstarszej do najmlodszej rozgywki
 	                }
 	               } );
 	           }

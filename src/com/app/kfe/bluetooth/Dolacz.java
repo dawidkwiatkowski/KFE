@@ -1,10 +1,6 @@
 package com.app.kfe.bluetooth;
  
 import com.app.kfe.R;
-import com.app.kfe.R.id;
-import com.app.kfe.R.layout;
-import com.app.kfe.R.menu;
-import com.app.kfe.R.string;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -20,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;

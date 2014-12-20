@@ -2,14 +2,10 @@ package com.app.kfe.rysowanie;
 
 import com.app.kfe.R;
 import com.app.kfe.wifi.DeviceDetailFragment;
-import com.app.kfe.wifi.FileTransferService;
 import com.app.kfe.wifi.WiFiDirectActivity;
-import com.app.kfe.wifi.WiFiDirectBroadcastReceiver;
 import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

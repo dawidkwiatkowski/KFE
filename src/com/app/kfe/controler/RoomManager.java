@@ -48,7 +48,7 @@ public class RoomManager {
 		Logger.debug("RoomManager", "Booting player " + player.getLogin() + " from room");
 		if(ServerManager.getInstance().isServerHost()) {
 			ServerMessage message = new ServerMessage(ServerMessageType.PLAYER_BOOT, Message.TARGET_ALL, _player);
-			JSONObject playerInfo = new JSONObject();;
+			JSONObject playerInfo = new JSONObject();
 			try {
 				playerInfo.put("mac", player.getMACAddress());
 				message.setContent(playerInfo);

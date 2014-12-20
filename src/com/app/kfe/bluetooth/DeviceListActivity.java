@@ -3,9 +3,6 @@ package com.app.kfe.bluetooth;
 import java.util.Set;
 
 import com.app.kfe.R;
-import com.app.kfe.R.id;
-import com.app.kfe.R.layout;
-import com.app.kfe.R.string;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

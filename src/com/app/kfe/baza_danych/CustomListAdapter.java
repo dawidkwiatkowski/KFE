@@ -3,15 +3,12 @@ package com.app.kfe.baza_danych;
 import java.util.List;
 
 import com.app.kfe.R;
-import com.app.kfe.R.id;
-import com.app.kfe.R.layout;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 public class CustomListAdapter extends ArrayAdapter<String>{
 private final Activity context;

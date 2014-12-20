@@ -4,15 +4,9 @@ package com.app.kfe.baza_danych;
 import java.util.List;
 
 import com.app.kfe.R;
-import com.app.kfe.R.id;
-import com.app.kfe.R.layout;
-import com.app.kfe.R.menu;
-import com.app.kfe.R.raw;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,7 +19,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import sqlite.helper.DatabaseHelper;
 import sqlite.model.Gracz;
-import android.util.Log;
 
 public class Ustawienia extends Activity {
 	
@@ -130,7 +123,7 @@ public class Ustawienia extends Activity {
 					for (Gracz gracz : db.getAllGracze()) {
 						if(nazwa_gracza.equals(gracz.getName())){
 							
-							 Toast.makeText(getBaseContext(),"Gracz "+ nazwa_gracza +" " +"istnieje ju¿ w bazie ", Toast.LENGTH_LONG).show();
+							 Toast.makeText(getBaseContext(),"Gracz "+ nazwa_gracza +" " +"istnieje juï¿½ w bazie ", Toast.LENGTH_LONG).show();
 							 i++;
 							 break;
 						}
@@ -138,7 +131,7 @@ public class Ustawienia extends Activity {
 					if(i==0){
 					Gracz player = new Gracz(nazwa_gracza);
 					db.createGracz(player);
-					 Toast.makeText(getBaseContext(),"Gracz zosta³ zapisany", Toast.LENGTH_LONG).show();}
+					 Toast.makeText(getBaseContext(),"Gracz zostaï¿½ zapisany", Toast.LENGTH_LONG).show();}
 											
 				}
 				db.closeDB();

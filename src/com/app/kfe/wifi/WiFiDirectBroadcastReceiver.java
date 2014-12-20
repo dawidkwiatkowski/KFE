@@ -39,7 +39,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     private Channel channel;
     private Activity activity;
     DeviceListFragment fragment= (DeviceListFragment) WiFiDirectActivity.activity.getFragmentManager()
-            .findFragmentById(R.id.frag_list);;
+            .findFragmentById(R.id.frag_list);
     /**
      * @param manager WifiP2pManager system service
      * @param channel Wifi p2p channel

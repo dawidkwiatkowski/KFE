@@ -1,6 +1,7 @@
 package com.app.kfe.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 import com.app.kfe.R;
@@ -9,6 +10,7 @@ import com.app.kfe.controler.communication.ServerManager;
 import com.app.kfe.fragments.RoomSelectionFragment;
 import com.app.kfe.main.KFE;
 import com.app.kfe.model.ServerBasicInfo;
+import com.app.kfe.rysowanie.Tablica;
 import com.app.kfe.utils.Logger;
 
 /**
@@ -77,6 +79,8 @@ public class RoomSelectionActivity extends Activity implements RoomSelectionFrag
     @Override
     public void onConnectionEstablished() {
         mRoomSelectionFragment.onServerInfoUpdated();
+        Intent gameActivityIntent = new Intent(KFE.getContext(), Tablica.class);
+        startActivity(gameActivityIntent);
     }
 
     @Override
