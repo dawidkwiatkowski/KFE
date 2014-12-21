@@ -43,10 +43,7 @@ public class RoomManager {
 
 	public boolean allowPlayerJoin() {
 		Logger.trace("RoomManager", "[allowPlayerJoin] Room: " + (_roomInstance == null ? "null" : _roomInstance.toString()));
-		if(_roomInstance != null) {
-			return _roomInstance.getMaxPlayers()<=0 || _roomInstance.numberOfPlayers() < _roomInstance.getMaxPlayers();
-		}
-		return false;
+		return _roomInstance != null && (_roomInstance.getMaxPlayers() <= 0 || _roomInstance.numberOfPlayers() < _roomInstance.getMaxPlayers());
 	}
 
 	public boolean bootPlayer(Player player) {

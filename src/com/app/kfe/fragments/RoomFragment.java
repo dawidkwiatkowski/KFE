@@ -42,14 +42,19 @@ public class RoomFragment extends Fragment implements RoomManager.RoomMessagesLi
         else {
             startGameButton.setEnabled(false);
             startGameButton.setText("Wait for game start");
-            RoomManager.getInstance().setRoomMessagesListener(this);
         }
+        RoomManager.getInstance().setRoomMessagesListener(this);
         return view;
     }
 
     @Override
     public void onPlayerJoinedRoom(Player player) {
-        mPlayersListAdapter.notifyDataSetChanged();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mPlayersListAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
