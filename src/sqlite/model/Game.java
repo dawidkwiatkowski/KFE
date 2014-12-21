@@ -27,7 +27,7 @@ public class Game {
     public Game(List<Player> players) {
         mPlayers = players;
         mState = State.PREPARING;
-        mActivePlayerIndex = -1;
+        mActivePlayerIndex = 0;
     }
 
     public Game(JSONObject gameObject) throws JSONException {
@@ -51,6 +51,14 @@ public class Game {
 
     public int getActivePlayerIndex() {
         return mActivePlayerIndex;
+    }
+
+    public void setActivePlayerIndex(int activePlayerIndex) {
+        mActivePlayerIndex = activePlayerIndex;
+    }
+
+    public Player getActivePlayer() {
+        return mPlayers.get(mActivePlayerIndex);
     }
 
     public JSONObject toJSON() throws JSONException {

@@ -2,6 +2,7 @@ package com.app.kfe.fragments;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,4 +67,7 @@ public class RoomFragment extends Fragment implements RoomManager.RoomMessagesLi
         startGameIntent.putExtra("game_state", gameObject.toString());
         startActivity(startGameIntent);
     }
+
+    @Override
+    public void onCanvasMessageReceived(Bitmap imageObject) {}
 }

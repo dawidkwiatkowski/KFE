@@ -1,6 +1,8 @@
 package com.app.kfe.rysowanie;
 
 import com.app.kfe.R;
+import com.app.kfe.controler.GameManager;
+import com.app.kfe.utils.Logger;
 import com.app.kfe.wifi.DeviceDetailFragment;
 import com.app.kfe.wifi.WiFiDirectActivity;
 import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
@@ -16,6 +18,7 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import org.json.JSONException;
 
 public class PaintView extends View {
 	
@@ -153,7 +156,15 @@ public class PaintView extends View {
 	                    .execute();
 	        }
 	}
-	
+
+	public void drawImage(Bitmap image) {
+		Bitmap workingBitmap = Bitmap.createBitmap(image);
+		workingBitmap = getResizedBitmap(workingBitmap,canvasHeight,canvasWidth);
+
+		Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+		drawCanvas.drawBitmap(mutableBitmap, 0, 0,null);
+		invalidate();
+	}
 	
 	@Override
 	protected void onDraw(Canvas canvas) {

@@ -58,6 +58,10 @@ public class MessagesManager {
 				JSONObject game = message.getContent();
 				GameManager.getInstance().onGameStartMessageReceived(game);
 				break;
+			case SEND_CANVAS:
+				JSONObject imageObject = message.getContent();
+				GameManager.getInstance().onCanvasMessageReceived(imageObject);
+				break;
 		}
 	}
 }

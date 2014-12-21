@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -19,6 +20,7 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -40,9 +42,11 @@ import com.app.kfe.wifi.DeviceListFragment;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
 import com.app.kfe.wifi.WiFiDirectActivity;
 import com.app.kfe.wifi.WiFiDirectBroadcastReceiver;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
-public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener,ChannelListener, DeviceActionListener {
+public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener,ChannelListener, DeviceActionListener, GameManager.GameMessagesListener {
 	
 	private PaintView paintView;
 	private Button yellowButton;
@@ -189,6 +193,23 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
 				dialog.cancel();
+			}
+		});
+
+		paintView.setDrawingCacheEnabled(true);
+
+		paintView.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if(event.getAction() == MotionEvent.ACTION_UP) {
+					try {
+						GameManager.getInstance().sendCanvas(paintView.getDrawingCache());
+					}
+					catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+				return false;
 			}
 		});
 	}
@@ -450,4 +471,12 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
       
     }
 
+	@Override
+	public void onGameStartMessageReceived(JSONObject gameObject) {}
+
+	@Override
+	public void onCanvasMessageReceived(Bitmap image) {
+
+		paintView.drawImage(image);
+	}
 }

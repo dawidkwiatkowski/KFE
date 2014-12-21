@@ -2,6 +2,7 @@ package com.app.kfe.controler;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 import com.app.kfe.controler.communication.ServerManager;
 import com.app.kfe.model.Player;
 import com.app.kfe.model.messages.GameMessage;
@@ -15,6 +16,8 @@ import java.io.ByteArrayOutputStream;
  * Created by tobikster on 20.12.14.
  */
 public class GameManager {
+    public static final String JSON_KEY_IMAGE = "image";
+
     private static GameManager singleton;
 
     private Game mGameInstance;
@@ -50,6 +53,30 @@ public class GameManager {
         }
     }
 
+    public void sendCanvas(Bitmap image) throws JSONException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        JSONObject imageObject = new JSONObject();
+        imageObject.put(JSON_KEY_IMAGE, Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT));
+
+        GameMessage message = new GameMessage(mGameInstance.getActivePlayer().getMACAddress(), GameMessage.Type.SEND_CANVAS, imageObject);
+        MessagesManager.getInstance().sendMessage(message);
+    }
+
+    public void onCanvasMessageReceived(JSONObject imageObject){
+        if(mGameMessagesListener != null) {
+            byte[] decodedString = new byte[0];
+            try {
+                decodedString = Base64.decode(imageObject.getString(JSON_KEY_IMAGE), Base64.DEFAULT);
+                Bitmap image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                mGameMessagesListener.onCanvasMessageReceived(image);
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void restoreGame(JSONObject game) {
         try {
             mGameInstance = new Game(game);
@@ -70,5 +97,6 @@ public class GameManager {
 
     public interface GameMessagesListener {
         public void onGameStartMessageReceived(JSONObject gameObject);
+        public void onCanvasMessageReceived(Bitmap image);
     }
 }

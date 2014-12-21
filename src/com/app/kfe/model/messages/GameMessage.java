@@ -42,6 +42,7 @@ public class GameMessage extends Message {
     }
 
     public enum Type {
-        GAME_START
+        GAME_START,
+        SEND_CANVAS,
     }
 }
