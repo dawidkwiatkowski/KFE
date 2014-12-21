@@ -55,7 +55,8 @@ public class MessagesManager {
 	public void handleMessage(GameMessage message) {
 		switch(message.getGameMessageType()) {
 			case GAME_START:
-				RoomManager.getInstance().onGameStartMessageReceived();
+				JSONObject game = message.getContent();
+				GameManager.getInstance().onGameStartMessageReceived(game);
 				break;
 		}
 	}

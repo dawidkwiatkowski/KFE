@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 
 import com.app.kfe.R;
 import com.app.kfe.controler.GameManager;
+import com.app.kfe.utils.Logger;
 import com.app.kfe.wifi.DeviceDetailFragment;
 import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
 import com.app.kfe.wifi.DeviceListFragment;
@@ -91,7 +93,6 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		        }
 		       
 		}
-		
 		
 		SlidingDrawer toolsPanel = (SlidingDrawer) findViewById(R.id.toolsPanel);
 		final ImageButton handle = (ImageButton) findViewById(R.id.handle);				

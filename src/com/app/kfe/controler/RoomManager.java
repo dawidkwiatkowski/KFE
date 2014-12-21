@@ -142,14 +142,7 @@ public class RoomManager {
 		room.setMaxPlayers(Integer.parseInt(SettingsManager.getInstance().getSettingValue("setting_room_maxPlayers")));
 	}
 
-	public void onGameStartMessageReceived() {
-		if(mRoomMessagesListener != null) {
-			mRoomMessagesListener.onGameStartMessageReceived();
-		}
-	}
-
 	public interface RoomMessagesListener {
 		public void onPlayerJoinedRoom(Player player);
-		public void onGameStartMessageReceived();
 	}
 }

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 import com.app.kfe.R;
 import com.app.kfe.adapters.PlayersListAdapter;
 import com.app.kfe.controler.GameManager;
@@ -17,11 +16,14 @@ import com.app.kfe.controler.communication.ServerManager;
 import com.app.kfe.main.KFE;
 import com.app.kfe.model.Player;
 import com.app.kfe.rysowanie.Tablica;
+import org.json.JSONObject;
 
 /**
  * Created by tobikster on 20.12.14.
  */
-public class RoomFragment extends Fragment implements RoomManager.RoomMessagesListener {
+public class RoomFragment extends Fragment implements RoomManager.RoomMessagesListener, GameManager.GameMessagesListener {
+
+
     PlayersListAdapter mPlayersListAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,7 +36,7 @@ public class RoomFragment extends Fragment implements RoomManager.RoomMessagesLi
             startGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(KFE.getContext(), Tablica.class));
+//                    startActivity(new Intent(KFE.getContext(), Tablica.class));
                     GameManager.getInstance().startGame();
                 }
             });
@@ -44,6 +46,7 @@ public class RoomFragment extends Fragment implements RoomManager.RoomMessagesLi
             startGameButton.setText("Wait for game start");
         }
         RoomManager.getInstance().setRoomMessagesListener(this);
+        GameManager.getInstance().setGameMessagesListener(this);
         return view;
     }
 
@@ -58,7 +61,9 @@ public class RoomFragment extends Fragment implements RoomManager.RoomMessagesLi
     }
 
     @Override
-    public void onGameStartMessageReceived() {
-        startActivity(new Intent(KFE.getContext(), Tablica.class));
+    public void onGameStartMessageReceived(JSONObject gameObject) {
+        Intent startGameIntent = new Intent(KFE.getContext(), Tablica.class);
+        startGameIntent.putExtra("game_state", gameObject.toString());
+        startActivity(startGameIntent);
     }
 }
