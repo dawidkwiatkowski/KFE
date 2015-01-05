@@ -2,10 +2,12 @@ package com.app.kfe;
 import com.app.kfe.baza_danych.Statystyki;
 import com.app.kfe.baza_danych.Ustawienia;
 import com.app.kfe.rysowanie.Tablica;
+
 import sqlite.helper.DatabaseHelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,12 +15,15 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Toast;
 public class MainActivity extends Activity  {
 private Button draw2_btn;
 //private Button dolacz_btn;
@@ -30,6 +35,7 @@ public static final String PREFS_NAME = "MyPrefsFile";
 DatabaseHelper db;
 boolean silent;
 SharedPreferences settings;
+private boolean touchStarted = false;
 @Override
 protected void onCreate(Bundle savedInstanceState) {
 super.onCreate(savedInstanceState);
@@ -99,59 +105,162 @@ draw2_btn.setLongClickable(isRestricted());
 // }
 //
 // });
-setting_btn.setOnClickListener(new OnClickListener() {
-@Override
-public void onClick(View v) {
-// TODO Auto-generated method stub
-v.startAnimation(animAlpha);
-silent = settings.getBoolean("silentMode", true);
-if((mpButtonClick != null) && silent){
-mpButtonClick.start();
-}
-Handler handler = new Handler();
-handler.postDelayed(new Runnable(){
-public void run() {
-Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
-startActivity(ustawienia);
-}
-}, 600);
-}
+//setting_btn.setOnClickListener(new OnClickListener() {
+//@Override
+//public void onClick(View v) {
+//// TODO Auto-generated method stub
+//v.startAnimation(animAlpha);
+//silent = settings.getBoolean("silentMode", true);
+//if((mpButtonClick != null) && silent){
+//mpButtonClick.start();
+//}
+//Handler handler = new Handler();
+//handler.postDelayed(new Runnable(){
+//public void run() {
+//Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
+//startActivity(ustawienia);
+//}
+//}, 600);
+//}
+//});
+//score_btn.setOnClickListener(new OnClickListener() {
+//@Override
+//public void onClick(View v) {
+//// TODO Auto-generated method stub
+//v.startAnimation(animAlpha);
+//silent = settings.getBoolean("silentMode", true);
+//if((mpButtonClick != null) && silent){
+//mpButtonClick.start();
+//}
+//Handler handler = new Handler();
+//handler.postDelayed(new Runnable(){
+//public void run() {
+//Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
+//startActivity(tablica);
+//}
+//}, 600);
+//}
+//});
+//exit_btn.setOnClickListener(new OnClickListener() {
+//@Override
+//public void onClick(View v) {
+//// TODO Auto-generated method stub
+//v.startAnimation(animAlpha);
+//silent = settings.getBoolean("silentMode", true);
+//if((mpButtonClick != null) && silent){
+//mpButtonClick.start();
+//}
+//Handler handler = new Handler();
+//handler.postDelayed(new Runnable(){
+//public void run() {
+//finish();
+//System.exit(0);
+//}
+//}, 600);
+//}
+//});
+
+setting_btn.setOnTouchListener(new OnTouchListener() {
+
+   
+	private Rect rect;    // Variable rect to hold the bounds of the view
+
+	public boolean onTouch(View v, MotionEvent event) {
+	    if(event.getAction() == MotionEvent.ACTION_DOWN){
+	        // Construct a rect of the view's bounds
+	        rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+	        setting_btn.setBackgroundColor(0);
+        	setting_btn.setText("Ustawienia");
+        	touchStarted = true;
+
+	    }
+	    if (event.getAction() == MotionEvent.ACTION_UP ) {
+	    	setting_btn.setBackgroundResource(R.drawable.tools);
+        	setting_btn.setText("");
+        	if (touchStarted) {
+        		
+            	Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
+            	startActivity(ustawienia);
+                return true;
+            }}
+	    if(event.getAction() == MotionEvent.ACTION_MOVE){
+	        if(!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())){
+	        	setting_btn.setBackgroundResource(R.drawable.tools);
+            	setting_btn.setText("");
+            	touchStarted = false;
+            	 return true;
+	        }
+	    }
+	    return false;
+	}
 });
-score_btn.setOnClickListener(new OnClickListener() {
-@Override
-public void onClick(View v) {
-// TODO Auto-generated method stub
-v.startAnimation(animAlpha);
-silent = settings.getBoolean("silentMode", true);
-if((mpButtonClick != null) && silent){
-mpButtonClick.start();
-}
-Handler handler = new Handler();
-handler.postDelayed(new Runnable(){
-public void run() {
-Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
-startActivity(tablica);
-}
-}, 600);
-}
+exit_btn.setOnTouchListener(new OnTouchListener() {
+
+	   
+	private Rect rect;    // Variable rect to hold the bounds of the view
+
+	public boolean onTouch(View v, MotionEvent event) {
+	    if(event.getAction() == MotionEvent.ACTION_DOWN){
+	        // Construct a rect of the view's bounds
+	        rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+	        exit_btn.setBackgroundColor(0);
+	        exit_btn.setText("Wyjœcie");
+        	touchStarted = true;
+
+	    }
+	    if (event.getAction() == MotionEvent.ACTION_UP ) {
+	    	exit_btn.setBackgroundResource(R.drawable.exit);
+	    	exit_btn.setText("");
+        	if (touchStarted) {
+        		
+        		finish();
+        		System.exit(0);
+                return true;
+            }}
+	    if(event.getAction() == MotionEvent.ACTION_MOVE){
+	        if(!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())){
+	        	exit_btn.setBackgroundResource(R.drawable.exit);
+	        	exit_btn.setText("");
+            	touchStarted = false;
+            	 return true;
+	        }
+	    }
+	    return false;
+	}
 });
-exit_btn.setOnClickListener(new OnClickListener() {
-@Override
-public void onClick(View v) {
-// TODO Auto-generated method stub
-v.startAnimation(animAlpha);
-silent = settings.getBoolean("silentMode", true);
-if((mpButtonClick != null) && silent){
-mpButtonClick.start();
-}
-Handler handler = new Handler();
-handler.postDelayed(new Runnable(){
-public void run() {
-finish();
-System.exit(0);
-}
-}, 600);
-}
+score_btn.setOnTouchListener(new OnTouchListener() {
+
+	   
+	private Rect rect;    // Variable rect to hold the bounds of the view
+
+	public boolean onTouch(View v, MotionEvent event) {
+	    if(event.getAction() == MotionEvent.ACTION_DOWN){
+	        // Construct a rect of the view's bounds
+	        rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+	        score_btn.setBackgroundColor(0);
+	        score_btn.setText("Statystyki");
+        	touchStarted = true;
+
+	    }
+	    if (event.getAction() == MotionEvent.ACTION_UP ) {
+	    	score_btn.setBackgroundResource(R.drawable.stats);
+	    	score_btn.setText("");
+        	if (touchStarted) {
+        		
+        		Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
+        		startActivity(tablica);
+                return true;
+            }}
+	    if(event.getAction() == MotionEvent.ACTION_MOVE){
+	        if(!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())){
+	        	score_btn.setBackgroundResource(R.drawable.stats);
+	        	score_btn.setText("");
+            	touchStarted = false;
+            	 return true;
+	        }
+	    }
+	    return false;
+	}
 });
 }
 @Override
@@ -188,4 +297,5 @@ catch(Exception e)
 return true;
 }
 }
+
 } 
