@@ -124,6 +124,7 @@ public class ServerManager {
 				switch(message.getInt("target")) {
 					case Message.TARGET_ALL:
 						Logger.debug("ServerManager", "[sendMessage] Sending message to all hosts...");
+						Logger.debug("ServerManager", "[sendMessage] " + message.toString());
 						synchronized (_connectedHosts) {
 							for(NIOSocket clientSocket : _connectedHosts.keySet()) {
 								writeMessageToSocket(clientSocket, message.toString());
