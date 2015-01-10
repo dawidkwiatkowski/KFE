@@ -25,7 +25,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SlidingDrawer;
@@ -72,6 +74,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	public static Tablica tablica = null;
 	public static Channel channel2;
     public static BroadcastReceiver receiver2 = null;
+    private RelativeLayout answerPanel;
+    private Button confirmAnwer;
+    private EditText answer;
 	
 	public static Activity activity;
 	
@@ -85,17 +90,27 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		activity = this;
 		tablica = this;
 		
+		answerPanel = (RelativeLayout) findViewById(R.id.answerRelativeLayout);
+		confirmAnwer = (Button) findViewById(R.id.confirmAnswer);
+		answer = (EditText) findViewById(R.id.answer);
+		
 		if(getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")){
 			isGame = getIntent().getExtras().getBoolean("isGame");		
 			WiFiDirectActivity.co_to="cos";
 			channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
 			receiver2 = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, channel2, this);
-		        registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
-		        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
-		        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-		                    .execute();
-		        }
+	        registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
+	        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+	        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+	                    .execute();
+	        }
+	        answerPanel.setVisibility(View.VISIBLE);
+	        confirmAnwer.setOnClickListener(this);
 		       
+		}
+		else
+		{
+			answerPanel.setVisibility(View.GONE);
 		}
 		
 		SlidingDrawer toolsPanel = (SlidingDrawer) findViewById(R.id.toolsPanel);
@@ -328,6 +343,13 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 				break;
 			case R.id.newImageTool:				
 				newImageDialog.show();
+				break;
+			case R.id.confirmAnswer:
+				String yourAnswer = answer.getText().toString();
+				//tutaj obs³uga przycisku wyœlij odpowiedŸ
+				
+				//na koniec po wys³aniu odpowiedzi trzeba wyczyœciæ pole
+				answer.setText("");
 				break;
 		}		
 		paintView.setDrawPaint(drawPaint);
