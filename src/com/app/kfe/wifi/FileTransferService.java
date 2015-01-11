@@ -98,7 +98,8 @@ public class FileTransferService extends IntentService {
 
         }
         else if (intent.getAction().equals(ACTION_OPEN_TABLICA)) {
-        	String text = "tablica";
+        	String text = DeviceDetailFragment.localIP;
+        	String adres_ip;
             String host = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
             Socket socket = new Socket();
             int port = intent.getExtras().getInt(EXTRAS_GROUP_OWNER_PORT);

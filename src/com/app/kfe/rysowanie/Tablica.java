@@ -86,16 +86,24 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		answerPanel = (RelativeLayout) findViewById(R.id.answerRelativeLayout);
 		confirmAnwer = (Button) findViewById(R.id.confirmAnswer);
 		answer = (EditText) findViewById(R.id.answer);
-		
+		WiFiDirectActivity.co_to="cos";
+		channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
+		receiver2 = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, channel2, this);
+        registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
 		if(getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")){
 			isGame = getIntent().getExtras().getBoolean("isGame");		
-			WiFiDirectActivity.co_to="cos";
+			
 			channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
 			receiver2 = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, channel2, this);
 	        registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
 	        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
 	        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
 	                    .execute();
+	        }
+	        else
+	        {
+        		new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+	        		.execute();
 	        }
 	        answerPanel.setVisibility(View.VISIBLE);
 	        confirmAnwer.setOnClickListener(this);

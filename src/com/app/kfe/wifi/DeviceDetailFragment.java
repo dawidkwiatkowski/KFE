@@ -16,6 +16,7 @@
 
 package com.app.kfe.wifi;
 
+import android.R.string;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -63,14 +64,19 @@ import java.net.Socket;
  */
 public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener {
 
+	public static final String IP_SERVER = "192.168.49.1";
     protected static final int CHOOSE_FILE_RESULT_CODE = 20;
     public static View mContentView = null;
-    private WifiP2pDevice device;
+    public static  WifiP2pDevice device;
+    public static  WifiP2pDevice device2;
     public static WifiP2pInfo info;
     public static Intent serviceIntent;
     public ProgressDialog progressDialog = null;
     public static Bitmap bm = null;
     public static PaintView pv;
+    public static String localIP;
+    public static String client_mac_fixed;
+    public static String clientIP;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -125,12 +131,15 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     	//Intent intent = new Intent(getActivity(),Tablica.class);
                         //intent.setType("image/*");
                     	//intent.setClass(getActivity(), Tablica.class);
-                    	
+                    	localIP = Utils.getLocalIPAddress();
+                		// Trick to find the ip in the file /proc/net/arp
+                		//client_mac_fixed = new String(DeviceDetailFragment.device.deviceAddress).replace("99", "19");
+                		//clientIP = Utils.getIPFromMac(client_mac_fixed);
                     	serviceIntent = new Intent(getActivity(), FileTransferService.class);
                         serviceIntent.setAction(FileTransferService.ACTION_OPEN_TABLICA);
                         serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
-                        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
-                                info.groupOwnerAddress.getHostAddress());
+                        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, IP_SERVER);
+                        //        info.groupOwnerAddress.getHostAddress());
                         serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
                          
                         getActivity().startService(serviceIntent);
@@ -195,6 +204,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             ((TextView) mContentView.findViewById(R.id.status_text)).setText(getResources()
                     .getString(R.string.client_text));
         }
+//        else{
+//        	new ForClientServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
+//            .execute();
+//        }
 
         // hide the connect button
         mContentView.findViewById(R.id.btn_connect).setVisibility(View.GONE);
@@ -206,7 +219,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
      * @param device the device to be displayed
      */
     public void showDetails(WifiP2pDevice device) {
-        this.device = device;
+        DeviceDetailFragment.device = device;
+        DeviceDetailFragment.device2 = device;
         this.getView().setVisibility(View.VISIBLE);
         TextView view = (TextView) mContentView.findViewById(R.id.device_address);
         view.setText(device.deviceAddress);
@@ -232,16 +246,169 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         this.getView().setVisibility(View.GONE);
     }
     
-	public static void sendCanvasService(){
+	public static void sendCanvasService(boolean is_owner ){
+		
+		//DeviceDetailFragment.device = DeviceListFragment.getDevice();
+		
+	localIP = Utils.getLocalIPAddress();
+			
 		Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
         serviceIntent.setAction(FileTransferService.ACTION_SEND_CANVAS);
         serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
-        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
-        		DeviceDetailFragment.info.groupOwnerAddress.getHostAddress());
-        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
-         
+        //serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+        		//DeviceDetailFragment.info.groupOwnerAddress.getHostAddress());
+        //serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+        
+        if(localIP.equals(IP_SERVER)){
+        	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+        	}else{
+        	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, IP_SERVER);
+        	}
+        if(is_owner)
+        {
+        	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+        }
+        else
+        {
+        	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+        }
         Tablica.activity.startService(serviceIntent); 
 	}
+	
+	 public static class ForClientServerAsyncTask extends AsyncTask<Void, Void, String> {
+
+	        private Context context;
+	        private TextView statusText;
+
+	        /**
+	         * @param context
+	         * @param statusText
+	         */
+	        public ForClientServerAsyncTask(Context context, View statusText) {
+	            this.context = context;
+	            this.statusText = (TextView) statusText;
+	        }
+
+	        @Override
+	        protected String doInBackground(Void... params) {
+	            try {
+	                ServerSocket serverSocket = new ServerSocket(8989); // zmiana portu
+	                Log.d(WiFiDirectActivity.TAG, "Server: Socket opened");
+	                Socket client = serverSocket.accept();
+
+	                InputStream inputstream = client.getInputStream();
+	                InputStream inputStream2 = inputstream;
+	                String result="";
+	                if(WiFiDirectActivity.co_to.equals("tablica"))
+	                {
+		                	try                
+		                {
+		                	result = getStringFromInputStream(inputstream);
+		                }
+		                catch(Exception e){
+		                	//result = "canva";
+		                }
+		                	clientIP = result;  
+	                }
+	                
+	                //String result = "Przyjêto dane";                                
+//	                if(result.equalsIgnoreCase("tablica"))
+//	        		{
+//	        			result="open";
+//	        		}
+	                else
+	                {                 
+	                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
+		                
+		                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
+		                result = "canva";
+		                if( DeviceDetailFragment.bm != null)
+		                	result = "canva";	                           
+		             }
+	                //Log.e(WiFiDirectActivity.TAG, "Result = " + result);
+	                
+	                serverSocket.close();
+	                return result;
+	                
+	            } catch (IOException e) {
+	                Log.e(WiFiDirectActivity.TAG, e.getMessage());
+	                return null;
+	            }
+	        }
+
+	        /*
+	         * (non-Javadoc)
+	         * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+	         */
+	        @Override
+	        protected void onPostExecute(String result) {
+	            
+	        	if(result.equals("canva"))
+	        	{
+	        		if (!result.isEmpty()) {
+	        	
+		                statusText.setText("Otrzymany tekst - " + result);
+		
+		                DeviceDetailFragment.pv = ((PaintView) Tablica.tablica.findViewById(R.id.drawing));
+		                if(DeviceDetailFragment.bm == null)
+		                	statusText.setText("null");
+		          
+		                DeviceDetailFragment.pv.odbieraj(bm);          
+	        		}
+	                
+	            }
+	        	else
+	        	{
+	        		open_tablica();
+	        	}
+	        }
+
+	        /*
+	         * (non-Javadoc)
+	         * @see android.os.AsyncTask#onPreExecute()
+	         */
+	        @Override
+	        protected void onPreExecute() {
+	            statusText.setText("Opening a server socket");
+	        }
+	        
+	        private static String getStringFromInputStream(InputStream is) {
+	       	 
+	    		BufferedReader br = null;
+	    		StringBuilder sb = new StringBuilder();
+	     
+	    		String line;
+	    		try {
+	     
+	    			br = new BufferedReader(new InputStreamReader(is));
+	    			while ((line = br.readLine()) != null) {
+	    				sb.append(line);
+	    			}
+	     
+	    		} catch (IOException e) {
+	    			e.printStackTrace();
+	    		} finally {
+	    			if (br != null) {
+	    				try {
+	    					br.close();
+	    				} catch (IOException e) {
+	    					e.printStackTrace();
+	    				}
+	    			}
+	    		}
+	     
+	    		return sb.toString();
+	     
+	    	}
+	        
+	        public void open_tablica()
+	        {
+	        	Intent dolacz = new Intent(context, com.app.kfe.rysowanie.Tablica.class);
+	        	dolacz.putExtra("isGame", true);
+	        	context.startActivity(dolacz);
+	        }
+	    }
+
     
 
     /**
@@ -351,15 +518,16 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	                	result = getStringFromInputStream(inputstream);
 	                }
 	                catch(Exception e){
-	                	result = "canva";
+	                	//result = "canva";
 	                }
+	                	clientIP = result;  
                 }
                 
                 //String result = "Przyjêto dane";                                
-                if(result.equalsIgnoreCase("tablica"))
-        		{
-        			result="open";
-        		}
+//                if(result.equalsIgnoreCase("tablica"))
+//        		{
+//        			result="open";
+//        		}
                 else
                 {                 
                 	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
@@ -401,7 +569,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         		}
                 
             }
-        	else if(result.equals("open"))
+        	else
         	{
         		open_tablica();
         	}

@@ -156,6 +156,14 @@ public class PaintView extends View {
 	        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
 	                    .execute();
 	        }
+		 else
+		 {
+				new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+        		.execute();
+		 }
+		
+			
+		 
 	}
 	
 	
@@ -186,11 +194,18 @@ public class PaintView extends View {
 				//intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
 				//WiFiDirectActivity.receiver = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, WiFiDirectActivity.channel, Tablica.tablica);
 				//Tablica.activity.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);	
-				
-				DeviceDetailFragment.sendCanvasService();
+				if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner)
+				{
+				DeviceDetailFragment.sendCanvasService(true);
+				}
+				else
+				{
+					DeviceDetailFragment.sendCanvasService(false);
+				}
+				}
 			}
 		}
-	}
+	
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
