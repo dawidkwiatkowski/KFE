@@ -37,6 +37,7 @@ public class FileTransferService extends IntentService {
     public static final String ACTION_SEND_FILE = "com.app.kfe.Wifi.SEND_FILE";
     public static final String ACTION_SEND_TEXT = "com.app.kfe.Wifi.SEND_TEXT";
     public static final String ACTION_SEND_CANVAS = "com.app.kfe.Wifi.SEND_CANVAS";
+    public static final String ACTION_SEND_NAME = "com.app.kfe.Wifi.SEND_NAME";
     public static final String ACTION_OPEN_TABLICA= "com.app.kfe.Wifi.OPEN_TABLICA";
     public static final String EXTRAS_FILE_PATH = "file_url";
     public static final String EXTRAS_GROUP_OWNER_ADDRESS = "go_host";
@@ -98,7 +99,7 @@ public class FileTransferService extends IntentService {
 
         }
         else if (intent.getAction().equals(ACTION_OPEN_TABLICA)) {
-        	String text = DeviceDetailFragment.localIP;
+        	String text = DeviceDetailFragment.localIP + ":" + "Gracz1";
         	String adres_ip;
             String host = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
             Socket socket = new Socket();
@@ -179,6 +180,41 @@ public class FileTransferService extends IntentService {
                 Log.e(WiFiDirectActivity.TAG, e.getMessage());
             } 
             finally {
+                if (socket != null) {
+                    if (socket.isConnected()) {
+                        try {
+                            socket.close();
+                        } catch (IOException e) {
+                            // Give up
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        else if (intent.getAction().equals(ACTION_SEND_NAME)) {
+        	String text = "Gracz2";
+            String host = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
+            Socket socket = new Socket();
+            int port = intent.getExtras().getInt(EXTRAS_GROUP_OWNER_PORT);
+
+            try {
+                Log.d(WiFiDirectActivity.TAG, "Opening client socket - ");
+                socket.bind(null);
+                socket.connect((new InetSocketAddress(host, port)), SOCKET_TIMEOUT);
+
+                Log.d(WiFiDirectActivity.TAG, "Client socket - " + socket.isConnected());
+                OutputStream stream = socket.getOutputStream();
+//                ContentResolver cr = context.getContentResolver();
+                InputStream is = null;
+                
+                is = new ByteArrayInputStream(text.getBytes());
+                
+                DeviceDetailFragment.copyFile(is, stream);
+                Log.d(WiFiDirectActivity.TAG, "Client: Data written");
+            } catch (IOException e) {
+                Log.e(WiFiDirectActivity.TAG, e.getMessage());
+            } finally {
                 if (socket != null) {
                     if (socket.isConnected()) {
                         try {

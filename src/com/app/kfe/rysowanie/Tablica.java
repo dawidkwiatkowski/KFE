@@ -99,11 +99,14 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
 	        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
 	                    .execute();
+	        	DeviceDetailFragment.gamer = "Gracz2";
+            	DeviceDetailFragment.sendGamerNameService();
 	        }
 	        else
 	        {
         		new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
 	        		.execute();
+        		
 	        }
 	        answerPanel.setVisibility(View.VISIBLE);
 	        confirmAnwer.setOnClickListener(this);

@@ -77,6 +77,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     public static String localIP;
     public static String client_mac_fixed;
     public static String clientIP;
+    public static String gamer;
+    public static String opponent=null;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -144,6 +146,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                          
                         getActivity().startService(serviceIntent);
                         
+                        gamer = "Gracz1";
+                        
                         Intent intent = new Intent(getActivity(),Tablica.class);
                         intent.putExtra("isGame", true);
                         startActivity(intent);
@@ -204,10 +208,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             ((TextView) mContentView.findViewById(R.id.status_text)).setText(getResources()
                     .getString(R.string.client_text));
         }
-//        else{
-//        	new ForClientServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
-//            .execute();
-//        }
+        else{
+        	new ForClientServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
+            .execute();
+        }
 
         // hide the connect button
         mContentView.findViewById(R.id.btn_connect).setVisibility(View.GONE);
@@ -275,6 +279,24 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         Tablica.activity.startService(serviceIntent); 
 	}
 	
+public static void sendGamerNameService(){
+		
+		//DeviceDetailFragment.device = DeviceListFragment.getDevice();
+		
+	localIP = Utils.getLocalIPAddress();
+			
+		Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
+        serviceIntent.setAction(FileTransferService.ACTION_SEND_NAME);
+        serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
+
+    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+
+
+    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+
+        Tablica.activity.startService(serviceIntent); 
+	}
+	
 	 public static class ForClientServerAsyncTask extends AsyncTask<Void, Void, String> {
 
 	        private Context context;
@@ -299,7 +321,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	                InputStream inputstream = client.getInputStream();
 	                InputStream inputStream2 = inputstream;
 	                String result="";
-	                if(WiFiDirectActivity.co_to.equals("tablica"))
+	                if(opponent == null)
 	                {
 		                	try                
 		                {
@@ -308,7 +330,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		                catch(Exception e){
 		                	//result = "canva";
 		                }
-		                	clientIP = result;  
+		                	opponent = result;  
 	                }
 	                
 	                //String result = "Przyjêto dane";                                
@@ -403,6 +425,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	        
 	        public void open_tablica()
 	        {
+	        	
+	        	
 	        	Intent dolacz = new Intent(context, com.app.kfe.rysowanie.Tablica.class);
 	        	dolacz.putExtra("isGame", true);
 	        	context.startActivity(dolacz);
@@ -520,7 +544,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	                catch(Exception e){
 	                	//result = "canva";
 	                }
-	                	clientIP = result;  
+	                	clientIP = result.split(":")[0];
+	                	opponent = result.split(":")[1];
                 }
                 
                 //String result = "Przyjêto dane";                                
@@ -615,9 +640,11 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         
         public void open_tablica()
         {
+        	
         	Intent dolacz = new Intent(context, com.app.kfe.rysowanie.Tablica.class);
         	dolacz.putExtra("isGame", true);
         	context.startActivity(dolacz);
+        	
         }
     }
     
