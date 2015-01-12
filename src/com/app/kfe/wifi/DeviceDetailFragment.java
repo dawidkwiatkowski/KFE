@@ -79,6 +79,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     public static String clientIP;
     public static String gamer;
     public static String opponent=null;
+    public static String code=null;
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -99,15 +101,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     progressDialog.dismiss();
                 }
                 progressDialog = ProgressDialog.show(getActivity(), "Press back to cancel",
-                        "Connecting to :" + device.deviceAddress, true, true
-//                        new DialogInterface.OnCancelListener() {
-//
-//                            @Override
-//                            public void onCancel(DialogInterface dialog) {
-//                                ((DeviceActionListener) getActivity()).cancelDisconnect();
-//                            }
-//                        }
-                        );
+                        "Connecting to :" + device.deviceAddress, true, true);
                 ((DeviceActionListener) getActivity()).connect(config);
 
             }
@@ -129,14 +123,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     public void onClick(View v) {
                         // Allow user to pick an image from Gallery or other
                         // registered apps
-                    	//Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    	//Intent intent = new Intent(getActivity(),Tablica.class);
-                        //intent.setType("image/*");
-                    	//intent.setClass(getActivity(), Tablica.class);
+
                     	localIP = Utils.getLocalIPAddress();
-                		// Trick to find the ip in the file /proc/net/arp
-                		//client_mac_fixed = new String(DeviceDetailFragment.device.deviceAddress).replace("99", "19");
-                		//clientIP = Utils.getIPFromMac(client_mac_fixed);
+
                     	serviceIntent = new Intent(getActivity(), FileTransferService.class);
                         serviceIntent.setAction(FileTransferService.ACTION_OPEN_TABLICA);
                         serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
@@ -200,7 +189,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         // socket.
         if (info.groupFormed && info.isGroupOwner) {
         	new TextServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
-                    .execute();
+            	.execute();
         } else if (info.groupFormed) {
             // The other device acts as the client. In this case, we enable the
             // get file button.
@@ -320,34 +309,49 @@ public static void sendGamerNameService(){
 
 	                InputStream inputstream = client.getInputStream();
 	                InputStream inputStream2 = inputstream;
-	                String result="";
-	                if(opponent == null)
-	                {
-		                	try                
-		                {
-		                	result = getStringFromInputStream(inputstream);
-		                }
-		                catch(Exception e){
-		                	//result = "canva";
-		                }
-		                	opponent = result;  
-	                }
+	                String result="bb";
 	                
-	                //String result = "Przyjêto dane";                                
-//	                if(result.equalsIgnoreCase("tablica"))
-//	        		{
-//	        			result="open";
-//	        		}
-	                else
-	                {                 
+	                if(code == null){
+	                	code = getStringFromInputStream(inputstream);
+	                	serverSocket.close();
+		                return result;
+	                }
+	                else if(code.equals("NAME")){
+	                	opponent = getStringFromInputStream(inputstream);
+	                	code = null;
+	                }
+	                else if(code.equals("CANVAS")){
 	                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
 		                
 		                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
 		                result = "canva";
 		                if( DeviceDetailFragment.bm != null)
-		                	result = "canva";	                           
-		             }
-	                //Log.e(WiFiDirectActivity.TAG, "Result = " + result);
+		                	result = "canva";
+		                
+		                code = null;
+	                }
+	                
+//	                if(opponent == null)
+//	                {
+//		                	try                
+//		                {
+//		                	result = getStringFromInputStream(inputstream);
+//		                }
+//		                catch(Exception e){
+//		                	//result = "canva";
+//		                }
+//		                	opponent = result;  
+//	                }
+//	                
+//	                else
+	                //{                 
+//	                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
+//		                
+//		                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
+//		                result = "canva";
+//		                if( DeviceDetailFragment.bm != null)
+//		                	result = "canva";	                           
+		             //}
 	                
 	                serverSocket.close();
 	                return result;
@@ -533,36 +537,53 @@ public static void sendGamerNameService(){
                 Socket client = serverSocket.accept();
 
                 InputStream inputstream = client.getInputStream();
-                InputStream inputStream2 = inputstream;
-                String result="";
-                if(WiFiDirectActivity.co_to.equals("tablica"))
-                {
-	                	try                
-	                {
-	                	result = getStringFromInputStream(inputstream);
-	                }
-	                catch(Exception e){
-	                	//result = "canva";
-	                }
-	                	clientIP = result.split(":")[0];
-	                	opponent = result.split(":")[1];
-                }
+                String result="aa";
                 
-                //String result = "Przyjêto dane";                                
-//                if(result.equalsIgnoreCase("tablica"))
-//        		{
-//        			result="open";
-//        		}
-                else
-                {                 
+                
+//                if(WiFiDirectActivity.co_to.equals("tablica"))
+//                {
+//	                	try                
+//	                {
+//	                	result = getStringFromInputStream(inputstream);
+//	                }
+//	                catch(Exception e){
+//	                	//result = "canva";
+//	                }
+//	                	clientIP = result.split(":")[0];
+//	                	opponent = result.split(":")[1];
+//                }
+//                else
+//                {                 
+//                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
+//	                
+//	                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
+//	                result = "canva";
+//	                if( DeviceDetailFragment.bm != null)
+//	                	result = "canva";	                           
+//	             }
+                
+                if(code == null){
+                	code = getStringFromInputStream(inputstream);
+                	serverSocket.close();
+                    return result;
+                }
+                else if(code.equals("OPEN_TABLICA")){
+                	String temp = getStringFromInputStream(inputstream);
+                	clientIP = temp.split(":")[0];
+                	opponent = temp.split(":")[1];
+                	code = null;
+                	open_tablica();
+                }
+                else if(code.equals("CANVAS")){
                 	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
 	                
 	                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
 	                result = "canva";
 	                if( DeviceDetailFragment.bm != null)
-	                	result = "canva";	                           
-	             }
-                //Log.e(WiFiDirectActivity.TAG, "Result = " + result);
+	                	result = "canva";
+	                
+	                code = null;
+                }
                 
                 serverSocket.close();
                 return result;
@@ -594,10 +615,13 @@ public static void sendGamerNameService(){
         		}
                 
             }
-        	else
-        	{
-        		open_tablica();
-        	}
+//        	else
+//        	{
+//        		open_tablica();
+//        	}
+        	
+        	new DeviceDetailFragment.TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+    			.execute();
         }
 
         /*
