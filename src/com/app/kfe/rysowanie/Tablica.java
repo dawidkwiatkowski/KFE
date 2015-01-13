@@ -82,7 +82,11 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		setContentView(R.layout.activity_tablica);
 		activity = this;
 		tablica = this;
-		
+//----------------------Rozgrywka---------------------------		
+		Gracz gracz_1 = new Gracz();
+		Gracz gracz_2 = new Gracz();
+		Rozgrywka gra = new Rozgrywka();
+//----------------------Rozgrywka---------------------------		
 		answerPanel = (RelativeLayout) findViewById(R.id.answerRelativeLayout);
 		confirmAnwer = (Button) findViewById(R.id.confirmAnswer);
 		answer = (EditText) findViewById(R.id.answer);
@@ -99,13 +103,20 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
 	        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
 	                    .execute();
-	        	DeviceDetailFragment.gamer = "Gracz2";
+	        	
             	DeviceDetailFragment.sendGamerNameService();
+            	
+            	gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
+            	gracz_2.is_drawing = true;
+            	gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
 	        }
 	        else
 	        {
         		new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
 	        		.execute();
+        		gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
+            	gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
+            	gracz_1.is_drawing = true;
         		
 	        }
 	        answerPanel.setVisibility(View.VISIBLE);
@@ -117,6 +128,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 			answerPanel.setVisibility(View.GONE);
 		}
 		
+		gra.lista_graczy.add(gracz_1);
+		gra.lista_graczy.add(gracz_2);
 		
 		SlidingDrawer toolsPanel = (SlidingDrawer) findViewById(R.id.toolsPanel);
 		final ImageButton handle = (ImageButton) findViewById(R.id.handle);				
@@ -157,6 +170,14 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		eraserTool.setOnClickListener(this);
 		newImageTool.setOnClickListener(this);
 		
+		  if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+			  paintView.setIsEnabled(false);
+			  toolsPanel.setVisibility(View.GONE);
+		  }
+		  else
+		  {
+			  answerPanel.setVisibility(View.GONE);
+		  }
 		SeekBar brashSize = (SeekBar) findViewById(R.id.brushSize);
 		brashSize.setOnSeekBarChangeListener(this);
 		
@@ -273,6 +294,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
+		
 		
 		switch(v.getId()){
 			case R.id.redButton:

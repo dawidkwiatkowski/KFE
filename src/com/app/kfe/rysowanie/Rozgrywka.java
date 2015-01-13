@@ -11,5 +11,11 @@ public class Rozgrywka {
 	public String haslo;
 	
 	
+	public String losuj_haslo()
+	{
+		
+		return haslo;
+	}
+	
 	
 }
