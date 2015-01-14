@@ -41,5 +41,8 @@ public class Rozgrywka {
 		//return db.getAllHasla();
 	}
 	
+	public String getHaslo(){
+		return haslo;
+	}	
 	
 }

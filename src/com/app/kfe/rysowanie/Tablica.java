@@ -30,6 +30,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.kfe.R;
@@ -67,9 +68,16 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	public static Tablica tablica = null;
 	public static Channel channel2;
     public static BroadcastReceiver receiver2 = null;
+    
     private RelativeLayout answerPanel;
     private Button confirmAnwer;
+    private Button drawerGiveUp;
     private EditText answer;
+    
+    private RelativeLayout forDrawerPanel;
+    private Button respondentGiveUp;
+    private TextView word;
+    
     static Rozgrywka gra = new Rozgrywka();
 	public static Activity activity;
 	
@@ -89,13 +97,26 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 //----------------------Rozgrywka---------------------------		
 		answerPanel = (RelativeLayout) findViewById(R.id.answerRelativeLayout);
 		confirmAnwer = (Button) findViewById(R.id.confirmAnswer);
+		respondentGiveUp = (Button) findViewById(R.id.respondentGiveUp);
 		answer = (EditText) findViewById(R.id.answer);
+		
+		forDrawerPanel = (RelativeLayout) findViewById(R.id.drawerRelativeLayout);
+		drawerGiveUp = (Button) findViewById(R.id.drawerGiveUp);
+		word = (Button) findViewById(R.id.word);
+		
 		WiFiDirectActivity.co_to="cos";
 		channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
 		receiver2 = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, channel2, this);
         registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
 		if(getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")){
 			isGame = getIntent().getExtras().getBoolean("isGame");		
+			
+	        answerPanel.setVisibility(View.VISIBLE);
+	        confirmAnwer.setOnClickListener(this);
+	        drawerGiveUp.setOnClickListener(this);
+	        
+	        forDrawerPanel.setVisibility(View.VISIBLE);
+	        respondentGiveUp.setOnClickListener(this);
 			
 			channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
 			receiver2 = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, channel2, this);
@@ -109,6 +130,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             	gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
             	gracz_2.is_drawing = true;
             	gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
+            	
+            	//ukrycie panelu z podpowiedzi¹ dla rysuj¹cego poniewa¿ zgaduj¹cy nie rysuje
+            	forDrawerPanel.setVisibility(View.GONE);
 	        }
 	        else
 	        {
@@ -120,14 +144,18 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             	gra.getAllHasla(this);
             	gra.losuj_haslo();
         		DeviceDetailFragment.sendWordService(false,gra.haslo);
-	        }
-	        answerPanel.setVisibility(View.VISIBLE);
-	        confirmAnwer.setOnClickListener(this);
-		       
+        		
+        		//ustawienie has³a do podpowiadania
+        		word.setText(gra.getHaslo());
+        		
+        		//ukrycie panelu s³u¿¹cego do odpowiadania poniewa¿ rysuj¹cy nie odpowiada
+        		answerPanel.setVisibility(View.GONE);
+	        }	       		      
 		}
 		else
 		{
 			answerPanel.setVisibility(View.GONE);
+			forDrawerPanel.setVisibility(View.GONE);
 		}
 		
 		gra.lista_graczy.add(gracz_1);
@@ -372,6 +400,15 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 				//na koniec po wys³aniu odpowiedzi trzeba wyczyœciæ pole
 				answer.setText("");
 				break;
+			case R.id.respondentGiveUp:
+				//tutaj obs³uga poddania siê odpowiadaj¹cego
+				
+				break;
+			case R.id.drawerGiveUp:
+				//tutaj obs³uga poddania siê rysuj¹cego
+				
+				break;
+				
 		}		
 		paintView.setDrawPaint(drawPaint);
 		
