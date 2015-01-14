@@ -204,13 +204,13 @@
 	    android:layout_alignParentBottom="true"
 	    android:background="@color/blackColor">
 	    
-	    <Button 
-		    android:id="@+id/confirmAnswer" 
-		   	android:background="@drawable/button"
-		   	android:layout_width="wrap_content"
-	        android:layout_height="30dp"
-	        android:layout_alignParentRight="true"
-		   	android:text="@string/sendAnswer"/>
+        <Button
+            android:id="@+id/respondenyGiveUp"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/button"
+            android:text="@string/give_up" />
 
 	    <EditText
 	        android:id="@+id/answer"
@@ -223,6 +223,57 @@
 	        android:ems="10"
 	        android:hint="@string/answerText"
 	        android:textSize="15dp" />
+
+	    <Button
+	        android:id="@+id/confirmAnswer"
+	        android:layout_width="100dp"
+	        android:layout_height="30dp"
+	        android:layout_alignParentTop="true"
+	        android:layout_toLeftOf="@+id/respondenyGiveUp"
+	        android:background="@drawable/button"
+	        android:text="@string/sendAnswer" />
+        
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/drawerRelativeLayout"
+	    android:layout_width="fill_parent"
+	    android:layout_height="30dp"
+	    android:layout_alignParentBottom="true"
+	    android:background="@color/blackColor">
+
+        <TextView
+            android:id="@+id/label_drawer"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:gravity="right|center_vertical"
+            android:text="@string/label_drawer"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/drawerGiveUp"
+            android:layout_toRightOf="@+id/label_drawer"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:text="należy podpiąć wylosowane hasło"
+            android:textSize="15dp" />
+        
+        <Button
+            android:id="@+id/drawerGiveUp"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/button"
+            android:text="@string/give_up" />
         
     </RelativeLayout>
 

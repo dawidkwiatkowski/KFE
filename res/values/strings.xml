@@ -77,4 +77,9 @@
     <string name="label_peers">PEERS</string>
     <string name="title_activity_wifi_act">Wifi_act</string>
     
+    
+    
+    <string name="label_drawer">Narysuj: </string>
+    <string name="give_up">Poddaj się</string>
+    
 </resources>
