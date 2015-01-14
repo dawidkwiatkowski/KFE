@@ -16,6 +16,8 @@
 
 package com.app.kfe.wifi;
 
+import android.R.string;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;import android.content.Intent;
@@ -38,6 +40,7 @@ import android.widget.TextView;
 
 import com.app.kfe.R;import com.app.kfe.rysowanie.PaintView;
 import com.app.kfe.rysowanie.Tablica;
+import com.app.kfe.wifi.FileTransferService;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
 
 import java.io.BufferedReader;
@@ -72,6 +75,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     public static String clientIP;
     public static String gamer;
     public static String opponent=null;
+    public static String code;
+    public static String haslo;
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -92,15 +98,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     progressDialog.dismiss();
                 }
                 progressDialog = ProgressDialog.show(getActivity(), "Press back to cancel",
-                        "Connecting to :" + device.deviceAddress, true, true
-//                        new DialogInterface.OnCancelListener() {
-//
-//                            @Override
-//                            public void onCancel(DialogInterface dialog) {
-//                                ((DeviceActionListener) getActivity()).cancelDisconnect();
-//                            }
-//                        }
-                        );
+                        "Connecting to :" + device.deviceAddress, true, true);
                 ((DeviceActionListener) getActivity()).connect(config);
 
             }
@@ -122,14 +120,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     public void onClick(View v) {
                         // Allow user to pick an image from Gallery or other
                         // registered apps
-                    	//Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    	//Intent intent = new Intent(getActivity(),Tablica.class);
-                        //intent.setType("image/*");
-                    	//intent.setClass(getActivity(), Tablica.class);
+
                     	localIP = Utils.getLocalIPAddress();
-                		// Trick to find the ip in the file /proc/net/arp
-                		//client_mac_fixed = new String(DeviceDetailFragment.device.deviceAddress).replace("99", "19");
-                		//clientIP = Utils.getIPFromMac(client_mac_fixed);
+
                     	serviceIntent = new Intent(getActivity(), FileTransferService.class);
                         serviceIntent.setAction(FileTransferService.ACTION_OPEN_TABLICA);
                         serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
@@ -193,7 +186,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         // socket.
         if (info.groupFormed && info.isGroupOwner) {
         	new TextServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
-                    .execute();
+            	.execute();
         } else if (info.groupFormed) {
             // The other device acts as the client. In this case, we enable the
             // get file button.
@@ -289,6 +282,35 @@ public static void sendGamerNameService(){
 
         Tablica.activity.startService(serviceIntent); 
 	}
+
+	public static void sendWordService(boolean is_owner, String haslo ){
+		
+		//DeviceDetailFragment.device = DeviceListFragment.getDevice();
+		
+		localIP = Utils.getLocalIPAddress();
+		DeviceDetailFragment.haslo = haslo;	
+		Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
+	    serviceIntent.setAction(FileTransferService.ACTION_SEND_WORD);
+	    serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
+	    //serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+	    		//DeviceDetailFragment.info.groupOwnerAddress.getHostAddress());
+	    //serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+	    
+	    if(localIP.equals(IP_SERVER)){
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+	    	}else{
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, IP_SERVER);
+	    	}
+	    if(is_owner)
+	    {
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+	    }
+	    else
+	    {
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+	    }
+	    Tablica.activity.startService(serviceIntent); 
+	}
 	
 	 public static class ForClientServerAsyncTask extends AsyncTask<Void, Void, String> {
 
@@ -303,7 +325,31 @@ public static void sendGamerNameService(){
 	            this.context = context;
 	            this.statusText = (TextView) statusText;
 	        }
-
+	        protected byte[] getCodeByteArray(byte[] table){
+	    		if(table.length >= 2){
+	    			byte[] result = new byte[2];
+	    			for(int i =0; i < 2; i++){
+	    				result[i] = table[i];
+	    			}
+	    			return result;
+	    		}
+	    		else{
+	    			return table;
+	    		}
+	    	}
+	    	
+	    	protected byte[] getMessageByteArray(byte[] table){
+	    		if(table.length > 2){
+	    			byte[] result = new byte[table.length-2];
+	    			for(int i =0; i < table.length-2; i++){
+	    				result[i] = table[i+2];
+	    			}
+	    			return result;
+	    		}
+	    		else{
+	    			return null;
+	    		}
+	    	}
 	        @Override
 	        protected String doInBackground(Void... params) {
 	            try {
@@ -312,35 +358,56 @@ public static void sendGamerNameService(){
 	                Socket client = serverSocket.accept();
 
 	                InputStream inputstream = client.getInputStream();
-	                InputStream inputStream2 = inputstream;
-	                String result="";
-	                if(opponent == null)
-	                {
-		                	try                
-		                {
-		                	result = getStringFromInputStream(inputstream);
-		                }
-		                catch(Exception e){
-		                	//result = "canva";
-		                }
-		                	opponent = result;  
-	                }
+	              
+	                String result="bb";
+	                byte[] receivedByteArray = Tablica.convertInputStreamToByteArray(inputstream);
+	                code = new String(getCodeByteArray(receivedByteArray));
 	                
-	                //String result = "Przyj�to dane";                                
-//	                if(result.equalsIgnoreCase("tablica"))
-//	        		{
-//	        			result="open";
-//	        		}
-	                else
-	                {                 
-	                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
-		                
+//	                if(code == null){
+//	                	code = getStringFromInputStream(inputstream);
+//	                	serverSocket.close();
+//		                return result;
+//	                }
+	                if(code.equals("SN")){
+	                	opponent = new String (getMessageByteArray(receivedByteArray));
+	                	
+	                }
+	                else if(code.equals("SC")){
+	                	
+	                	byte[] array = getMessageByteArray(receivedByteArray);
 		                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
 		                result = "canva";
 		                if( DeviceDetailFragment.bm != null)
-		                	result = "canva";	                           
-		             }
-	                //Log.e(WiFiDirectActivity.TAG, "Result = " + result);
+		                	result = "canva";
+		                
+		               
+	                }
+	                else if(code.equals("SW"))
+	                {
+	                	haslo = new String (getMessageByteArray(receivedByteArray));
+	                }
+	                
+//	                if(opponent == null)
+//	                {
+//		                	try                
+//		                {
+//		                	result = getStringFromInputStream(inputstream);
+//		                }
+//		                catch(Exception e){
+//		                	//result = "canva";
+//		                }
+//		                	opponent = result;  
+//	                }
+//	                
+//	                else
+	                //{                 
+//	                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
+//		                
+//		                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
+//		                result = "canva";
+//		                if( DeviceDetailFragment.bm != null)
+//		                	result = "canva";	                           
+		             //}
 	                
 	                serverSocket.close();
 	                return result;
@@ -372,6 +439,10 @@ public static void sendGamerNameService(){
 	        		}
 	                
 	            }
+	        	else if(code.equals("SW"))
+	        	{
+	        		Tablica.set_haslo(haslo);
+	        	}
 	        	else
 	        	{
 	        		open_tablica();
@@ -517,7 +588,32 @@ public static void sendGamerNameService(){
             this.context = context;
             this.statusText = (TextView) statusText;
         }
-
+        
+        protected byte[] getCodeByteArray(byte[] table){
+    		if(table.length >= 2){
+    			byte[] result = new byte[2];
+    			for(int i =0; i < 2; i++){
+    				result[i] = table[i];
+    			}
+    			return result;
+    		}
+    		else{
+    			return table;
+    		}
+    	}
+    	
+    	protected byte[] getMessageByteArray(byte[] table){
+    		if(table.length > 2){
+    			byte[] result = new byte[table.length-2];
+    			for(int i =0; i < table.length-2; i++){
+    				result[i] = table[i+2];
+    			}
+    			return result;
+    		}
+    		else{
+    			return null;
+    		}
+    	}
         @Override
         protected String doInBackground(Void... params) {
             try {
@@ -526,36 +622,58 @@ public static void sendGamerNameService(){
                 Socket client = serverSocket.accept();
 
                 InputStream inputstream = client.getInputStream();
-                InputStream inputStream2 = inputstream;
-                String result="";
-                if(WiFiDirectActivity.co_to.equals("tablica"))
-                {
-	                	try                
-	                {
-	                	result = getStringFromInputStream(inputstream);
-	                }
-	                catch(Exception e){
-	                	//result = "canva";
-	                }
-	                	clientIP = result.split(":")[0];
-	                	opponent = result.split(":")[1];
-                }
+                String result="aa";
+                byte[] receivedByteArray = Tablica.convertInputStreamToByteArray(inputstream);
+                code = new String(getCodeByteArray(receivedByteArray));
+//                if(WiFiDirectActivity.co_to.equals("tablica"))
+//                {
+//	                	try                
+//	                {
+//	                	result = getStringFromInputStream(inputstream);
+//	                }
+//	                catch(Exception e){
+//	                	//result = "canva";
+//	                }
+//	                	clientIP = result.split(":")[0];
+//	                	opponent = result.split(":")[1];
+//                }
+//                else
+//                {                 
+//                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
+//	                
+//	                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
+//	                result = "canva";
+//	                if( DeviceDetailFragment.bm != null)
+//	                	result = "canva";	                           
+//	             }
                 
-                //String result = "Przyj�to dane";                                
-//                if(result.equalsIgnoreCase("tablica"))
-//        		{
-//        			result="open";
-//        		}
-                else
-                {                 
-                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
+//                if(code == null){
+//                	code = getStringFromInputStream(inputstream);
+//                	serverSocket.close();
+//                    return result;
+//                }
+                if(code.equals("OT")){
+                	String temp = new String (getMessageByteArray(receivedByteArray));
+                	clientIP = temp.split(":")[0];
+                	opponent = temp.split(":")[1];
+                	
+                	open_tablica();
+                }
+                else if(code.equals("SC")){
+                	byte[] array = getMessageByteArray(receivedByteArray);
 	                
 	                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
 	                result = "canva";
 	                if( DeviceDetailFragment.bm != null)
-	                	result = "canva";	                           
-	             }
-                //Log.e(WiFiDirectActivity.TAG, "Result = " + result);
+	                	result = "canva";
+	                
+	                
+                }
+                else if(code.equals("SW"))
+                {
+                	haslo = new String (getMessageByteArray(receivedByteArray));
+                	
+                }
                 
                 serverSocket.close();
                 return result;
@@ -587,10 +705,16 @@ public static void sendGamerNameService(){
         		}
                 
             }
-        	else
+        	else if(code.equals("SW"))
         	{
-        		open_tablica();
+        		Tablica.set_haslo(haslo);
         	}
+//        	else
+//        	{
+//        		open_tablica();
+//        	}
+        	
+        
         }
 
         /*
