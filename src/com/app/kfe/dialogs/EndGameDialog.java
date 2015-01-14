@@ -12,13 +12,13 @@ import android.os.Bundle;
  */
 public class EndGameDialog extends DialogFragment {
 
-    private EndGameDialogActionsHanler mListener;
+    private EndGameDialogActionsHandler mListener;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (EndGameDialogActionsHanler) (activity);
+            mListener = (EndGameDialogActionsHandler) (activity);
         } catch (ClassCastException e) {
             throw new ClassCastException(String.format("%s must implement EndGameDialogActionsHandler!", activity.toString()));
         }
@@ -46,7 +46,7 @@ public class EndGameDialog extends DialogFragment {
         return builder.create();
     }
 
-    public interface EndGameDialogActionsHanler {
+    public interface EndGameDialogActionsHandler {
         public void onGameRerunAck(DialogFragment dialog);
 
         public void onGameRerunNack(DialogFragment dialog);
