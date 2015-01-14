@@ -20,10 +20,8 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -241,6 +239,18 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.tablica, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
 		// TODO Auto-generated method stub
@@ -357,9 +367,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 				break;
 			case R.id.confirmAnswer:
 				String yourAnswer = answer.getText().toString();
-				//tutaj obs³uga przycisku wyœlij odpowiedŸ
+				//tutaj obsï¿½uga przycisku wyï¿½lij odpowiedï¿½
 				
-				//na koniec po wys³aniu odpowiedzi trzeba wyczyœciæ pole
+				//na koniec po wysï¿½aniu odpowiedzi trzeba wyczyï¿½ciï¿½ pole
 				answer.setText("");
 				break;
 		}		

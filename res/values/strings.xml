@@ -94,6 +94,7 @@
     <string name="settings_group_room">Tworzenie pokoju</string>
     <string name="settings_room_maxPlayers">Maksymalna ilość graczy</string>
     <string name="start_game">Start game</string>
+    <string name="show_end_game_dialog">Show end game dialog</string>
 
     <string-array name="settings_room_maxPlayers_entries">
         <item>2</item>
