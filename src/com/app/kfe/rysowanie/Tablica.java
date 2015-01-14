@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 
 import com.app.kfe.R;
 import com.app.kfe.controler.GameManager;
+import com.app.kfe.dialogs.EndGameDialog;
 import com.app.kfe.utils.Logger;
 import com.app.kfe.wifi.DeviceDetailFragment;
 import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
@@ -46,7 +48,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener,ChannelListener, DeviceActionListener, GameManager.GameMessagesListener {
+public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener,ChannelListener, DeviceActionListener, GameManager.GameMessagesListener, EndGameDialog.EndGameDialogActionsHanler {
 	
 	private PaintView paintView;
 	private Button yellowButton;
@@ -96,6 +98,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		receiver2 = WiFiDirectBroadcastReceiver.getInstance(WiFiDirectActivity.manager, channel2, this);
         registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
 		if(getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")){
+			channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
+			receiver2 = WiFiDirectBroadcastReceiver.getInstance(WiFiDirectActivity.manager, channel2, this);
+			registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
 			isGame = getIntent().getExtras().getBoolean("isGame");		
 
 	        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
@@ -230,6 +235,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		boolean result;
 		switch(item.getItemId()) {
 			case R.id.tmp_show_end_game_dialog:
+				DialogFragment endGameDialog = new EndGameDialog();
+				endGameDialog.show(getFragmentManager(), "end_game");
 				result = false;
 				break;
 			default:
@@ -509,5 +516,15 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	public void onCanvasMessageReceived(Bitmap image) {
 
 		paintView.drawImage(image);
+	}
+
+	@Override
+	public void onGameRerunAck(DialogFragment dialog) {
+
+	}
+
+	@Override
+	public void onGameRerunNack(DialogFragment dialog) {
+
 	}
 }

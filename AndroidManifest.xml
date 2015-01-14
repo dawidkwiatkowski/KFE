@@ -81,8 +81,6 @@
         </activity>
         <activity android:name=".activities.RoomSelectionActivity"/>
         <activity android:name=".activities.RoomActivity"/>
-        <activity android:name=".activities.EndGameActivity"
-                android:theme="@android:style/Theme.Dialog"/>
         <!-- Used for transferring files  after a successful connection -->
         <service
                 android:name="com.app.kfe.wifi.FileTransferService"
