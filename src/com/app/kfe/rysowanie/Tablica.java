@@ -93,14 +93,11 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		answer = (EditText) findViewById(R.id.answer);
 		WiFiDirectActivity.co_to="cos";
 		channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
-		receiver2 = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, channel2, this);
+		receiver2 = WiFiDirectBroadcastReceiver.getInstance(WiFiDirectActivity.manager, channel2, this);
         registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
 		if(getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")){
 			isGame = getIntent().getExtras().getBoolean("isGame");		
-			
-			channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
-			receiver2 = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, channel2, this);
-	        registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
+
 	        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
 	        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
 	                    .execute();
@@ -219,23 +216,6 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 				dialog.cancel();
 			}
 		});
-
-		paintView.setDrawingCacheEnabled(true);
-
-		paintView.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if(event.getAction() == MotionEvent.ACTION_UP) {
-					try {
-						GameManager.getInstance().sendCanvas(paintView.getDrawingCache());
-					}
-					catch (JSONException e) {
-						e.printStackTrace();
-					}
-				}
-				return false;
-			}
-		});
 	}
 
 	@Override
@@ -247,7 +227,15 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		return super.onOptionsItemSelected(item);
+		boolean result;
+		switch(item.getItemId()) {
+			case R.id.tmp_show_end_game_dialog:
+				result = false;
+				break;
+			default:
+				result = super.onOptionsItemSelected(item);
+		}
+		return result;
 	}
 
 	@Override

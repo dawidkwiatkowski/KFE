@@ -87,7 +87,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     @Override
     public void onResume() {
         super.onResume();
-        receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
+        //receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
+        receiver = WiFiDirectBroadcastReceiver.getInstance(manager, channel, this);
         registerReceiver(receiver, intentFilter);
         co_to="tablica";
     }
