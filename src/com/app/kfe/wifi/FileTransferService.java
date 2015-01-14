@@ -132,7 +132,7 @@ public class FileTransferService extends IntentService {
         else if (intent.getAction().equals(ACTION_SEND_WORD)) {
         	code = "SW";
         	
-        	sendText(code,"Word", intent);
+        	sendText(code,DeviceDetailFragment.haslo, intent);
         }
     }
     

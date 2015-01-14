@@ -15,24 +15,30 @@ public class Rozgrywka {
 	public int czas;
 	public List<Gracz> lista_graczy = new ArrayList<Gracz>();
 	public List<Integer> listaUzytychHasel = new ArrayList<Integer>();
+	public List<Haslo> listaHasel = new ArrayList<Haslo>();
 	public String haslo;
 	public DatabaseHelper db;
 	
-	
-	public String losuj_haslo()
+	public Rozgrywka()
 	{
-		Random rand = new Random();
-		int i = rand.nextInt();
 		
-		return haslo;
 	}
 	
-	public ArrayList<Haslo> getAllHasla(Context context){
+	public void losuj_haslo()
+	{
+		Random rand = new Random();
+		int i = rand.nextInt(listaHasel.size());
+		this.haslo =  (listaHasel.get(i).getHaslo());
+		listaUzytychHasel.add(i);
+		
+	}
+	
+	public void getAllHasla(Context context){
 		if( db == null){
 			db = new DatabaseHelper(context);
 		}
-		
-		return db.getAllHasla();
+		listaHasel = db.getAllHasla();
+		//return db.getAllHasla();
 	}
 	
 	

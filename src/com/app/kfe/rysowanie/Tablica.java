@@ -70,7 +70,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     private RelativeLayout answerPanel;
     private Button confirmAnwer;
     private EditText answer;
-	
+    static Rozgrywka gra = new Rozgrywka();
 	public static Activity activity;
 	
 	public static boolean isGame = false;
@@ -85,7 +85,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 //----------------------Rozgrywka---------------------------		
 		Gracz gracz_1 = new Gracz();
 		Gracz gracz_2 = new Gracz();
-		Rozgrywka gra = new Rozgrywka();
+		
 //----------------------Rozgrywka---------------------------		
 		answerPanel = (RelativeLayout) findViewById(R.id.answerRelativeLayout);
 		confirmAnwer = (Button) findViewById(R.id.confirmAnswer);
@@ -117,7 +117,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         		gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
             	gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
             	gracz_1.is_drawing = true;
-        		
+            	gra.getAllHasla(this);
+            	gra.losuj_haslo();
+        		DeviceDetailFragment.sendWordService(false,gra.haslo);
 	        }
 	        answerPanel.setVisibility(View.VISIBLE);
 	        confirmAnwer.setOnClickListener(this);
@@ -236,6 +238,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 				dialog.cancel();
 			}
 		});
+		
+		
 	}
 
 	@Override
@@ -249,6 +253,13 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 		paintView.setDrawPaint(drawPaint);
 		paintView.setCanvasPaint(canvasPaint);
 		
+	}
+	
+	public static void set_haslo(String haslo)
+	{
+	  gra.haslo = haslo;
+	  new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+      .execute();
 	}
 	
 	public static byte[] convertInputStreamToByteArray(InputStream inputStream)

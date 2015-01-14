@@ -80,6 +80,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     public static String gamer;
     public static String opponent=null;
     public static String code;
+    public static String haslo;
     
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -285,6 +286,35 @@ public static void sendGamerNameService(){
 
         Tablica.activity.startService(serviceIntent); 
 	}
+
+	public static void sendWordService(boolean is_owner, String haslo ){
+		
+		//DeviceDetailFragment.device = DeviceListFragment.getDevice();
+		
+		localIP = Utils.getLocalIPAddress();
+		DeviceDetailFragment.haslo = haslo;	
+		Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
+	    serviceIntent.setAction(FileTransferService.ACTION_SEND_WORD);
+	    serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
+	    //serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+	    		//DeviceDetailFragment.info.groupOwnerAddress.getHostAddress());
+	    //serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+	    
+	    if(localIP.equals(IP_SERVER)){
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+	    	}else{
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, IP_SERVER);
+	    	}
+	    if(is_owner)
+	    {
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+	    }
+	    else
+	    {
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+	    }
+	    Tablica.activity.startService(serviceIntent); 
+	}
 	
 	 public static class ForClientServerAsyncTask extends AsyncTask<Void, Void, String> {
 
@@ -354,7 +384,11 @@ public static void sendGamerNameService(){
 		                if( DeviceDetailFragment.bm != null)
 		                	result = "canva";
 		                
-		                code = null;
+		               
+	                }
+	                else if(code.equals("SW"))
+	                {
+	                	haslo = new String (getMessageByteArray(receivedByteArray));
 	                }
 	                
 //	                if(opponent == null)
@@ -409,6 +443,10 @@ public static void sendGamerNameService(){
 	        		}
 	                
 	            }
+	        	else if(code.equals("SW"))
+	        	{
+	        		Tablica.set_haslo(haslo);
+	        	}
 	        	else
 	        	{
 	        		open_tablica();
@@ -635,6 +673,11 @@ public static void sendGamerNameService(){
 	                
 	                
                 }
+                else if(code.equals("SW"))
+                {
+                	haslo = new String (getMessageByteArray(receivedByteArray));
+                	
+                }
                 
                 serverSocket.close();
                 return result;
@@ -666,6 +709,10 @@ public static void sendGamerNameService(){
         		}
                 
             }
+        	else if(code.equals("SW"))
+        	{
+        		Tablica.set_haslo(haslo);
+        	}
 //        	else
 //        	{
 //        		open_tablica();
