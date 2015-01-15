@@ -283,6 +283,39 @@ public static void sendGamerNameService(){
         Tablica.activity.startService(serviceIntent); 
 	}
 
+public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
+	
+	localIP = Utils.getLocalIPAddress();
+	
+	Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
+	if(!giveUp)
+	{
+		serviceIntent.setAction(FileTransferService.ACTION_END_ROUND);
+	}
+	else
+	{
+		serviceIntent.setAction(FileTransferService.ACTION_GIVE_UP);
+	}
+    serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
+
+    
+    if(localIP.equals(IP_SERVER)){
+    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+    	}else{
+    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, IP_SERVER);
+    	}
+    if(is_owner)
+    {
+    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+    }
+    else
+    {
+    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+    }
+    Tablica.activity.startService(serviceIntent); 
+}
+
+
 	public static void sendWordService(boolean is_owner, String haslo ){
 				
 		localIP = Utils.getLocalIPAddress();
@@ -332,6 +365,8 @@ public static void sendGamerNameService(){
 	    }
 	    Tablica.activity.startService(serviceIntent); 
 	}
+	
+	
 	
 	 public static class ForClientServerAsyncTask extends AsyncTask<Void, Void, String> {
 
@@ -406,6 +441,14 @@ public static void sendGamerNameService(){
 	                {
 	                	result = "resend";
 	                }
+	                else if(code.equals("GU"))
+	                {
+	                	result = "giveup";
+	                }
+	                else if(code.equals("ER"))
+	                {
+	                	result = "end_round";
+	                }
 	                
 	                serverSocket.close();
 	                return result;
@@ -445,6 +488,16 @@ public static void sendGamerNameService(){
 	        	{
 	        	  DeviceDetailFragment.sendWordService(false, Tablica.gra.getHaslo());
 	        	}
+	        	else if (code.equals("GU"))
+	        	{
+	        		Tablica.gra.nowa_runda(true);
+	        		Tablica.tablica.zmianaGraczy();
+	        	}
+	        	 else if(code.equals("ER"))
+                {
+	        		 Tablica.gra.nowa_runda(false);
+	        		 Tablica.tablica.zmianaGraczy();
+                }
 	        }
 
 	        /*
@@ -646,7 +699,14 @@ public static void sendGamerNameService(){
                 	haslo = new String (getMessageByteArray(receivedByteArray));
                 	
                 }
-                
+                else if (code.equals("GU"))
+	        	{
+	        		result = "give_up";
+	        	}
+	        	 else if(code.equals("ER"))
+                {
+	        		result = "end_round";
+                }
                 serverSocket.close();
                 return result;
                 
@@ -681,7 +741,16 @@ public static void sendGamerNameService(){
         	{
         		Tablica.set_haslo(haslo);
         	}
-        	
+        	else if (code.equals("GU"))
+        	{
+        		Tablica.gra.nowa_runda(true);
+        		Tablica.tablica.zmianaGraczy();
+        	}
+        	 else if(code.equals("ER"))
+            {
+        		 Tablica.gra.nowa_runda(false);
+        		 Tablica.tablica.zmianaGraczy();
+            }
         	
         
         }

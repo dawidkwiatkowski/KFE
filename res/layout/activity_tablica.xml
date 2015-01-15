@@ -266,7 +266,7 @@
 
         <Button
             android:id="@+id/drawerGiveUp"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/button"

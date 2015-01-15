@@ -13,6 +13,7 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.*;
 import android.view.View.OnClickListener;
@@ -56,6 +57,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     private ImageButton triangleTool;
     private ImageButton eraserTool;
     private ImageButton newImageTool;
+    private SlidingDrawer toolsPanel;
     private AlertDialog.Builder saveDialog;
     private AlertDialog.Builder newImageDialog;
     private int brushColor;
@@ -76,7 +78,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     public static Activity activity;
 
     public static boolean isGame = false;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +107,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
 //----------------------Rozgrywka---------------------------		
 
-        SlidingDrawer toolsPanel = (SlidingDrawer) findViewById(R.id.toolsPanel);
+        toolsPanel = (SlidingDrawer) findViewById(R.id.toolsPanel);
         final ImageButton handle = (ImageButton) findViewById(R.id.handle);
 
         paintView = (PaintView) findViewById(R.id.drawing);
@@ -143,15 +145,6 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         triangleTool.setOnClickListener(this);
         eraserTool.setOnClickListener(this);
         newImageTool.setOnClickListener(this);
-
-//		  if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
-//			  paintView.setIsEnabled(false);
-//			  toolsPanel.setVisibility(View.GONE);
-//		  }
-//		  else
-//		  {
-//			  answerPanel.setVisibility(View.GONE);
-//		  }
 
         //-------------------------------------------------- rozgrywka ----------------------------
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")) {
@@ -197,8 +190,15 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 gracz_1.is_drawing = true;
                 gra.getAllHasla(this);
                 gra.losuj_haslo();
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Do something after 5s = 5000ms
+                    	DeviceDetailFragment.sendWordService(false, gra.getHaslo());
+                    }
+                }, 1000);
                 
-                DeviceDetailFragment.sendWordService(false, gra.getHaslo());
 
                 //ustawienie hasï¿½a do podpowiadania
 
@@ -206,6 +206,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
                 //ukrycie panelu sï¿½uï¿½ï¿½cego do odpowiadania poniewaï¿½ rysujï¿½cy nie odpowiada
                 answerPanel.setVisibility(View.GONE);
+                new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                .execute();
             }
         }
 //			else
@@ -275,6 +277,50 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         });
 
     }
+    
+    public void zmianaGraczy(){
+    	
+    	if(gra.lista_graczy.get(0).is_drawing){
+    		paintView.setIsEnabled(true);
+            toolsPanel.setVisibility(View.VISIBLE);
+            //ukrycie panelu z podpowiedziï¿½ dla rysujï¿½cego poniewaï¿½ zgadujï¿½cy nie rysuje
+            forDrawerPanel.setVisibility(View.VISIBLE);
+            answerPanel.setVisibility(View.GONE);
+    	}
+    	else{
+    		paintView.setIsEnabled(false);
+            toolsPanel.setVisibility(View.GONE);
+            //ukrycie panelu z podpowiedziï¿½ dla rysujï¿½cego poniewaï¿½ zgadujï¿½cy nie rysuje
+            forDrawerPanel.setVisibility(View.GONE);
+            answerPanel.setVisibility(View.VISIBLE);
+    	}
+    	
+    	if(gra.lista_graczy.get(1).is_drawing){
+    		paintView.setIsEnabled(true);
+            toolsPanel.setVisibility(View.VISIBLE);
+            //ukrycie panelu z podpowiedziï¿½ dla rysujï¿½cego poniewaï¿½ zgadujï¿½cy nie rysuje
+            forDrawerPanel.setVisibility(View.VISIBLE);
+            answerPanel.setVisibility(View.GONE);
+    	}
+    	else{
+    		paintView.setIsEnabled(false);
+            toolsPanel.setVisibility(View.GONE);
+            //ukrycie panelu z podpowiedziï¿½ dla rysujï¿½cego poniewaï¿½ zgadujï¿½cy nie rysuje
+            forDrawerPanel.setVisibility(View.GONE);
+            answerPanel.setVisibility(View.VISIBLE);
+    	}
+    	
+    	if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+            new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                    .execute();
+    	}
+    	else
+    	{
+    		 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                        .execute();
+    	}
+		
+	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -422,37 +468,37 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 String haslo = gra.getHaslo();
                 if(haslo==null)
                 {
-                	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-                       .execute();
-                	DeviceDetailFragment.resendWordService(true, haslo);
-                	do
-                	{
-                		haslo = gra.getHaslo();
-                	}
-                	while(gra.getHaslo()==null);
+                	Toast nullAnswer = Toast.makeText(getApplicationContext(), "null", Toast.LENGTH_SHORT);
+                    nullAnswer.show();
                 }
-                yourAnswer.replace(" ", "");
-                haslo = haslo.replace(" ", "");
-                
-                if(yourAnswer.equalsIgnoreCase(haslo)){
-                	Toast goodAnswer = Toast.makeText(getApplicationContext(), "Poprawna odpowiedŸ", Toast.LENGTH_SHORT);
-                    goodAnswer.show();
+                else
+                {
+	                yourAnswer.replace(" ", "");
+	                haslo = haslo.replace(" ", "");
+	                
+	                if(yourAnswer.equalsIgnoreCase(haslo)){
+	                	Toast goodAnswer = Toast.makeText(getApplicationContext(), "Poprawna odpowiedŸ", Toast.LENGTH_SHORT);
+	                    goodAnswer.show();
+	                }
+	                else{
+	                	Toast badAnswer = Toast.makeText(getApplicationContext(), "B³êdna odpowiedŸ", Toast.LENGTH_SHORT);
+	                	badAnswer.show();
+	                }
                 }
-                else{
-                	Toast badAnswer = Toast.makeText(getApplicationContext(), "B³êdna odpowiedŸ", Toast.LENGTH_SHORT);
-                	badAnswer.show();
-                }
-
                 //na koniec po wysï¿½aniu odpowiedzi trzeba wyczyï¿½ciï¿½ pole
                 answer.setText("");
                 break;
             case R.id.respondentGiveUp:
                 //tutaj obsï¿½uga poddania siï¿½ odpowiadajï¿½cego
-
+            	gra.nowa_runda(true);
+            	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
+            	zmianaGraczy();
                 break;
-            case R.id.drawerGiveUp:
+            case R.id.drawerGiveUp:            	
                 //tutaj obsï¿½uga poddania siï¿½ rysujï¿½cego
-
+            	gra.nowa_runda(true);
+            	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
+            	zmianaGraczy();
                 break;
 
         }

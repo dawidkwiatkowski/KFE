@@ -42,6 +42,8 @@ public class FileTransferService extends IntentService {
     public static final String ACTION_SEND_WORD = "com.app.kfe.Wifi.SEND_WORD";
     public static final String ACTION_RESEND_WORD = "com.app.kfe.Wifi.RESEND_WORD";
     public static final String ACTION_OPEN_TABLICA= "com.app.kfe.Wifi.OPEN_TABLICA";
+    public static final String ACTION_GIVE_UP= "com.app.kfe.Wifi.GIVE_UP";
+    public static final String ACTION_END_ROUND= "com.app.kfe.Wifi.END_ROUND";
     public static final String EXTRAS_FILE_PATH = "file_url";
     public static final String EXTRAS_GROUP_OWNER_ADDRESS = "go_host";
     public static final String EXTRAS_GROUP_OWNER_PORT = "go_port";
@@ -139,6 +141,16 @@ public class FileTransferService extends IntentService {
         	code = "RW";
         	
         	sendText(code,"resend", intent);
+        }
+        else if(intent.getAction().equals(ACTION_GIVE_UP)) {
+        	code = "GU";
+        	
+        	sendText(code,"giveup", intent);
+        }
+        else if(intent.getAction().equals(ACTION_END_ROUND)) {
+        	code = "ER";
+        	
+        	sendText(code,"end_round", intent);
         }
     }
     

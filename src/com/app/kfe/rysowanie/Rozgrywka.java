@@ -45,4 +45,37 @@ public class Rozgrywka {
 		return haslo;
 	}	
 	
+	public void nowa_runda(boolean isGiveUp)
+	{
+		Gracz gracz1 = lista_graczy.get(0);
+		Gracz gracz2 = lista_graczy.get(1);
+		
+		if(gracz1.is_drawing){
+			gracz1.is_drawing = false;
+			if(!isGiveUp){
+				gracz1.punkty+=1;
+			}
+		}
+		else{
+			gracz1.is_drawing = true;
+			if(!isGiveUp){
+				gracz1.punkty+=2;
+			}
+		}
+		
+		if(gracz2.is_drawing){
+			gracz2.is_drawing = false;
+			if(!isGiveUp){
+				gracz2.punkty+=1;
+			}
+		}
+		else{
+			gracz2.is_drawing = true;
+			if(!isGiveUp){
+				gracz2.punkty+=2;
+			}
+		}
+		
+	}
+	
 }
