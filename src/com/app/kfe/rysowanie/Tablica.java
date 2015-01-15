@@ -2,6 +2,7 @@ package com.app.kfe.rysowanie;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -13,14 +14,14 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.*;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import com.app.kfe.R;
+import com.app.kfe.dialogs.EndGameDialog;
 import com.app.kfe.wifi.DeviceDetailFragment;
 import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
 import com.app.kfe.wifi.DeviceListFragment;
@@ -34,7 +35,7 @@ import java.io.InputStream;
 import java.util.UUID;
 
 
-public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener, ChannelListener, DeviceActionListener {
+public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener, ChannelListener, DeviceActionListener, EndGameDialog.EndGameDialogActionsHandler {
 
     private PaintView paintView;
     private Button yellowButton;
@@ -251,6 +252,27 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.tablica, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean processItemSelection;
+        switch(item.getItemId()) {
+            case R.id.tmp_show_end_game_dialog:
+                new EndGameDialog().show(getFragmentManager(), "end_game");
+                processItemSelection = false;
+                break;
+            default:
+                processItemSelection = super.onOptionsItemSelected(item);
+        }
+        return processItemSelection;
+    }
+
+    @Override
     public void onProgressChanged(SeekBar seekBar, int progress,
                                   boolean fromUser) {
         // TODO Auto-generated method stub
@@ -370,17 +392,17 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 break;
             case R.id.confirmAnswer:
                 String yourAnswer = answer.getText().toString();
-                //tutaj obs�uga przycisku wy�lij odpowied�
+                //tutaj obsługa przycisku wyślij odpowiedź
 
-                //na koniec po wys�aniu odpowiedzi trzeba wyczy�ci� pole
+                //na koniec po wysłaniu odpowiedzi trzeba wyczyścić pole
                 answer.setText("");
                 break;
             case R.id.respondentGiveUp:
-                //tutaj obs�uga poddania si� odpowiadaj�cego
+                //tutaj obsługa poddania się odpowiadającego
 
                 break;
             case R.id.drawerGiveUp:
-                //tutaj obs�uga poddania si� rysuj�cego
+                //tutaj obsługa poddania się rysującego
 
                 break;
 
@@ -414,39 +436,39 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
     public void setBrushTool() {
         setColor();
-        paintView.setMCurrentShape(paintView.SMOOTHLINE);
+        paintView.setMCurrentShape(PaintView.SMOOTHLINE);
     }
 
     public void setLineTool() {
         setColor();
-        paintView.setMCurrentShape(paintView.LINE);
+        paintView.setMCurrentShape(PaintView.LINE);
     }
 
     public void setRectangleTool() {
         setColor();
-        paintView.setMCurrentShape(paintView.RECTANGLE);
+        paintView.setMCurrentShape(PaintView.RECTANGLE);
     }
 
     public void setCircleTool() {
         setColor();
-        paintView.setMCurrentShape(paintView.CIRCLE);
+        paintView.setMCurrentShape(PaintView.CIRCLE);
     }
 
     public void setSquareTool() {
         setColor();
-        paintView.setMCurrentShape(paintView.SQUARE);
+        paintView.setMCurrentShape(PaintView.SQUARE);
     }
 
     public void setTriangleTool() {
         setColor();
-        paintView.setMCurrentShape(paintView.TRIANGLE);
+        paintView.setMCurrentShape(PaintView.TRIANGLE);
         paintView.resetTriangle();
     }
 
     public void setEraserTool() {
         drawPaint.setColor(Color.WHITE);
         canvasPaint.setColor(Color.WHITE);
-        paintView.setMCurrentShape(paintView.SMOOTHLINE);
+        paintView.setMCurrentShape(PaintView.SMOOTHLINE);
     }
 
     public void newImage() {
@@ -529,4 +551,13 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
     }
 
+    @Override
+    public void onGameRerunAck(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onGameRerunNack(DialogFragment dialog) {
+
+    }
 }
