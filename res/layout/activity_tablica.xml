@@ -196,11 +196,20 @@
 
     <RelativeLayout
         android:id="@+id/answerRelativeLayout"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="30dp"
+        
         android:layout_alignParentBottom="true"
         android:background="@color/blackColor" >
-
+		<Button
+            android:id="@+id/confirmAnswer"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/respondentGiveUp"
+            
+            android:background="@drawable/button"
+            android:text="@string/sendAnswer" />
         <Button
             android:id="@+id/respondentGiveUp"
             android:layout_width="100dp"
@@ -262,14 +271,7 @@
             android:background="@drawable/button"
             android:text="@string/give_up" />
 
-        <Button
-            android:id="@+id/confirmAnswer"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/drawerGiveUp"
-            android:background="@drawable/button"
-            android:text="@string/sendAnswer" />
+        
 
     </RelativeLayout>
 

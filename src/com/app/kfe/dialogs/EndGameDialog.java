@@ -27,8 +27,8 @@ public class EndGameDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Game over")
-                .setMessage("New turn?");
+        builder.setTitle("Gracz\t\tPunkty\t\tRysuj¹cy")
+                .setMessage("Gracz1\t\t2\t\t\t\t\t\ttak \nGracz2\t\t4\t\t\t\t\t\tnie\n\nCzy chcesz kontynuowac gre?");
         builder.setPositiveButton("YES!", new DialogInterface.OnClickListener() {
 
             @Override

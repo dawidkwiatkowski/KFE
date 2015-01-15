@@ -503,16 +503,22 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     @Override
     protected void onResume() {
         super.onResume();
-        channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
-        receiver2 = WiFiDirectBroadcastReceiver.getInstance(WiFiDirectActivity.manager, channel2, this);
-        registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
+        if(isGame)
+        {
+	        channel2 = WiFiDirectActivity.manager.initialize(this, getMainLooper(), null);
+	        receiver2 = WiFiDirectBroadcastReceiver.getInstance(WiFiDirectActivity.manager, channel2, this);
+	        registerReceiver(receiver2, WiFiDirectActivity.intentFilter);
+        }
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        if(isGame)
+        {
         unregisterReceiver(receiver2);
+        }
     }
 
     public void setIsWifiP2pEnabled(boolean isWifiP2pEnabled) {
