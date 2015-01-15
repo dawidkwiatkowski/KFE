@@ -72,7 +72,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     private Button respondentGiveUp;
     private TextView word;
 
-    static Rozgrywka gra = new Rozgrywka();
+    public static Rozgrywka gra = new Rozgrywka();
     public static Activity activity;
 
     public static boolean isGame = false;
@@ -197,7 +197,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 gracz_1.is_drawing = true;
                 gra.getAllHasla(this);
                 gra.losuj_haslo();
-                DeviceDetailFragment.sendWordService(false, gra.haslo);
+                
+                DeviceDetailFragment.sendWordService(false, gra.getHaslo());
 
                 //ustawienie hasï¿½a do podpowiadania
 
@@ -272,7 +273,6 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 dialog.cancel();
             }
         });
-
 
     }
 
@@ -418,6 +418,30 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             case R.id.confirmAnswer:
                 String yourAnswer = answer.getText().toString();
                 //tutaj obsï¿½uga przycisku wyï¿½lij odpowiedï¿½
+                
+                String haslo = gra.getHaslo();
+                if(haslo==null)
+                {
+                	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                       .execute();
+                	DeviceDetailFragment.resendWordService(true, haslo);
+                	do
+                	{
+                		haslo = gra.getHaslo();
+                	}
+                	while(gra.getHaslo()==null);
+                }
+                yourAnswer.replace(" ", "");
+                haslo = haslo.replace(" ", "");
+                
+                if(yourAnswer.equalsIgnoreCase(haslo)){
+                	Toast goodAnswer = Toast.makeText(getApplicationContext(), "Poprawna odpowiedŸ", Toast.LENGTH_SHORT);
+                    goodAnswer.show();
+                }
+                else{
+                	Toast badAnswer = Toast.makeText(getApplicationContext(), "B³êdna odpowiedŸ", Toast.LENGTH_SHORT);
+                	badAnswer.show();
+                }
 
                 //na koniec po wysï¿½aniu odpowiedzi trzeba wyczyï¿½ciï¿½ pole
                 answer.setText("");

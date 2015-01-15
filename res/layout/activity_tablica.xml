@@ -207,9 +207,10 @@
             android:layout_height="30dp"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/respondentGiveUp"
-            
+            android:layout_marginRight="10dp"
             android:background="@drawable/button"
             android:text="@string/sendAnswer" />
+
         <Button
             android:id="@+id/respondentGiveUp"
             android:layout_width="100dp"
@@ -225,7 +226,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/respondentGiveUp"
+            android:layout_toLeftOf="@+id/confirmAnswer"
             android:ems="10"
             android:hint="@string/answerText"
             android:textSize="15dp" />

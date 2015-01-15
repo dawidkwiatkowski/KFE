@@ -284,17 +284,38 @@ public static void sendGamerNameService(){
 	}
 
 	public static void sendWordService(boolean is_owner, String haslo ){
-		
-		//DeviceDetailFragment.device = DeviceListFragment.getDevice();
-		
+				
 		localIP = Utils.getLocalIPAddress();
 		DeviceDetailFragment.haslo = haslo;	
 		Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
 	    serviceIntent.setAction(FileTransferService.ACTION_SEND_WORD);
 	    serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
-	    //serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
-	    		//DeviceDetailFragment.info.groupOwnerAddress.getHostAddress());
-	    //serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+
+	    
+	    if(localIP.equals(IP_SERVER)){
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+	    	}else{
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, IP_SERVER);
+	    	}
+	    if(is_owner)
+	    {
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+	    }
+	    else
+	    {
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+	    }
+	    Tablica.activity.startService(serviceIntent); 
+	}
+	
+	public static void resendWordService(boolean is_owner, String haslo ){
+		
+		localIP = Utils.getLocalIPAddress();
+		DeviceDetailFragment.haslo = haslo;	
+		Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
+	    serviceIntent.setAction(FileTransferService.ACTION_RESEND_WORD);
+	    serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
+
 	    
 	    if(localIP.equals(IP_SERVER)){
 	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
@@ -363,11 +384,6 @@ public static void sendGamerNameService(){
 	                byte[] receivedByteArray = Tablica.convertInputStreamToByteArray(inputstream);
 	                code = new String(getCodeByteArray(receivedByteArray));
 	                
-//	                if(code == null){
-//	                	code = getStringFromInputStream(inputstream);
-//	                	serverSocket.close();
-//		                return result;
-//	                }
 	                if(code.equals("SN")){
 	                	opponent = new String (getMessageByteArray(receivedByteArray));
 	                	
@@ -385,29 +401,11 @@ public static void sendGamerNameService(){
 	                else if(code.equals("SW"))
 	                {
 	                	haslo = new String (getMessageByteArray(receivedByteArray));
+	                }	               
+	                else if(code.equals("RW"))
+	                {
+	                	result = "resend";
 	                }
-	                
-//	                if(opponent == null)
-//	                {
-//		                	try                
-//		                {
-//		                	result = getStringFromInputStream(inputstream);
-//		                }
-//		                catch(Exception e){
-//		                	//result = "canva";
-//		                }
-//		                	opponent = result;  
-//	                }
-//	                
-//	                else
-	                //{                 
-//	                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
-//		                
-//		                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
-//		                result = "canva";
-//		                if( DeviceDetailFragment.bm != null)
-//		                	result = "canva";	                           
-		             //}
 	                
 	                serverSocket.close();
 	                return result;
@@ -443,9 +441,9 @@ public static void sendGamerNameService(){
 	        	{
 	        		Tablica.set_haslo(haslo);
 	        	}
-	        	else
+	        	else if(code.equals("RW"))
 	        	{
-	        		open_tablica();
+	        	  DeviceDetailFragment.sendWordService(false, Tablica.gra.getHaslo());
 	        	}
 	        }
 
@@ -625,33 +623,7 @@ public static void sendGamerNameService(){
                 String result="aa";
                 byte[] receivedByteArray = Tablica.convertInputStreamToByteArray(inputstream);
                 code = new String(getCodeByteArray(receivedByteArray));
-//                if(WiFiDirectActivity.co_to.equals("tablica"))
-//                {
-//	                	try                
-//	                {
-//	                	result = getStringFromInputStream(inputstream);
-//	                }
-//	                catch(Exception e){
-//	                	//result = "canva";
-//	                }
-//	                	clientIP = result.split(":")[0];
-//	                	opponent = result.split(":")[1];
-//                }
-//                else
-//                {                 
-//                	byte[] array = Tablica.convertInputStreamToByteArray(inputstream);
-//	                
-//	                DeviceDetailFragment.bm = BitmapFactory.decodeByteArray(array , 0, array.length);
-//	                result = "canva";
-//	                if( DeviceDetailFragment.bm != null)
-//	                	result = "canva";	                           
-//	             }
-                
-//                if(code == null){
-//                	code = getStringFromInputStream(inputstream);
-//                	serverSocket.close();
-//                    return result;
-//                }
+
                 if(code.equals("OT")){
                 	String temp = new String (getMessageByteArray(receivedByteArray));
                 	clientIP = temp.split(":")[0];
@@ -709,10 +681,7 @@ public static void sendGamerNameService(){
         	{
         		Tablica.set_haslo(haslo);
         	}
-//        	else
-//        	{
-//        		open_tablica();
-//        	}
+        	
         	
         
         }
