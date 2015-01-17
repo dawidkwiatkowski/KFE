@@ -38,7 +38,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.app.kfe.R;import com.app.kfe.rysowanie.PaintView;
+import com.app.kfe.R;import com.app.kfe.dialogs.EndGameDialog;
+import com.app.kfe.rysowanie.PaintView;
 import com.app.kfe.rysowanie.Tablica;
 import com.app.kfe.wifi.FileTransferService;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
@@ -366,7 +367,30 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	    Tablica.activity.startService(serviceIntent); 
 	}
 	
-	
+	public static void sendEndGameService(boolean is_owner ){
+		
+		localIP = Utils.getLocalIPAddress();
+		
+		Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
+	    serviceIntent.setAction(FileTransferService.ACTION_LEAVE_GAME);
+	    serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
+
+	    
+	    if(localIP.equals(IP_SERVER)){
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+	    	}else{
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, IP_SERVER);
+	    	}
+	    if(is_owner)
+	    {
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+	    }
+	    else
+	    {
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+	    }
+	    Tablica.activity.startService(serviceIntent); 
+	}
 	
 	 public static class ForClientServerAsyncTask extends AsyncTask<Void, Void, String> {
 
@@ -449,6 +473,10 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	                {
 	                	result = new String (getMessageByteArray(receivedByteArray));
 	                }
+	                else if(code.equals("LG"))
+	                {
+	                	result = "endgame";
+	                }
 	                
 	                serverSocket.close();
 	                return result;
@@ -495,6 +523,7 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        		Tablica.gra.setHaslo(result);
 	        		Tablica.tablica.zmianaGraczy();
 	        		Tablica.tablica.newImage();
+	        		Tablica.tablica.show_endgame();
 	        	}
 	        	 else if(code.equals("ER"))
                 {
@@ -502,13 +531,18 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        		 Tablica.gra.nowa_runda(false);
 	        		 Tablica.gra.setHaslo(result);
 	        		 Tablica.tablica.zmianaGraczy();
+	        		 Tablica.tablica.newImage();
+	        		 Tablica.tablica.show_endgame();
                 }
 	        	 else if(code.equals("SN"))
 	        	 {
 	        		 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                      .execute();
 	        	 }
-	        	 
+	        	 else if(code.equals("LG"))
+	                {
+	                	Tablica.tablica.finish();
+	                }
 	        }
 
 	        /*
@@ -718,6 +752,10 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
                 {
 	        		result = new String (getMessageByteArray(receivedByteArray));
                 }
+	        	 else if(code.equals("LG"))
+	                {
+	                	result = "endgame";
+	                }
                 serverSocket.close();
                 return result;
                 
@@ -758,14 +796,20 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
         		Tablica.gra.setHaslo(result);
         		Tablica.tablica.zmianaGraczy();
         		Tablica.tablica.newImage();
+        		 Tablica.tablica.show_endgame();
         	}
         	 else if(code.equals("ER"))
              {
 	        		 Tablica.gra.nowa_runda(false);
 	        		 Tablica.gra.setHaslo(result);
 	        		 Tablica.tablica.zmianaGraczy();
+	        		 Tablica.tablica.newImage();
+	        		 Tablica.tablica.show_endgame();
              }
-        	
+        	 else if(code.equals("LG"))
+             {
+             	Tablica.tablica.finish();
+             }
         	
         
         }

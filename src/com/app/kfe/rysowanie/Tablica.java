@@ -309,6 +309,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
          	gra.nowa_runda(true);
          	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
          	zmianaGraczy();
+         	new EndGameDialog().show(getFragmentManager(), "end_game");
 //         	final Handler handler = new Handler();
 //            handler.postDelayed(new Runnable() {
 //                @Override
@@ -567,6 +568,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	                    gra.nowa_runda(false);
 	                	zmianaGraczy();
 	                	Tablica.tablica.newImage();
+	                	new EndGameDialog().show(getFragmentManager(), "end_game");
 	                }
 	                else{
 	                	Toast badAnswer = Toast.makeText(getApplicationContext(), "B≥Ídna odpowiedü", Toast.LENGTH_SHORT);
@@ -608,7 +610,11 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
         paintView.destroyDrawingCache();
     }
-
+    
+    public void show_endgame()
+    {
+    	 new EndGameDialog().show(getFragmentManager(), "end_game");
+    }
     public void setColor() {
         drawPaint.setColor(brushColor);
         canvasPaint.setColor(brushColor);
@@ -793,6 +799,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
     @Override
     public void onGameRerunNack(DialogFragment dialog) {
-
+    	DeviceDetailFragment.sendEndGameService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
+    	finish();
+    	
     }
 }

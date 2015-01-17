@@ -4,7 +4,7 @@ public class Gracz {
 
 	public String nazwa_gracza;
 	public int punkty=0;
-	boolean is_drawing=false;
+	public boolean is_drawing=false;
 	
 	public Gracz(String nazwa)
 	{
