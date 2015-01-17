@@ -145,12 +145,12 @@ public class FileTransferService extends IntentService {
         else if(intent.getAction().equals(ACTION_GIVE_UP)) {
         	code = "GU";
         	
-        	sendText(code,"giveup", intent);
+        	sendText(code,Tablica.gra.getHaslo(), intent);
         }
         else if(intent.getAction().equals(ACTION_END_ROUND)) {
         	code = "ER";
         	
-        	sendText(code,"end_round", intent);
+        	sendText(code,Tablica.gra.getHaslo(), intent);
         }
     }
     

@@ -131,35 +131,48 @@ public class PaintView extends View {
 		canvasWidth = w;
 	}
 	
+	
 	public void odbieraj(Bitmap bm)
 	{
-		try
-		{
-		Bitmap workingBitmap = Bitmap.createBitmap(bm);
-		workingBitmap = getResizedBitmap(workingBitmap,canvasHeight,canvasWidth);
 		
-		Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);		
-		drawCanvas.drawBitmap(mutableBitmap, 0, 0,null);
-		invalidate();
-		}
-		catch(Exception kurcze)
-		{
+		
+			try
+			{
+			Bitmap workingBitmap = Bitmap.createBitmap(bm);
+			workingBitmap = getResizedBitmap(workingBitmap,canvasHeight,canvasWidth);
+			
+			Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);		
+			drawCanvas.drawBitmap(mutableBitmap, 0, 0,null);
+			invalidate();
+			}
+			catch(Exception kurcze)
+			{
+				Tablica.tablica.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);		
+				 if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+			        new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+			                    .execute();
+					 //Tablica.server_task.execute();
+			        }
+				 else
+				 {
+					 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+	                    .execute();
+					 //Tablica.client_task.execute();
+				 }
+			}
 			Tablica.tablica.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);		
 			 if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
 		        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
 		                    .execute();
+				// Tablica.server_task.execute();
 		        }
-		}
-		Tablica.tablica.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);		
-		 if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
-	        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-	                    .execute();
-	        }
-		 else
-		 {
-				new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+			 else
+			 {
+					new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
         		.execute();
-		 }
+				// Tablica.client_task.execute();
+			 }
+		
 		
 			
 		 
@@ -203,11 +216,17 @@ public class PaintView extends View {
 				//Tablica.activity.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);	
 				if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner)
 				{
-				DeviceDetailFragment.sendCanvasService(true);
+					DeviceDetailFragment.sendCanvasService(true);
+					new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+	        		.execute();
+				//	Tablica.server_task.execute();
 				}
 				else
 				{
 					DeviceDetailFragment.sendCanvasService(false);
+					new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+	        		.execute();
+				//	Tablica.client_task.execute();
 				}
 				}
 			}

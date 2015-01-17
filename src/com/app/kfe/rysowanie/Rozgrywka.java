@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import sqlite.helper.DatabaseHelper;
 import sqlite.model.Haslo;
@@ -27,7 +28,24 @@ public class Rozgrywka {
 	public void losuj_haslo()
 	{
 		Random rand = new Random();
-		int i = rand.nextInt(listaHasel.size());
+		int i;
+		int licznik=0;
+		Toast msg = null;
+		do
+		{
+			i = rand.nextInt(listaHasel.size());
+			licznik++;
+			if(licznik > 5)
+			{
+				
+				msg = msg.makeText(Tablica.tablica, "Wykorzystano ju¿ wszystkie has³a, resetujê" , msg.LENGTH_SHORT);
+				msg.show();
+				listaUzytychHasel.clear();
+				licznik=0;
+			}
+		}
+		while(listaUzytychHasel.contains(i));
+		
 		this.haslo =  (listaHasel.get(i).getHaslo());
 		listaUzytychHasel.add(i);
 		
@@ -41,15 +59,25 @@ public class Rozgrywka {
 		//return db.getAllHasla();
 	}
 	
+	public void add_used_haslo()
+	{
+		listaUzytychHasel.add(listaHasel.lastIndexOf(haslo));
+	}
+	
 	public String getHaslo(){
 		return haslo;
 	}	
+	
+	public void setHaslo(String haslo)
+	{
+		this.haslo = haslo;
+	}
 	
 	public void nowa_runda(boolean isGiveUp)
 	{
 		Gracz gracz1 = lista_graczy.get(0);
 		Gracz gracz2 = lista_graczy.get(1);
-		
+		Tablica.tablica.newImage();
 		if(gracz1.is_drawing){
 			gracz1.is_drawing = false;
 			if(!isGiveUp){

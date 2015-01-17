@@ -2,16 +2,19 @@ package com.app.kfe.rysowanie;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.Camera.Size;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -25,6 +28,7 @@ import com.app.kfe.R;
 import com.app.kfe.dialogs.EndGameDialog;
 import com.app.kfe.dialogs.EndGameDialog.EndGameDialogActionsHandler;
 import com.app.kfe.wifi.DeviceDetailFragment;
+import com.app.kfe.wifi.DeviceDetailFragment.ForClientServerAsyncTask;
 import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
 import com.app.kfe.wifi.DeviceListFragment;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
@@ -34,6 +38,7 @@ import com.app.kfe.wifi.WiFiDirectBroadcastReceiver;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.FormatterClosedException;
 import java.util.UUID;
 
 
@@ -64,7 +69,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     public static Tablica tablica = null;
     public static Channel channel2;
     public static BroadcastReceiver receiver2 = null;
-
+    public static boolean ifGiveUp = false;
     private RelativeLayout answerPanel;
     private Button confirmAnwer;
     private Button drawerGiveUp;
@@ -76,8 +81,11 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
     public static Rozgrywka gra = new Rozgrywka();
     public static Activity activity;
-
+    Builder giveUpDialog;
     public static boolean isGame = false;
+    public static AsyncTask<Void, Void, String> server_task;
+    public static AsyncTask<Void, Void, String> client_task;
+    
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +112,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         respondentGiveUp.setVisibility(View.GONE);
         answer.setVisibility(View.GONE);
         word.setVisibility(View.GONE);
-
+        giveUpDialog  = new AlertDialog.Builder(this);
 //----------------------Rozgrywka---------------------------		
 
         toolsPanel = (SlidingDrawer) findViewById(R.id.toolsPanel);
@@ -170,9 +178,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             respondentGiveUp.setOnClickListener(this);
 
             if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
-                new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+               new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                         .execute();
-
+            	
                 DeviceDetailFragment.sendGamerNameService();
 
                 gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
@@ -180,15 +188,26 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
                 paintView.setIsEnabled(false);
                 toolsPanel.setVisibility(View.GONE);
+                if (gra.listaHasel.isEmpty())
+                {
+                	gra.getAllHasla(this);
+                }
                 //ukrycie panelu z podpowiedziï¿½ dla rysujï¿½cego poniewaï¿½ zgadujï¿½cy nie rysuje
                 forDrawerPanel.setVisibility(View.GONE);
             } else {
+            	
+            	//client_task  = new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text));
+            	//client_task.execute();
+            	
                 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                         .execute();
                 gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
                 gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
                 gracz_1.is_drawing = true;
-                gra.getAllHasla(this);
+                if (gra.listaHasel.isEmpty())
+                {
+                	gra.getAllHasla(this);
+                }
                 gra.losuj_haslo();
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -206,8 +225,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
                 //ukrycie panelu sï¿½uï¿½ï¿½cego do odpowiadania poniewaï¿½ rysujï¿½cy nie odpowiada
                 answerPanel.setVisibility(View.GONE);
-                new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+               new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                 .execute();
+                //client_task.execute();
             }
         }
 //			else
@@ -275,7 +295,40 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 dialog.cancel();
             }
         });
+        
+   	
+	 giveUpDialog.setTitle("KFE");
+	 giveUpDialog.setMessage("Czy napewno chcesz siê poddaæ?");
+	 
+	 giveUpDialog.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+         @Override
+         public void onClick(DialogInterface dialog, int which) {
+             // TODO Auto-generated method stub
+        	
+        	gra.losuj_haslo();
+         	gra.nowa_runda(true);
+         	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
+         	zmianaGraczy();
+//         	final Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    // Do something after 5s = 5000ms
+//                	Tablica.tablica.newImage();
+//                }
+//            }, 1000);
+         	
+         	
+         }
+     });
+     giveUpDialog.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
 
+         @Override
+         public void onClick(DialogInterface dialog, int which) {
+             // TODO Auto-generated method stub
+             dialog.cancel();
+         }
+     });
     }
     
     public void zmianaGraczy(){
@@ -286,6 +339,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             //ukrycie panelu z podpowiedziï¿½ dla rysujï¿½cego poniewaï¿½ zgadujï¿½cy nie rysuje
             forDrawerPanel.setVisibility(View.VISIBLE);
             answerPanel.setVisibility(View.GONE);
+            word.setText(gra.getHaslo());
     	}
     	else{
     		paintView.setIsEnabled(false);
@@ -295,29 +349,32 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             answerPanel.setVisibility(View.VISIBLE);
     	}
     	
-    	if(gra.lista_graczy.get(1).is_drawing){
-    		paintView.setIsEnabled(true);
-            toolsPanel.setVisibility(View.VISIBLE);
-            //ukrycie panelu z podpowiedziï¿½ dla rysujï¿½cego poniewaï¿½ zgadujï¿½cy nie rysuje
-            forDrawerPanel.setVisibility(View.VISIBLE);
-            answerPanel.setVisibility(View.GONE);
-    	}
-    	else{
-    		paintView.setIsEnabled(false);
-            toolsPanel.setVisibility(View.GONE);
-            //ukrycie panelu z podpowiedziï¿½ dla rysujï¿½cego poniewaï¿½ zgadujï¿½cy nie rysuje
-            forDrawerPanel.setVisibility(View.GONE);
-            answerPanel.setVisibility(View.VISIBLE);
-    	}
+//    	if(gra.lista_graczy.get(1).is_drawing){
+//    		paintView.setIsEnabled(true);
+//            toolsPanel.setVisibility(View.VISIBLE);
+//            //ukrycie panelu z podpowiedziï¿½ dla rysujï¿½cego poniewaï¿½ zgadujï¿½cy nie rysuje
+//            forDrawerPanel.setVisibility(View.VISIBLE);
+//            answerPanel.setVisibility(View.GONE);
+//            word.setText(gra.getHaslo());
+//    	}
+//    	else{
+//    		paintView.setIsEnabled(false);
+//            toolsPanel.setVisibility(View.GONE);
+//            //ukrycie panelu z podpowiedziï¿½ dla rysujï¿½cego poniewaï¿½ zgadujï¿½cy nie rysuje
+//            forDrawerPanel.setVisibility(View.GONE);
+//            answerPanel.setVisibility(View.VISIBLE);
+//    	}
     	
     	if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
             new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-                    .execute();
+                   .execute();
+    		//server_task.execute();
     	}
     	else
     	{
-    		 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-                        .execute();
+    		new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                      .execute();
+    		//client_task.execute();
     	}
 		
 	}
@@ -358,8 +415,19 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
     public static void set_haslo(String haslo) {
         gra.haslo = haslo;
-        new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-                .execute();
+        Tablica.gra.add_used_haslo();
+        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+	        new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+	                .execute();
+        	
+        	
+        }
+        else
+        {
+        new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+            .execute();
+        	
+        }
     }
 
     public static byte[] convertInputStreamToByteArray(InputStream inputStream) {
@@ -469,16 +537,36 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 if(haslo==null)
                 {
                 	Toast nullAnswer = Toast.makeText(getApplicationContext(), "null", Toast.LENGTH_SHORT);
-                    nullAnswer.show();
+                	nullAnswer.show();
+                	DeviceDetailFragment.resendWordService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, "resend");
+                	final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Do something after 5s = 5000ms
+                        	DeviceDetailFragment.sendWordService(false, gra.getHaslo());
+                        }
+                    }, 1000);
+                    break;
                 }
                 else
                 {
-	                yourAnswer.replace(" ", "");
+                	yourAnswer = yourAnswer.trim();
+	                yourAnswer = yourAnswer.replace(" ", "");
+	                yourAnswer = normalize(yourAnswer);
+	                
+	                haslo = haslo.trim();
 	                haslo = haslo.replace(" ", "");
+	                haslo = normalize(haslo);
 	                
 	                if(yourAnswer.equalsIgnoreCase(haslo)){
 	                	Toast goodAnswer = Toast.makeText(getApplicationContext(), "Poprawna odpowiedŸ", Toast.LENGTH_SHORT);
 	                    goodAnswer.show();
+	                    gra.losuj_haslo();
+	                    DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, false);
+	                    gra.nowa_runda(false);
+	                	zmianaGraczy();
+	                	Tablica.tablica.newImage();
 	                }
 	                else{
 	                	Toast badAnswer = Toast.makeText(getApplicationContext(), "B³êdna odpowiedŸ", Toast.LENGTH_SHORT);
@@ -490,15 +578,12 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 break;
             case R.id.respondentGiveUp:
                 //tutaj obsï¿½uga poddania siï¿½ odpowiadajï¿½cego
-            	gra.nowa_runda(true);
-            	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
-            	zmianaGraczy();
+            
+                giveUpDialog.show();
                 break;
             case R.id.drawerGiveUp:            	
                 //tutaj obsï¿½uga poddania siï¿½ rysujï¿½cego
-            	gra.nowa_runda(true);
-            	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
-            	zmianaGraczy();
+            	giveUpDialog.show();
                 break;
 
         }
@@ -581,6 +666,53 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         }
 
     }
+    
+    public String normalize(String slowo)
+    {
+    	
+    	StringBuilder normalized_slowo = new StringBuilder(slowo);
+    	for(int i=0; i < slowo.length() ; i++)
+    	{
+	    	if(normalized_slowo.charAt(i)=='¿')
+	    	{
+	    		normalized_slowo.setCharAt(i, 'z');
+	    	}
+	    	else if(normalized_slowo.charAt(i)=='Ÿ')
+	    	{
+	    		normalized_slowo.setCharAt(i, 'z');
+	    	}
+	    	else if(normalized_slowo.charAt(i)=='ñ')
+	    	{
+	    		normalized_slowo.setCharAt(i, 'n');
+	    	}
+	    	else if(normalized_slowo.charAt(i)=='³')
+	    	{
+	    		normalized_slowo.setCharAt(i, 'l');
+	    	}
+	    	else if(normalized_slowo.charAt(i)=='ó')
+	    	{
+	    		normalized_slowo.setCharAt(i, 'o');
+	    	}
+	    	else if(normalized_slowo.charAt(i)=='œ')
+	    	{
+	    		normalized_slowo.setCharAt(i, 's');
+	    	}
+	    	else if(normalized_slowo.charAt(i)=='¹')
+	    	{
+	    		normalized_slowo.setCharAt(i, 'a');
+	    	}
+	    	else if(normalized_slowo.charAt(i)=='ê')
+	    	{
+	    		normalized_slowo.setCharAt(i, 'e');
+	    	}
+	    	else if(normalized_slowo.charAt(i)=='æ')
+	    	{
+	    		normalized_slowo.setCharAt(i, 'c');
+	    	}
+    	}
+		return normalized_slowo.toString();
+    	
+    }
 
     @Override
     protected void onPause() {
@@ -646,8 +778,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         // server. The file server is single threaded, single connection server
         // socket.
         if (info.groupFormed && info.isGroupOwner) {
-            new TextServerAsyncTask(this, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-                    .execute();
+           new TextServerAsyncTask(this, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                   .execute();
+        	//server_task.execute();
         }
 
 

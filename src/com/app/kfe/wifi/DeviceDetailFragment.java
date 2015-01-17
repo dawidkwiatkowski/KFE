@@ -443,11 +443,11 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	                }
 	                else if(code.equals("GU"))
 	                {
-	                	result = "giveup";
+	                	result = new String (getMessageByteArray(receivedByteArray));
 	                }
 	                else if(code.equals("ER"))
 	                {
-	                	result = "end_round";
+	                	result = new String (getMessageByteArray(receivedByteArray));
 	                }
 	                
 	                serverSocket.close();
@@ -483,6 +483,7 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        	else if(code.equals("SW"))
 	        	{
 	        		Tablica.set_haslo(haslo);
+	        		
 	        	}
 	        	else if(code.equals("RW"))
 	        	{
@@ -491,13 +492,23 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        	else if (code.equals("GU"))
 	        	{
 	        		Tablica.gra.nowa_runda(true);
+	        		Tablica.gra.setHaslo(result);
 	        		Tablica.tablica.zmianaGraczy();
+	        		Tablica.tablica.newImage();
 	        	}
 	        	 else if(code.equals("ER"))
                 {
+	        		 
 	        		 Tablica.gra.nowa_runda(false);
+	        		 Tablica.gra.setHaslo(result);
 	        		 Tablica.tablica.zmianaGraczy();
                 }
+	        	 else if(code.equals("SN"))
+	        	 {
+	        		 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                     .execute();
+	        	 }
+	        	 
 	        }
 
 	        /*
@@ -701,11 +712,11 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
                 }
                 else if (code.equals("GU"))
 	        	{
-	        		result = "give_up";
+	        		result = new String (getMessageByteArray(receivedByteArray));
 	        	}
 	        	 else if(code.equals("ER"))
                 {
-	        		result = "end_round";
+	        		result = new String (getMessageByteArray(receivedByteArray));
                 }
                 serverSocket.close();
                 return result;
@@ -744,13 +755,17 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
         	else if (code.equals("GU"))
         	{
         		Tablica.gra.nowa_runda(true);
+        		Tablica.gra.setHaslo(result);
         		Tablica.tablica.zmianaGraczy();
+        		Tablica.tablica.newImage();
         	}
         	 else if(code.equals("ER"))
-            {
-        		 Tablica.gra.nowa_runda(false);
-        		 Tablica.tablica.zmianaGraczy();
-            }
+             {
+	        		 Tablica.gra.nowa_runda(false);
+	        		 Tablica.gra.setHaslo(result);
+	        		 Tablica.tablica.zmianaGraczy();
+             }
+        	
         	
         
         }
