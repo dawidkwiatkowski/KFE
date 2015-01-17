@@ -57,7 +57,7 @@
                     android:layout_height="40dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/button"
-                    android:src="@drawable/rectangle" />
+                    android:src="@drawable/line" />
 
                 <ImageButton
                     android:id="@+id/rectangleTool"
@@ -73,7 +73,7 @@
                     android:layout_height="40dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/button"
-                    android:src="@drawable/rectangle" />
+                    android:src="@drawable/square" />
 
                 <ImageButton
                     android:id="@+id/circleTool"
@@ -81,7 +81,7 @@
                     android:layout_height="40dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/button"
-                    android:src="@drawable/rectangle" />
+                    android:src="@drawable/circle" />
 
                 <ImageButton
                     android:id="@+id/triangleTool"
@@ -89,7 +89,7 @@
                     android:layout_height="40dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/button"
-                    android:src="@drawable/rectangle" />
+                    android:src="@drawable/triangle" />
 
                 <ImageButton
                     android:id="@+id/eraserTool"
