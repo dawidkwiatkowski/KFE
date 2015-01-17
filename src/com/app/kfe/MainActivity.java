@@ -64,15 +64,50 @@ public class MainActivity extends Activity {
         exit_btn = (Button) findViewById(R.id.exit_btn);
         registerForContextMenu(draw2_btn);
         draw2_btn.setLongClickable(isRestricted());
-        draw2_btn.setOnClickListener(new Button.OnClickListener() {
+//        draw2_btn.setOnClickListener(new Button.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                // TODO Auto-generated method stub
+//
+//                openContextMenu(draw2_btn);
+//
+//
+//            }
+//        });
+        
+        draw2_btn.setOnTouchListener(new OnTouchListener() {
 
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
 
-                openContextMenu(draw2_btn);
+            private Rect rect;    // Variable rect to hold the bounds of the view
 
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    // Construct a rect of the view's bounds
+                    rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+                    draw2_btn.setBackgroundColor(0);
+                    draw2_btn.setText("GRAJ");
+                    touchStarted = true;
 
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                	draw2_btn.setBackgroundResource(R.drawable.draw);
+                	draw2_btn.setText("");
+                    if (touchStarted) {
+
+                    	openContextMenu(draw2_btn);
+                        return true;
+                    }
+                }
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    if (!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())) {
+                    	draw2_btn.setBackgroundResource(R.drawable.draw);
+                    	draw2_btn.setText("");
+                        touchStarted = false;
+                        return true;
+                    }
+                }
+                return false;
             }
         });
 
@@ -122,7 +157,7 @@ public class MainActivity extends Activity {
                     // Construct a rect of the view's bounds
                     rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
                     exit_btn.setBackgroundColor(0);
-                    exit_btn.setText("Wyj≈õcie");
+                    exit_btn.setText("Wyjúcie");
                     touchStarted = true;
 
                 }
