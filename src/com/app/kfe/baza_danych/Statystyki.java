@@ -3,6 +3,7 @@ package com.app.kfe.baza_danych;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -36,25 +37,35 @@ public class Statystyki extends Activity  {
 	        setContentView(R.layout.activity_score);
 	        mainListView = (ListView) findViewById( R.id.statListView );  
 	        db = new DatabaseHelper(getApplicationContext());
+			int pkt=20;
+			int pkt2=30;
+	        Gracz player1 = new Gracz("pk1");
+	    	 Gracz player2 = new Gracz("pk2");
+	        db.createGracz(player1);
+			db.createGracz(player2);
+			
+			Rozgrywka gra1 = new Rozgrywka();
+			db.createRozgrywka(gra1, new long[] {db.getIDGracza("pk1"),db.getIDGracza("pk2")},new int[]{pkt,pkt2});
 	        
 	        final List<Rozgrywka> rozgrywki=db.getAllRozgrywka();
-	    
-	       
-	        Rozgrywka gra1 = new Rozgrywka();
-			int pkt=10;
-			List<Gracz> allGracze = db.getAllGracze();
-				
-			int ostatniGracz=0;
-						if (allGracze != null && !allGracze.isEmpty()) {
-				 ostatniGracz=allGracze.size()-1;
-				}
-			
-			if(!allGracze.isEmpty()){
-			int id_last_player=allGracze.get(ostatniGracz).getId();
-			
-			
-			db.createRozgrywka(gra1, new long[] { id_last_player },new int[]{pkt});
-			}
+//	    
+//	       
+//	        Rozgrywka gra1 = new Rozgrywka();
+
+//			List<Gracz> allGracze = db.getAllGracze();
+//				
+//			int ostatniGracz=0;
+//						if (allGracze != null && !allGracze.isEmpty()) {
+//				 ostatniGracz=allGracze.size()-1;
+//				}
+//			
+//			if(!allGracze.isEmpty()){
+//			int id_last_player=allGracze.get(ostatniGracz).getId();
+//			
+//			
+//			db.createRozgrywka(gra1, new long[] { id_last_player },new int[]{pkt});
+//			}
+	      
 	       
 	        if (rozgrywki.size() > 0) {// sortowanie listy po datach rozgrywek
 	        	

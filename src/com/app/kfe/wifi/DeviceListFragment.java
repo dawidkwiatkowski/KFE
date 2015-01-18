@@ -95,7 +95,9 @@ public class DeviceListFragment extends ListFragment implements PeerListListener
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         WifiP2pDevice device = (WifiP2pDevice) getListAdapter().getItem(position);
-        ((DeviceActionListener) getActivity()).showDetails(device);
+        ((DeviceActionListener) getActivity()).showDetails(device);////obs³uga klikniêcia
+        
+        
     }
 
     /**

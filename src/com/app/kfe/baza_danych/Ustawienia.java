@@ -1,6 +1,7 @@
 package com.app.kfe.baza_danych;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.app.kfe.R;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import sqlite.helper.DatabaseHelper;
 import sqlite.model.Gracz;
+import sqlite.model.Rozgrywka;
 
 public class Ustawienia extends Activity {
 	
@@ -87,7 +89,24 @@ public class Ustawienia extends Activity {
     
     
     
-    
+//    public void proste_statystyki{
+//    	String nazwa_gracza;
+//    	 db = new DatabaseHelper(getApplicationContext());
+//    	 Gracz player1 = new Gracz(" nazwa_gracza");
+//    	 Gracz player2 = new Gracz(" nazwa_gracza");
+//    	 int pkt;
+//			db.createGracz(player1);
+//			db.createGracz(player2);
+//			List<Gracz> allGracze=new ArrayList<Gracz>();
+//			allGracze.add(player1);
+//			allGracze.add(player2);
+//			Rozgrywka gra1 = new Rozgrywka();
+//			db.createRozgrywka(gra1, new long[] { player1.getId(), player2.getId()},new int[]{pkt,pkt});
+//			
+//			
+//	}
+//   
+//    }
     
     
     public void addListenerOnButton() {

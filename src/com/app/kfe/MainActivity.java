@@ -71,7 +71,7 @@ draw2_btn = (Button) findViewById(R.id.draw2_btn);
 setting_btn = (Button) findViewById(R.id.setting_btn);
 score_btn = (Button) findViewById(R.id.score_btn);
 exit_btn = (Button) findViewById(R.id.exit_btn);
-final Animation animAlpha = AnimationUtils.loadAnimation(this, R.layout.anim_alpha);
+//final Animation animAlpha = AnimationUtils.loadAnimation(this, R.layout.anim_alpha);
 registerForContextMenu(draw2_btn);
 draw2_btn.setLongClickable(isRestricted());
  draw2_btn.setOnClickListener(new Button.OnClickListener() {
