@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -138,6 +139,7 @@ public class PaintView extends View {
 	public void odbieraj(Bitmap bm)
 	{
 		
+        
 		if(czyOdbierac)
 		{
 			try
@@ -178,6 +180,18 @@ public class PaintView extends View {
 			 }
 		
 		}
+		else
+		{
+			if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+	        	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+	                    .execute();
+			}
+	        	else
+	        	{
+	        		new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                    .execute();
+	        	}
+		}
 			
 		 
 	}
@@ -213,30 +227,10 @@ public class PaintView extends View {
 					onDrawTriangle(canvas);
 					break;
 			}
-			if(Tablica.isGame){
-				if(czyPrzesylac)
-				{
-					//receiver=com.app.kfe.wifi.WiFiDirectActivity.receiver;
-					//intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
-					//WiFiDirectActivity.receiver = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, WiFiDirectActivity.channel, Tablica.tablica);
-					//Tablica.activity.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);	
-					if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner)
-					{
-						DeviceDetailFragment.sendCanvasService(true);
-						new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-		        		.execute();
-					//	Tablica.server_task.execute();
-					}
-					else
-					{
-						DeviceDetailFragment.sendCanvasService(false);
-						new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-		        		.execute();
-					//	Tablica.client_task.execute();
-					}
-				}
+			
 			}
-			}
+	
+		
 		}
 	
 	
@@ -264,13 +258,46 @@ public class PaintView extends View {
 				case TRIANGLE:
 					onTouchEventTriangle(event);
 					break;
+					
+			}
+			
+				int action = MotionEventCompat.getActionMasked(event);
+
+				if(Tablica.isGame && action == event.ACTION_UP){
+					if(czyPrzesylac)
+					{
+						//receiver=com.app.kfe.wifi.WiFiDirectActivity.receiver;
+						//intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
+						//WiFiDirectActivity.receiver = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, WiFiDirectActivity.channel, Tablica.tablica);
+						//Tablica.activity.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);	
+						if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner)
+						{
+							DeviceDetailFragment.sendCanvasService(true);
+							new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+			        		.execute();
+//						//	Tablica.server_task.execute();
+						}
+						else
+						{
+							DeviceDetailFragment.sendCanvasService(false);
+							new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+			        		.execute();
+//						//	Tablica.client_task.execute();
+						}
+					}
+					else
+					{
+						DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
+					}
+				
 			}
 			return true;
 		}
 		else
 			return false;
 	}
-	
+	 
+	   
 	private void onTouchEventSmoothLine(MotionEvent event) {
 		
 		mx = touchX;
