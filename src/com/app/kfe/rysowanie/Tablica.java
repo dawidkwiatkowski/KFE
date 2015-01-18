@@ -284,6 +284,10 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             public void onClick(DialogInterface dialog, int which) {
                 // TODO Auto-generated method stub
                 newImage();
+                if(isGame)
+                {
+                	DeviceDetailFragment.sendClearScreenService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
+                }
                 dialog.cancel();
             }
         });
@@ -814,5 +818,10 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     	DeviceDetailFragment.sendEndGameService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
     	finish();
     	
+    }
+    @Override
+    public void onBackPressed() {
+    	DeviceDetailFragment.sendEndGameService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
+    	finish();
     }
 }

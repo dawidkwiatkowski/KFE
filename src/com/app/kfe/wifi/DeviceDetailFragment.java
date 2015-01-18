@@ -266,6 +266,35 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         Tablica.activity.startService(serviceIntent); 
 	}
 	
+public static void sendClearScreenService(boolean is_owner ){
+		
+		//DeviceDetailFragment.device = DeviceListFragment.getDevice();
+		
+	localIP = Utils.getLocalIPAddress();
+			
+		Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
+        serviceIntent.setAction(FileTransferService.ACTION_CLEAR_SCREEN);
+        serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
+        //serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+        		//DeviceDetailFragment.info.groupOwnerAddress.getHostAddress());
+        //serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+        
+        if(localIP.equals(IP_SERVER)){
+        	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+        	}else{
+        	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, IP_SERVER);
+        	}
+        if(is_owner)
+        {
+        	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+        }
+        else
+        {
+        	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+        }
+        Tablica.activity.startService(serviceIntent); 
+	}
+	
 public static void sendGamerNameService(){
 		
 		//DeviceDetailFragment.device = DeviceListFragment.getDevice();
@@ -477,6 +506,11 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	                {
 	                	result = "endgame";
 	                }
+	                else if(code.equals("CS"))
+	                {
+	                	result = "clear_screen";
+	                }
+	                		
 	                
 	                serverSocket.close();
 	                return result;
@@ -543,6 +577,12 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	                {
 	                	Tablica.tablica.finish();
 	                }
+	        	 else if(code.equals("CS"))
+	        	 {
+	        		 Tablica.tablica.newImage();
+	        		 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, mContentView.findViewById(R.id.status_text))
+	             	.execute();
+	        	 }
 	        }
 
 	        /*
@@ -595,78 +635,7 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 
     
 
-    /**
-     * A simple server socket that accepts connection and writes some data on
-     * the stream.
-     */
-    public static class FileServerAsyncTask extends AsyncTask<Void, Void, String> {
-
-        private Context context;
-        private TextView statusText;
-
-        /**
-         * @param context
-         * @param statusText
-         */
-        public FileServerAsyncTask(Context context, View statusText) {
-            this.context = context;
-            this.statusText = (TextView) statusText;
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                ServerSocket serverSocket = new ServerSocket(8988);
-                Log.d(WiFiDirectActivity.TAG, "Server: Socket opened");
-                Socket client = serverSocket.accept();
-                Log.d(WiFiDirectActivity.TAG, "Server: connection done");
-                final File f = new File(Environment.getExternalStorageDirectory() + "/"
-                        + context.getPackageName() + "/wifip2pshared-" + System.currentTimeMillis()
-                        + ".jpg");
-
-                File dirs = new File(f.getParent());
-                if (!dirs.exists())
-                    dirs.mkdirs();
-                f.createNewFile();
-
-                Log.d(WiFiDirectActivity.TAG, "server: copying files " + f.toString());
-                InputStream inputstream = client.getInputStream();
-                copyFile(inputstream, new FileOutputStream(f));
-                serverSocket.close();
-                return f.getAbsolutePath();
-            } catch (IOException e) {
-                Log.e(WiFiDirectActivity.TAG, e.getMessage());
-                return null;
-            }
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
-         */
-        @Override
-        protected void onPostExecute(String result) {
-            if (result != null) {
-                statusText.setText("File copied - " + result);
-                Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse("file://" + result), "image/*");
-                context.startActivity(intent);
-            }
-
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see android.os.AsyncTask#onPreExecute()
-         */
-        @Override
-        protected void onPreExecute() {
-            statusText.setText("Opening a server socket");
-        }
-
-    }
-    
+ 
     /**
      * A simple server socket that accepts connection and writes some data on
      * the stream.
@@ -753,9 +722,13 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        		result = new String (getMessageByteArray(receivedByteArray));
                 }
 	        	 else if(code.equals("LG"))
-	                {
-	                	result = "endgame";
-	                }
+                {
+                	result = "endgame";
+                }
+	        	 else if(code.equals("CS"))
+                {
+                	result = "clear_screen";
+                }
                 serverSocket.close();
                 return result;
                 
@@ -810,7 +783,12 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
              {
              	Tablica.tablica.finish();
              }
-        	
+        	 else if(code.equals("CS"))
+             {
+             	Tablica.tablica.newImage();
+             	new TextServerAsyncTask(Tablica.tablica, mContentView.findViewById(R.id.status_text))
+            	.execute();
+             }
         
         }
 
