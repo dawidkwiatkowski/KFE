@@ -10,17 +10,19 @@ import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.ImageButton;
+
 import com.app.kfe.baza_danych.Statystyki;
 import com.app.kfe.baza_danych.Ustawienia;
 import com.app.kfe.rysowanie.Tablica;
 import sqlite.helper.DatabaseHelper;
 
 public class MainActivity extends Activity {
-    private Button draw2_btn;
+    private ImageButton draw2_btn;
     //private Button dolacz_btn;
-    private Button setting_btn;
-    private Button score_btn;
-    private Button exit_btn;
+    private ImageButton setting_btn;
+    private ImageButton score_btn;
+    private ImageButton exit_btn;
     MediaPlayer mpButtonClick;
     public static final String PREFS_NAME = "MyPrefsFile";
     DatabaseHelper db;
@@ -57,166 +59,61 @@ public class MainActivity extends Activity {
     }
 
     public void addListenerOnButton() {
-        draw2_btn = (Button) findViewById(R.id.draw2_btn);
+        draw2_btn = (ImageButton) findViewById(R.id.draw2_btn);
 // dolacz_btn = (Button) findViewById(R.id.dolacz_btn);
-        setting_btn = (Button) findViewById(R.id.setting_btn);
-        score_btn = (Button) findViewById(R.id.score_btn);
-        exit_btn = (Button) findViewById(R.id.exit_btn);
+        setting_btn = (ImageButton) findViewById(R.id.setting_btn);
+        score_btn = (ImageButton) findViewById(R.id.score_btn);
+        exit_btn = (ImageButton) findViewById(R.id.exit_btn);
         registerForContextMenu(draw2_btn);
         draw2_btn.setLongClickable(isRestricted());
-//        draw2_btn.setOnClickListener(new Button.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//
-//                openContextMenu(draw2_btn);
-//
-//
-//            }
-//        });
+        draw2_btn.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+
+                openContextMenu(draw2_btn);
+
+
+            }
+        });
         
-        draw2_btn.setOnTouchListener(new OnTouchListener() {
+        setting_btn.setOnClickListener(new Button.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
 
-            private Rect rect;    // Variable rect to hold the bounds of the view
+            	Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
+                startActivity(ustawienia);
 
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    // Construct a rect of the view's bounds
-                    rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-                    draw2_btn.setBackgroundColor(0);
-                    draw2_btn.setText("GRAJ");
-                    touchStarted = true;
-
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                	draw2_btn.setBackgroundResource(R.drawable.draw);
-                	draw2_btn.setText("");
-                    if (touchStarted) {
-
-                    	openContextMenu(draw2_btn);
-                        return true;
-                    }
-                }
-                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())) {
-                    	draw2_btn.setBackgroundResource(R.drawable.draw);
-                    	draw2_btn.setText("");
-                        touchStarted = false;
-                        return true;
-                    }
-                }
-                return false;
             }
         });
+        
+        exit_btn.setOnClickListener(new Button.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
 
-        setting_btn.setOnTouchListener(new OnTouchListener() {
+            	finish();
+                System.exit(0);
 
-
-            private Rect rect;    // Variable rect to hold the bounds of the view
-
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    // Construct a rect of the view's bounds
-                    rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-                    setting_btn.setBackgroundColor(0);
-                    setting_btn.setText("Ustawienia");
-                    touchStarted = true;
-
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    setting_btn.setBackgroundResource(R.drawable.tools);
-                    setting_btn.setText("");
-                    if (touchStarted) {
-
-                        Intent ustawienia = new Intent(getApplicationContext(), Ustawienia.class);
-                        startActivity(ustawienia);
-                        return true;
-                    }
-                }
-                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())) {
-                        setting_btn.setBackgroundResource(R.drawable.tools);
-                        setting_btn.setText("");
-                        touchStarted = false;
-                        return true;
-                    }
-                }
-                return false;
             }
         });
-        exit_btn.setOnTouchListener(new OnTouchListener() {
+        
+        score_btn.setOnClickListener(new Button.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
 
-            private Rect rect;    // Variable rect to hold the bounds of the view
+            	Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
+                startActivity(tablica);
 
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    // Construct a rect of the view's bounds
-                    rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-                    exit_btn.setBackgroundColor(0);
-                    exit_btn.setText("Wyjœcie");
-                    touchStarted = true;
-
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    exit_btn.setBackgroundResource(R.drawable.exit);
-                    exit_btn.setText("");
-                    if (touchStarted) {
-
-                        finish();
-                        System.exit(0);
-                        return true;
-                    }
-                }
-                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())) {
-                        exit_btn.setBackgroundResource(R.drawable.exit);
-                        exit_btn.setText("");
-                        touchStarted = false;
-                        return true;
-                    }
-                }
-                return false;
             }
         });
-        score_btn.setOnTouchListener(new OnTouchListener() {
-
-
-            private Rect rect;    // Variable rect to hold the bounds of the view
-
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    // Construct a rect of the view's bounds
-                    rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-                    score_btn.setBackgroundColor(0);
-                    score_btn.setText("Statystyki");
-                    touchStarted = true;
-
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    score_btn.setBackgroundResource(R.drawable.stats);
-                    score_btn.setText("");
-                    if (touchStarted) {
-
-                        Intent tablica = new Intent(getApplicationContext(), Statystyki.class);
-                        startActivity(tablica);
-                        return true;
-                    }
-                }
-                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())) {
-                        score_btn.setBackgroundResource(R.drawable.stats);
-                        score_btn.setText("");
-                        touchStarted = false;
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+               
     }
 
     @Override
