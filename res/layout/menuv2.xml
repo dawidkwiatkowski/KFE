@@ -35,8 +35,7 @@
 		    android:src="@drawable/draw"
 		    android:textSize="@dimen/text_button_size"
 		    android:layout_margin="5dp"
-		    android:scaleType="fitCenter"
-		    android:background="@drawable/custom_image_button"/>
+		    android:scaleType="fitCenter" />
 		
 		<ImageButton
 		    android:id="@+id/setting_btn"
