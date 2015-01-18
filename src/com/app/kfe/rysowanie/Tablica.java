@@ -284,6 +284,10 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             public void onClick(DialogInterface dialog, int which) {
                 // TODO Auto-generated method stub
                 newImage();
+                if(isGame)
+                {
+                	DeviceDetailFragment.sendClearScreenService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
+                }
                 dialog.cancel();
             }
         });
@@ -309,6 +313,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
          	gra.nowa_runda(true);
          	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
          	zmianaGraczy();
+         	new EndGameDialog().show(getFragmentManager(), "end_game");
 //         	final Handler handler = new Handler();
 //            handler.postDelayed(new Runnable() {
 //                @Override
@@ -561,12 +566,14 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	                
 	                if(yourAnswer.equalsIgnoreCase(haslo)){
 	                	Toast goodAnswer = Toast.makeText(getApplicationContext(), "Poprawna odpowiedŸ", Toast.LENGTH_SHORT);
+	                	PaintView.czyOdbierac=false;
 	                    goodAnswer.show();
 	                    gra.losuj_haslo();
 	                    DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, false);
 	                    gra.nowa_runda(false);
 	                	zmianaGraczy();
 	                	Tablica.tablica.newImage();
+	                	new EndGameDialog().show(getFragmentManager(), "end_game");
 	                }
 	                else{
 	                	Toast badAnswer = Toast.makeText(getApplicationContext(), "B³êdna odpowiedŸ", Toast.LENGTH_SHORT);
@@ -578,11 +585,12 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 break;
             case R.id.respondentGiveUp:
                 //tutaj obsï¿½uga poddania siï¿½ odpowiadajï¿½cego
-            
+            	PaintView.czyOdbierac=false;
                 giveUpDialog.show();
                 break;
             case R.id.drawerGiveUp:            	
                 //tutaj obsï¿½uga poddania siï¿½ rysujï¿½cego
+            	PaintView.czyOdbierac=false;
             	giveUpDialog.show();
                 break;
 
@@ -608,7 +616,11 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 
         paintView.destroyDrawingCache();
     }
-
+    
+    public void show_endgame()
+    {
+    	 new EndGameDialog().show(getFragmentManager(), "end_game");
+    }
     public void setColor() {
         drawPaint.setColor(brushColor);
         canvasPaint.setColor(brushColor);
@@ -789,10 +801,27 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     @Override
     public void onGameRerunAck(DialogFragment dialog) {
         newImage();
+        PaintView.czyOdbierac=true;
+        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+            new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                     .execute();
+        }
+        else
+        {
+        	new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+            .execute();
+        }
     }
 
     @Override
     public void onGameRerunNack(DialogFragment dialog) {
-
+    	DeviceDetailFragment.sendEndGameService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
+    	finish();
+    	
+    }
+    @Override
+    public void onBackPressed() {
+    	DeviceDetailFragment.sendEndGameService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
+    	finish();
     }
 }

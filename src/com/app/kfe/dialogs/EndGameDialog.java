@@ -1,5 +1,7 @@
 package com.app.kfe.dialogs;
 
+import com.app.kfe.rysowanie.Tablica;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,12 +29,25 @@ public class EndGameDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        String sprawdz_1;
+        String sprawdz_2;
+        if(Tablica.gra.lista_graczy.get(0).is_drawing)
+        	sprawdz_1 = "tak";
+        else
+        	sprawdz_1 = "nie";
+        if(Tablica.gra.lista_graczy.get(1).is_drawing)
+        	sprawdz_2 = "tak";
+        else
+        	sprawdz_2 = "nie";
+        	
         builder.setTitle("Gracz\t\tPunkty\t\tRysuj¹cy")
-                .setMessage("Gracz1\t\t2\t\t\t\t\t\ttak \nGracz2\t\t4\t\t\t\t\t\tnie\n\nCzy chcesz kontynuowac gre?");
+                .setMessage("Gracz1\t\t"+Tablica.gra.lista_graczy.get(0).punkty+"\t\t\t\t\t\t"+ sprawdz_1 +" \nGracz2\t\t" + Tablica.gra.lista_graczy.get(1).punkty+
+                		"\t\t\t\t\t\t"+sprawdz_2+ "\n\nCzy chcesz kontynuowac gre?");
         builder.setPositiveButton("YES!", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
+            	
                 mListener.onGameRerunAck(EndGameDialog.this);
             }
         });
