@@ -285,10 +285,7 @@ public class PaintView extends View {
 //						//	Tablica.client_task.execute();
 						}
 					}
-					else
-					{
-						DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
-					}
+					
 				
 			}
 			return true;
