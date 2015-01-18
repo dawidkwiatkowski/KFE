@@ -31,6 +31,7 @@ public class EndGameDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         String sprawdz_1;
         String sprawdz_2;
+        Tablica.licznik++;
         if(Tablica.gra.lista_graczy.get(0).is_drawing)
         	sprawdz_1 = "tak";
         else

@@ -210,6 +210,18 @@
         
         android:layout_alignParentBottom="true"
         android:background="@color/blackColor" >
+        <TextView 
+            android:id="@+id/Timer"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/confirmAnswer"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            
+            android:text="0" />
+            
+            
 		<Button
             android:id="@+id/confirmAnswer"
             android:layout_width="100dp"
@@ -235,7 +247,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/confirmAnswer"
+            android:layout_toLeftOf="@+id/Timer"
             android:ems="10"
             android:hint="@string/answerText"
             android:textSize="15dp" />
@@ -272,7 +284,17 @@
             android:paddingLeft="10dp"
             android:text="należy podpiąć wylosowane hasło"
             android:textSize="15dp" />
-
+		<TextView 
+		    android:id="@+id/Timer_c"
+		    android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/drawerGiveUp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            
+            android:text="0"
+		    />
         <Button
             android:id="@+id/drawerGiveUp"
             android:layout_width="wrap_content"
