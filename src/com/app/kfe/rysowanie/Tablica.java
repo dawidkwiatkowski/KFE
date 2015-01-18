@@ -189,7 +189,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                         .execute();
             	
                 DeviceDetailFragment.sendGamerNameService();
-                timer_s.setVisibility(View.VISIBLE);
+              //  timer_s.setVisibility(View.VISIBLE);
                 gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
                 gracz_2.is_drawing = true;
                 gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
@@ -201,7 +201,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 }
                 //ukrycie panelu z podpowiedzi� dla rysuj�cego poniewa� zgaduj�cy nie rysuje
                 forDrawerPanel.setVisibility(View.GONE);
-                timer_serv();
+                //timer_serv();
 
             } else {
             	
@@ -887,6 +887,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             	new DeviceDetailFragment.ForClientServerAsyncTask (Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text)).execute();
             	//PaintView.czyOdbierac=false;
             	//PaintView.czyPrzesylac=false;
+            	PaintView.czyPrzesylac = false;
             	if(gra.lista_graczy.get(0).is_drawing && licznik<1)
             	{
             		gra.losuj_haslo();
@@ -899,4 +900,6 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
          }.start();
     }
     
+    
+
 }
