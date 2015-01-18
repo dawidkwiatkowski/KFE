@@ -10,17 +10,17 @@ import android.widget.Toast;
 import sqlite.helper.DatabaseHelper;
 import sqlite.model.Haslo;
 
-public class Rozgrywka {
+public class Game {
 
 	public int runda=1;
 	public int czas;
-	public List<Gracz> lista_graczy = new ArrayList<Gracz>();
+	public List<Gamer> lista_graczy = new ArrayList<Gamer>();
 	public List<Integer> listaUzytychHasel = new ArrayList<Integer>();
 	public List<Haslo> listaHasel = new ArrayList<Haslo>();
 	public String haslo;
 	public DatabaseHelper db;
 	
-	public Rozgrywka()
+	public Game()
 	{
 		
 	}
@@ -75,8 +75,8 @@ public class Rozgrywka {
 	
 	public void nowa_runda(boolean isGiveUp)
 	{
-		Gracz gracz1 = lista_graczy.get(0);
-		Gracz gracz2 = lista_graczy.get(1);
+		Gamer gracz1 = lista_graczy.get(0);
+		Gamer gracz2 = lista_graczy.get(1);
 		Tablica.tablica.newImage();
 		if(gracz1.is_drawing){
 			gracz1.is_drawing = false;

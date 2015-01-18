@@ -37,15 +37,15 @@ public class Statystyki extends Activity  {
 	        setContentView(R.layout.activity_score);
 	        mainListView = (ListView) findViewById( R.id.statListView );  
 	        db = new DatabaseHelper(getApplicationContext());
-			int pkt=20;
-			int pkt2=30;
-	        Gracz player1 = new Gracz("pk1");
-	    	 Gracz player2 = new Gracz("pk2");
-	        db.createGracz(player1);
-			db.createGracz(player2);
-			
-			Rozgrywka gra1 = new Rozgrywka();
-			db.createRozgrywka(gra1, new long[] {db.getIDGracza("pk1"),db.getIDGracza("pk2")},new int[]{pkt,pkt2});
+//			int pkt=20;
+//			int pkt2=30;
+//	        Gracz player1 = new Gracz("pk1");
+//	    	 Gracz player2 = new Gracz("pk2");
+//	        db.createGracz(player1);
+//			db.createGracz(player2);
+//			
+//			Rozgrywka gra1 = new Rozgrywka();
+//			db.createRozgrywka(gra1, new long[] {db.getIDGracza("pk1"),db.getIDGracza("pk2")},new int[]{pkt,pkt2});
 	        
 	        final List<Rozgrywka> rozgrywki=db.getAllRozgrywka();
 //	    

@@ -42,6 +42,10 @@ import java.io.InputStream;
 import java.util.FormatterClosedException;
 import java.util.UUID;
 
+import sqlite.helper.DatabaseHelper;
+import sqlite.model.Gracz;
+import sqlite.model.Rozgrywka;
+
 
 public class Tablica extends Activity implements OnSeekBarChangeListener, OnClickListener, ChannelListener, DeviceActionListener, EndGameDialogActionsHandler {
 
@@ -75,14 +79,15 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     private Button confirmAnwer;
     private Button drawerGiveUp;
     private EditText answer;
-
+    private CountDownTimer cdown;
+    
     private RelativeLayout forDrawerPanel;
     private Button respondentGiveUp;
     private TextView word;
     private TextView timer_s;
     private TextView timer_c;
 
-    public static Rozgrywka gra = new Rozgrywka();
+    public static Game gra = new Game();
     public static Activity activity;
     Builder giveUpDialog;
     public static boolean isGame = false;
@@ -98,8 +103,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         activity = this;
         tablica = this;
 //----------------------Rozgrywka---------------------------		
-        Gracz gracz_1 = new Gracz();
-        Gracz gracz_2 = new Gracz();
+        Gamer gracz_1 = new Gamer();
+        Gamer gracz_2 = new Gamer();
         licznik=0;
         forDrawerPanel = (RelativeLayout) findViewById(R.id.drawerRelativeLayout);
         answerPanel = (RelativeLayout) findViewById(R.id.answerRelativeLayout);
@@ -173,7 +178,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             word.setVisibility(View.VISIBLE);
             WiFiDirectActivity.co_to = "cos";
             
-
+       
             gra.lista_graczy.add(gracz_1);
             gra.lista_graczy.add(gracz_2);
 
@@ -319,7 +324,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
          @Override
          public void onClick(DialogInterface dialog, int which) {
              // TODO Auto-generated method stub
-        	
+        	if(gra.lista_graczy.get(0).is_drawing)
+        		cancelTimer();
         	gra.losuj_haslo();
          	gra.nowa_runda(true);
          	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
@@ -601,6 +607,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 break;
             case R.id.drawerGiveUp:            	
                 //tutaj obs�uga poddania si� rysuj�cego
+            	cancelTimer();
             	PaintView.czyOdbierac=false;
             	giveUpDialog.show();
                 break;
@@ -817,7 +824,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
             new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                      .execute();
-            timer_serv();
+            timer_c.setVisibility(View.VISIBLE);
+            timer_client();
         }
         else
         {
@@ -831,9 +839,12 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     @Override
     public void onGameRerunNack(DialogFragment dialog) {
     	DeviceDetailFragment.sendEndGameService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
+    	zapisz_do_bazy();
     	finish();
     	
     }
+    
+    
     @Override
     public void onBackPressed() {
     	if(isGame)
@@ -874,7 +885,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     }
     public void timer_client()
     {
-    	new CountDownTimer(30000, 1000) {
+    	cdown = new CountDownTimer(30000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 timer_c.setText("t: " + millisUntilFinished / 1000);
@@ -898,6 +909,28 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             	}
             }
          }.start();
+    }
+    
+    public void  cancelTimer() {
+    	if (cdown != null) {
+    	    cdown.cancel();
+    	}
+    }
+    
+    public void zapisz_do_bazy()
+    {
+    	
+//    	db = new DatabaseHelper(getApplicationContext());
+//		int pkt=20;
+//		int pkt2=30;
+        Gracz player1 = new Gracz(gra.lista_graczy.get(0).nazwa_gracza);
+        Gracz player2 = new Gracz(gra.lista_graczy.get(1).nazwa_gracza);
+        gra.db.createGracz(player1);
+        gra.db.createGracz(player2);
+//		
+		Rozgrywka gra1 = new Rozgrywka();
+		gra.db.createRozgrywka(gra1, new long[] {gra.db.getIDGracza(gra.lista_graczy.get(0).nazwa_gracza),gra.db.getIDGracza(gra.lista_graczy.get(1).nazwa_gracza)},new int[]{gra.lista_graczy.get(0).punkty,
+				gra.lista_graczy.get(1).punkty});
     }
     
     
