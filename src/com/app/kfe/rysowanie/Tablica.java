@@ -562,6 +562,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	                
 	                if(yourAnswer.equalsIgnoreCase(haslo)){
 	                	Toast goodAnswer = Toast.makeText(getApplicationContext(), "Poprawna odpowiedŸ", Toast.LENGTH_SHORT);
+	                	PaintView.czyOdbierac=false;
 	                    goodAnswer.show();
 	                    gra.losuj_haslo();
 	                    DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, false);
@@ -580,11 +581,12 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 break;
             case R.id.respondentGiveUp:
                 //tutaj obsï¿½uga poddania siï¿½ odpowiadajï¿½cego
-            
+            	PaintView.czyOdbierac=false;
                 giveUpDialog.show();
                 break;
             case R.id.drawerGiveUp:            	
                 //tutaj obsï¿½uga poddania siï¿½ rysujï¿½cego
+            	PaintView.czyOdbierac=false;
             	giveUpDialog.show();
                 break;
 
@@ -795,6 +797,16 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     @Override
     public void onGameRerunAck(DialogFragment dialog) {
         newImage();
+        PaintView.czyOdbierac=true;
+        if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+            new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                     .execute();
+        }
+        else
+        {
+        	new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+            .execute();
+        }
     }
 
     @Override

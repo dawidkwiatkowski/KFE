@@ -28,7 +28,7 @@ public class PaintView extends View {
 	 public static final int CIRCLE = 5;
 	 public static final int TRIANGLE = 6;
 	 public static final int SMOOTHLINE = 2;
-	 
+	 public static boolean czyOdbierac = true;
 	 public int mCurrentShape;
 	 private IntentFilter intentFilter = new IntentFilter();
 	 public boolean isDrawing = false;
@@ -135,7 +135,8 @@ public class PaintView extends View {
 	public void odbieraj(Bitmap bm)
 	{
 		
-		
+		if(czyOdbierac)
+		{
 			try
 			{
 			Bitmap workingBitmap = Bitmap.createBitmap(bm);
@@ -173,7 +174,7 @@ public class PaintView extends View {
 				// Tablica.client_task.execute();
 			 }
 		
-		
+		}
 			
 		 
 	}

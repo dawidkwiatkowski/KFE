@@ -47,6 +47,7 @@ public class EndGameDialog extends DialogFragment {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
+            	
                 mListener.onGameRerunAck(EndGameDialog.this);
             }
         });
