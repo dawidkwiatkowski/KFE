@@ -40,7 +40,7 @@ public class StatActivity extends Activity {
         int id_rozgrywki= Integer.parseInt(value);
         
 
-	      
+       
 	        	
 	        	 for ( Gracz gra: db.getAllGraczeByRozgrywka(id_rozgrywki)){
 	 	        	gracze.add(gra.getName());	

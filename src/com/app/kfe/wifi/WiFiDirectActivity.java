@@ -16,11 +16,14 @@
 
 package com.app.kfe.wifi;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
@@ -73,7 +76,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         activity = this;
 
         // add necessary intent values to be matched.
-
+        ActionBar bar = getActionBar();
+        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#0066cc")));
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
@@ -156,13 +160,13 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(WiFiDirectActivity.this, "Discovery Initiated",
+                        Toast.makeText(WiFiDirectActivity.this, "Wyszukiwanie rozpoczête",
                                 Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(int reasonCode) {
-                        Toast.makeText(WiFiDirectActivity.this, "Discovery Failed : " + reasonCode,
+                        Toast.makeText(WiFiDirectActivity.this, "B³¹d wyszukiwania : " + reasonCode,
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -194,7 +198,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 
             @Override
             public void onFailure(int reason) {
-                Toast.makeText(WiFiDirectActivity.this, "Connect failed. Retry.",
+                Toast.makeText(WiFiDirectActivity.this, "B³¹d po³¹czenia. Ponawianie",
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -257,7 +261,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(WiFiDirectActivity.this, "Aborting connection",
+                        Toast.makeText(WiFiDirectActivity.this, "Zerwanie po³¹czenia",
                                 Toast.LENGTH_SHORT).show();
                     }
 

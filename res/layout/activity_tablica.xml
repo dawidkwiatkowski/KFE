@@ -282,7 +282,7 @@
             android:layout_toRightOf="@+id/label_drawer"
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
-            android:text="naleÅ¼y podpiÄ…Ä‡ wylosowane hasÅ‚o"
+            android:text="nale¿y podpi¹æ wylosowane has³o"
             android:textSize="15dp" />
 		<TextView 
 		    android:id="@+id/Timer_c"

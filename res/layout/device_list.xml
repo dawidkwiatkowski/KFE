@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+   
     android:paddingTop="3dp">
 
     <TextView
@@ -15,14 +16,14 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:gravity="center_vertical"
-        android:background="@android:color/holo_blue_light" />
+        android:background="@android:color/white" />
 
     <!-- Self information -->
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        
         android:layout_width="fill_parent"
         android:layout_height="?android:attr/listPreferredItemHeight"
-        android:background="?android:attr/activatedBackgroundIndicator"
+      
         android:padding="3dip">
         <ImageView
             android:id="@+id/icon"
@@ -61,7 +62,7 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:gravity="center_vertical"
-        android:background="@android:color/holo_blue_light" />
+        android:background="@android:color/white" />
 
     <!-- Available peers -->
     <ListView

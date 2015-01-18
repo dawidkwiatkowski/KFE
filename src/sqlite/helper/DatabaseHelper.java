@@ -188,11 +188,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		long rozgrywka_id = db.insert(ROZGRYWKA_TABLE, null, values);
 
 		// insert tag_ids
-		for (long gra_id: gracz_ids) {
+		/*for (long gra_id: gracz_ids) {
 			for(int pkt: punkty){
 				createStat_gry(rozgrywka_id, gra_id,pkt);
-		
+				
 			}
+		}*/
+		for(long gra_id=0; gra_id<gracz_ids.length;gra_id++){
+			createStat_gry(rozgrywka_id, gra_id,punkty[(int)gra_id]);
 		}
 
 		return rozgrywka_id;
@@ -328,11 +331,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * Creating tag
 	 */
 	public long createGracz(Gracz gracz) {
+	
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
 		values.put(KEY_NAME, gracz.getName());
 		
+	
 
 		// insert row
 		long gracz_id = db.insert(GRACZ_TABLE, null, values);
@@ -370,7 +375,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		String selectQuery = "SELECT  * FROM " + GRACZ_TABLE + " gra, "
 				+ STAT_GRY_TABLE + " sta "  + " WHERE sta."
-				+ KEY_ROZGRYWKA_ID + " = '" + id_rozgrywki+"'"+ " AND gra."+KEY_ID + "= sta."+KEY_GRACZ_ID ;
+				+ KEY_ROZGRYWKA_ID + " = '" + id_rozgrywki+"'"+ " AND gra."+KEY_ID + "-1 = sta."+KEY_GRACZ_ID ;
 		
 
 		Log.e(LOG, selectQuery);
@@ -391,6 +396,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 
 		return gracze;
+	}
+	
+	public Integer getIDGracza(String nazwa_gracza) {
+		//List <Integer> Id_gracza=new ArrayList<Integer>();
+		int id_gracza=0;
+		List<Gracz> gracze = new ArrayList<Gracz>();
+		String selectQuery = "SELECT  * FROM " + GRACZ_TABLE + " gra "
+				  + " WHERE gra." + KEY_NAME + " = '" + nazwa_gracza+"'" ;
+		
+
+		Log.e(LOG, selectQuery);
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (c.moveToFirst()) {
+			do {
+				Gracz gracz = new Gracz();
+				gracz.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+				gracz.setName(c.getString(c.getColumnIndex(KEY_NAME)));
+
+				// adding to todo list
+				gracze.add(gracz);
+				id_gracza= gracz.getId();
+			} while (c.moveToNext());
+		}
+
+		return id_gracza;
 	}
 	/*
 	 * Updating a tag
