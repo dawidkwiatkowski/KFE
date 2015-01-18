@@ -36,6 +36,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.app.kfe.R;import com.app.kfe.dialogs.EndGameDialog;
@@ -78,16 +79,20 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     public static String opponent=null;
     public static String code;
     public static String haslo;
+    private Button but;
     
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+    	
+    	
         mContentView = inflater.inflate(R.layout.device_detail, null);
+       
         mContentView.findViewById(R.id.btn_connect).setOnClickListener(new View.OnClickListener() {
         
             @Override
@@ -171,7 +176,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         }
         this.info = info;
         this.getView().setVisibility(View.VISIBLE);
-
+       
         // The owner IP is now known.
         TextView view = (TextView) mContentView.findViewById(R.id.group_owner);
         view.setText(getResources().getString(R.string.group_owner_text)
@@ -217,6 +222,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         view.setText(device.deviceAddress);
         view = (TextView) mContentView.findViewById(R.id.device_info);
         view.setText(device.toString());
+      
 
     }
 
@@ -553,6 +559,10 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        	}
 	        	else if (code.equals("GU"))
 	        	{
+	        		if(Tablica.gra.lista_graczy.get(0).is_drawing)
+	        		{
+	        			Tablica.tablica.cancelTimer();
+	        		}
 	        		Tablica.gra.nowa_runda(true);
 	        		Tablica.gra.setHaslo(result);
 	        		Tablica.tablica.zmianaGraczy();
@@ -561,7 +571,10 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        	}
 	        	 else if(code.equals("ER"))
                 {
-	        		 
+	        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
+		        		{
+		        			Tablica.tablica.cancelTimer();
+		        		}
 	        		 Tablica.gra.nowa_runda(false);
 	        		 Tablica.gra.setHaslo(result);
 	        		 Tablica.tablica.zmianaGraczy();
@@ -575,6 +588,11 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        	 }
 	        	 else if(code.equals("LG"))
 	                {
+	        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
+		        		{
+		        			Tablica.tablica.cancelTimer();
+		        		}
+	        		 	Tablica.tablica.zapisz_do_bazy();
 	                	Tablica.tablica.finish();
 	                }
 	        	 else if(code.equals("CS"))
@@ -765,6 +783,10 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
         	}
         	else if (code.equals("GU"))
         	{
+        		if(Tablica.gra.lista_graczy.get(0).is_drawing)
+        		{
+        			Tablica.tablica.cancelTimer();
+        		}
         		Tablica.gra.nowa_runda(true);
         		Tablica.gra.setHaslo(result);
         		Tablica.tablica.zmianaGraczy();
@@ -773,6 +795,10 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
         	}
         	 else if(code.equals("ER"))
              {
+        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
+	        		{
+	        			Tablica.tablica.cancelTimer();
+	        		}
 	        		 Tablica.gra.nowa_runda(false);
 	        		 Tablica.gra.setHaslo(result);
 	        		 Tablica.tablica.zmianaGraczy();
@@ -781,6 +807,11 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
              }
         	 else if(code.equals("LG"))
              {
+        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
+	        		{
+	        			Tablica.tablica.cancelTimer();
+	        		}
+        		 Tablica.tablica.zapisz_do_bazy();
              	Tablica.tablica.finish();
              }
         	 else if(code.equals("CS"))
