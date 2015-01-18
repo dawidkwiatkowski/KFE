@@ -16,6 +16,7 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.*;
@@ -78,6 +79,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     private RelativeLayout forDrawerPanel;
     private Button respondentGiveUp;
     private TextView word;
+    private TextView timer_s;
+    private TextView timer_c;
 
     public static Rozgrywka gra = new Rozgrywka();
     public static Activity activity;
@@ -85,7 +88,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     public static boolean isGame = false;
     public static AsyncTask<Void, Void, String> server_task;
     public static AsyncTask<Void, Void, String> client_task;
-    
+    public static int licznik=0;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +100,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 //----------------------Rozgrywka---------------------------		
         Gracz gracz_1 = new Gracz();
         Gracz gracz_2 = new Gracz();
-
+        licznik=0;
         forDrawerPanel = (RelativeLayout) findViewById(R.id.drawerRelativeLayout);
         answerPanel = (RelativeLayout) findViewById(R.id.answerRelativeLayout);
         confirmAnwer = (Button) findViewById(R.id.confirmAnswer);
@@ -105,13 +108,16 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         answer = (EditText) findViewById(R.id.answer);
         drawerGiveUp = (Button) findViewById(R.id.drawerGiveUp);
         word = (TextView) findViewById(R.id.word);
-
+        timer_s = (TextView) findViewById(R.id.Timer);
+        timer_c = (TextView) findViewById(R.id.Timer_c);
         forDrawerPanel.setVisibility(View.GONE);
         answerPanel.setVisibility(View.GONE);
         confirmAnwer.setVisibility(View.GONE);
         respondentGiveUp.setVisibility(View.GONE);
         answer.setVisibility(View.GONE);
         word.setVisibility(View.GONE);
+        timer_s.setVisibility(View.GONE);
+        timer_c.setVisibility(View.GONE);
         giveUpDialog  = new AlertDialog.Builder(this);
 //----------------------Rozgrywka---------------------------		
 
@@ -157,7 +163,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
         //-------------------------------------------------- rozgrywka ----------------------------
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("isGame")) {
             isGame = getIntent().getExtras().getBoolean("isGame");
-
+            PaintView.czyOdbierac=true;
+            PaintView.czyPrzesylac=true;
             forDrawerPanel.setVisibility(View.VISIBLE);
             answerPanel.setVisibility(View.VISIBLE);
             confirmAnwer.setVisibility(View.VISIBLE);
@@ -165,7 +172,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             answer.setVisibility(View.VISIBLE);
             word.setVisibility(View.VISIBLE);
             WiFiDirectActivity.co_to = "cos";
-
+            
 
             gra.lista_graczy.add(gracz_1);
             gra.lista_graczy.add(gracz_2);
@@ -182,7 +189,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                         .execute();
             	
                 DeviceDetailFragment.sendGamerNameService();
-
+                timer_s.setVisibility(View.VISIBLE);
                 gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
                 gracz_2.is_drawing = true;
                 gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
@@ -194,6 +201,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 }
                 //ukrycie panelu z podpowiedzi� dla rysuj�cego poniewa� zgaduj�cy nie rysuje
                 forDrawerPanel.setVisibility(View.GONE);
+                timer_serv();
+
             } else {
             	
             	//client_task  = new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text));
@@ -201,6 +210,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             	
                 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                         .execute();
+                timer_c.setVisibility(View.VISIBLE);
                 gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
                 gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
                 gracz_1.is_drawing = true;
@@ -228,6 +238,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                 .execute();
                 //client_task.execute();
+               timer_client();
             }
         }
 //			else
@@ -275,7 +286,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 dialog.cancel();
             }
         });
-
+        
         newImageDialog = new AlertDialog.Builder(this);
         newImageDialog.setTitle("Czyszczenie tablicy");
         newImageDialog.setMessage("Czy czy wyczy�ci� tablic�?");
@@ -802,15 +813,19 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     public void onGameRerunAck(DialogFragment dialog) {
         newImage();
         PaintView.czyOdbierac=true;
+        licznik=0;
         if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
             new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                      .execute();
+            timer_serv();
         }
         else
         {
         	new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
             .execute();
+        	timer_client();
         }
+        
     }
 
     @Override
@@ -821,7 +836,67 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     }
     @Override
     public void onBackPressed() {
-    	DeviceDetailFragment.sendEndGameService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
-    	finish();
+    	if(isGame)
+    	{
+	    	DeviceDetailFragment.sendEndGameService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
+	    	finish();
+    	}
+    	else
+    	{
+    		finish();
+    	}
     }
+    
+    public void timer_serv()
+    {
+    	new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                timer_s.setText("t: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+            	//new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text)).cancel(true);
+            	new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                .execute();
+            	//PaintView.czyOdbierac=false;
+            	//PaintView.czyPrzesylac=false;
+            	if(gra.lista_graczy.get(0).is_drawing && licznik<1)
+            	{
+            		gra.losuj_haslo();
+                 	gra.nowa_runda(true);
+                 	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
+                 	zmianaGraczy();
+                 	new EndGameDialog().show(getFragmentManager(), "end_game");
+            	}
+            }
+         }.start();
+    }
+    public void timer_client()
+    {
+    	new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                timer_c.setText("t: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                //mTextField.setText("done!");
+            	
+            	//new DeviceDetailFragment.ForClientServerAsyncTask (Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text)).cancel(true);
+            	new DeviceDetailFragment.ForClientServerAsyncTask (Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text)).execute();
+            	//PaintView.czyOdbierac=false;
+            	//PaintView.czyPrzesylac=false;
+            	if(gra.lista_graczy.get(0).is_drawing && licznik<1)
+            	{
+            		gra.losuj_haslo();
+                 	gra.nowa_runda(true);
+                 	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
+                 	zmianaGraczy();
+                 	new EndGameDialog().show(getFragmentManager(), "end_game");
+            	}
+            }
+         }.start();
+    }
+    
 }

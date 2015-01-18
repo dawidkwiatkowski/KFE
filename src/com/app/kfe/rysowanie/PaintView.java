@@ -28,7 +28,10 @@ public class PaintView extends View {
 	 public static final int CIRCLE = 5;
 	 public static final int TRIANGLE = 6;
 	 public static final int SMOOTHLINE = 2;
+	 
 	 public static boolean czyOdbierac = true;
+	 public static boolean czyPrzesylac = true;
+	 
 	 public int mCurrentShape;
 	 private IntentFilter intentFilter = new IntentFilter();
 	 public boolean isDrawing = false;
@@ -211,25 +214,28 @@ public class PaintView extends View {
 					break;
 			}
 			if(Tablica.isGame){
-				//receiver=com.app.kfe.wifi.WiFiDirectActivity.receiver;
-				//intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
-				//WiFiDirectActivity.receiver = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, WiFiDirectActivity.channel, Tablica.tablica);
-				//Tablica.activity.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);	
-				if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner)
+				if(czyPrzesylac)
 				{
-					DeviceDetailFragment.sendCanvasService(true);
-					new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-	        		.execute();
-				//	Tablica.server_task.execute();
+					//receiver=com.app.kfe.wifi.WiFiDirectActivity.receiver;
+					//intentFilter=com.app.kfe.wifi.WiFiDirectActivity.intentFilter;
+					//WiFiDirectActivity.receiver = new WiFiDirectBroadcastReceiver(WiFiDirectActivity.manager, WiFiDirectActivity.channel, Tablica.tablica);
+					//Tablica.activity.registerReceiver(WiFiDirectActivity.receiver, WiFiDirectActivity.intentFilter);	
+					if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner)
+					{
+						DeviceDetailFragment.sendCanvasService(true);
+						new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+		        		.execute();
+					//	Tablica.server_task.execute();
+					}
+					else
+					{
+						DeviceDetailFragment.sendCanvasService(false);
+						new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+		        		.execute();
+					//	Tablica.client_task.execute();
+					}
 				}
-				else
-				{
-					DeviceDetailFragment.sendCanvasService(false);
-					new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
-	        		.execute();
-				//	Tablica.client_task.execute();
-				}
-				}
+			}
 			}
 		}
 	
