@@ -195,15 +195,19 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
             	
                 DeviceDetailFragment.sendGamerNameService();
               //  timer_s.setVisibility(View.VISIBLE);
-                gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
-                gracz_2.is_drawing = true;
-                gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
-                paintView.setIsEnabled(false);
-                toolsPanel.setVisibility(View.GONE);
+//                gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
+//                gracz_2.is_drawing = true;
+//                gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
                 if (gra.listaHasel.isEmpty())
                 {
                 	gra.getAllHasla(this);
                 }
+                gra.lista_graczy.get(0).nazwa_gracza = gra.db.getAllGracze().get(0).toString();
+                gra.lista_graczy.get(1).is_drawing = true;
+                gra.lista_graczy.get(1).nazwa_gracza =  DeviceDetailFragment.opponent;
+                paintView.setIsEnabled(false);
+                toolsPanel.setVisibility(View.GONE);
+               
                 //ukrycie panelu z podpowiedzi� dla rysuj�cego poniewa� zgaduj�cy nie rysuje
                 forDrawerPanel.setVisibility(View.GONE);
                 //timer_serv();
@@ -216,13 +220,15 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                         .execute();
                 timer_c.setVisibility(View.VISIBLE);
-                gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
-                gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
-                gracz_1.is_drawing = true;
+//                gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
+//                gracz_2.nazwa_gracza = DeviceDetailFragment.opponent;
+//                gracz_1.is_drawing = true;
                 if (gra.listaHasel.isEmpty())
                 {
                 	gra.getAllHasla(this);
                 }
+               
+               
                 gra.losuj_haslo();
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -232,7 +238,9 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                     	DeviceDetailFragment.sendWordService(false, gra.getHaslo());
                     }
                 }, 1000);
-                
+                gra.lista_graczy.get(0).nazwa_gracza = gra.db.getAllGracze().get(0).toString();
+                gra.lista_graczy.get(0).is_drawing = true;
+                gra.lista_graczy.get(1).nazwa_gracza =  DeviceDetailFragment.opponent;
 
                 //ustawienie has�a do podpowiadania
 
