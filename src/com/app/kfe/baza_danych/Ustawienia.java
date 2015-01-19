@@ -1,9 +1,18 @@
 package com.app.kfe.baza_danych;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.AsyncTask;
+import android.util.Log;
 import com.app.kfe.R;
 
 import android.app.Activity;
@@ -20,6 +29,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import sqlite.helper.DatabaseHelper;
 import sqlite.model.Gracz;
+import sqlite.model.Haslo;
 import sqlite.model.Rozgrywka;
 
 public class Ustawienia extends Activity {
@@ -70,20 +80,32 @@ public class Ustawienia extends Activity {
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.ustawienia, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        boolean result;
+        switch(item.getItemId()) {
+            case R.id.update_database:
+                try {
+                    URL url = new URL("https://raw.githubusercontent.com/dawidkwiatkowski/KFE/master/123.txt");
+                    new UpdateKeyStringDatabaseTask().execute(url);
+                }
+                catch (MalformedURLException mue) {}
+                result = true;
+            break;
+            case R.id.tmp_print_key_strings_database:
+                for(Haslo haslo: db.getAllHasla()) {
+                    Log.d("Hasla", haslo.getHaslo());
+                }
+                result = true;
+                break;
+            default:
+                result = super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+        return result;
     }
     
     
@@ -141,7 +163,7 @@ public class Ustawienia extends Activity {
 					for (Gracz gracz : db.getAllGracze()) {
 						if(nazwa_gracza.equals(gracz.getName())){
 							
-							 Toast.makeText(getBaseContext(),"Gracz "+ nazwa_gracza +" " +"istnieje ju¿½ w bazie ", Toast.LENGTH_LONG).show();
+							 Toast.makeText(getBaseContext(),"Gracz "+ nazwa_gracza +" " +"istnieje juï¿½ï¿½ w bazie ", Toast.LENGTH_LONG).show();
 							 i++;
 							 break;
 						}
@@ -154,7 +176,7 @@ public class Ustawienia extends Activity {
 						player.setId(1);
 						db.updateGracz(player);
 					}
-					 Toast.makeText(getBaseContext(),"Gracz zosta³½ zapisany", Toast.LENGTH_LONG).show();}
+					 Toast.makeText(getBaseContext(),"Gracz zostaï¿½ï¿½ zapisany", Toast.LENGTH_LONG).show();}
 											
 				}
 				db.closeDB();
@@ -165,5 +187,29 @@ public class Ustawienia extends Activity {
     	
     	
 	}
+    private class UpdateKeyStringDatabaseTask extends AsyncTask<URL, Integer, InputStream> {
+        @Override
+        protected InputStream doInBackground(URL... params) {
+            InputStream result = null;
+            try {
+                for(URL url : params) {
+                    HttpURLConnection urlConnection = (HttpURLConnection)(url.openConnection());
+                    result = urlConnection.getInputStream();
+                }
+            }
+            catch (IOException ioe) {}
+            return result;
+        }
+        @Override
+        protected void onPostExecute(InputStream inputStream) {
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line;
+                while((line = reader.readLine()) != null) {
+                    db.addHaslo(line);
+                }
+            } catch (IOException e) {}
+        }
+    }
     
 }

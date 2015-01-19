@@ -15,7 +15,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -261,7 +260,7 @@ public class PaintView extends View {
 					
 			}
 			
-				int action = MotionEventCompat.getActionMasked(event);
+				int action = event.getActionMasked();
 
 				if(Tablica.isGame && action == event.ACTION_UP){
 					if(czyPrzesylac)
