@@ -23,6 +23,8 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 
+import sqlite.helper.DatabaseHelper;
+
 import com.app.kfe.R;
 import com.app.kfe.rysowanie.PaintView;
 import com.app.kfe.rysowanie.Tablica;
@@ -121,7 +123,9 @@ public class FileTransferService extends IntentService {
         }
         else if (intent.getAction().equals(ACTION_OPEN_TABLICA)) {
         	code = "OT";
-        	sendText(code, DeviceDetailFragment.localIP + ":" + "Gracz1",intent);
+        	DatabaseHelper db = new DatabaseHelper(this);
+        	
+        	sendText(code, DeviceDetailFragment.localIP + ":" + db.getAllGracze().get(0),intent);
         //	sendText(DeviceDetailFragment.localIP + ":" + "Gracz1", intent);        	
         }
         else if (intent.getAction().equals(ACTION_SEND_CANVAS)) {
@@ -131,8 +135,8 @@ public class FileTransferService extends IntentService {
         }
         else if (intent.getAction().equals(ACTION_SEND_NAME)) {
         	code = "SN";
-        	
-        	sendText(code,"Gracz2", intent);
+        	DatabaseHelper db = new DatabaseHelper(this);
+        	sendText(code,db.getAllGracze().get(0).toString(), intent);
         }
         else if (intent.getAction().equals(ACTION_SEND_WORD)) {
         	code = "SW";
