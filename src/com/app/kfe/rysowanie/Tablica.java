@@ -591,7 +591,10 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	                
 	                if(yourAnswer.equalsIgnoreCase(haslo)){
 	                	Toast goodAnswer = Toast.makeText(getApplicationContext(), "Poprawna odpowiedü", Toast.LENGTH_SHORT);
-	                	cdown.cancel();
+	                	if(cdown!=null)
+	                		{
+	                			cdown.cancel();
+	                		}
 	                	PaintView.czyOdbierac=false;
 	                    goodAnswer.show();
 	                    gra.losuj_haslo();
@@ -896,7 +899,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     }
     public void timer_client()
     {
-    	cdown = new CountDownTimer(30000, 1000) {
+    	cdown = new CountDownTimer(180000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 timer_c.setText("t: " + millisUntilFinished / 1000);

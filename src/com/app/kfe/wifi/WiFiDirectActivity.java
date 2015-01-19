@@ -38,9 +38,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.app.kfe.R;
+import com.app.kfe.rysowanie.Tablica;
 import com.app.kfe.wifi.DeviceListFragment.DeviceActionListener;
 
 /**
@@ -95,6 +97,17 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         receiver = WiFiDirectBroadcastReceiver.getInstance(manager, channel, this);
         registerReceiver(receiver, intentFilter);
         co_to="tablica";
+        if(DeviceDetailFragment.info!=null)
+        {
+	        if(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
+	        {
+	        	Button but = (Button) findViewById(R.id.btn_start_client);
+	        	 but.setVisibility(View.GONE);
+	        }
+	     }  
+	        
+        
+	   }
     }
 
     @Override

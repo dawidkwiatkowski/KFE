@@ -336,8 +336,13 @@ localIP = Utils.getLocalIPAddress();
     serviceIntent.setAction(FileTransferService.ACTION_REQUEST_NAME);
     serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
 
-	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
-
+	//serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+	 
+	if(localIP.equals(IP_SERVER)){
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+	    	}else{
+	    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, IP_SERVER);
+	    	}
 
 	 if(isOwner)
      {
@@ -644,6 +649,10 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        	 {
 	        		 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                      .execute();
+	        		 if(Tablica.isGame)
+	        		 {
+	        			 Tablica.tablica.gra.lista_graczy.get(1).nazwa_gracza = opponent;
+	        		 }
 	        	 }
 	        	 else if(code.equals("RN")){
 	                	
