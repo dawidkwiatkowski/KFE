@@ -302,7 +302,7 @@ public static void sendClearScreenService(boolean is_owner ){
         Tablica.activity.startService(serviceIntent); 
 	}
 	
-public static void sendGamerNameService(){
+public static void sendGamerNameService(boolean isOwner){
 		
 		//DeviceDetailFragment.device = DeviceListFragment.getDevice();
 		
@@ -315,10 +315,44 @@ public static void sendGamerNameService(){
     	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
 
 
-    	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+    	 if(isOwner)
+         {
+         	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+         }
+         else
+         {
+         	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+         }
 
         Tablica.activity.startService(serviceIntent); 
 	}
+public static void requestGamerNameService(boolean isOwner){
+	
+	//DeviceDetailFragment.device = DeviceListFragment.getDevice();
+	
+localIP = Utils.getLocalIPAddress();
+		
+	Intent serviceIntent = new Intent(Tablica.activity, FileTransferService.class);
+    serviceIntent.setAction(FileTransferService.ACTION_REQUEST_NAME);
+    serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, "a");
+
+	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS, clientIP);
+
+
+	 if(isOwner)
+     {
+     	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8989);
+     }
+     else
+     {
+     	serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+     }
+
+    Tablica.activity.startService(serviceIntent); 
+}
+
+
+
 
 public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	
@@ -483,6 +517,12 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	                	opponent = new String (getMessageByteArray(receivedByteArray));
 	                	
 	                }
+	                else if(code.equals("RN")){
+	                	
+	                	result = "request_name";		
+	                	
+	                	
+	                }
 	                else if(code.equals("SC")){
 	                	
 	                	byte[] array = getMessageByteArray(receivedByteArray);
@@ -605,6 +645,13 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        		 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                      .execute();
 	        	 }
+	        	 else if(code.equals("RN")){
+	                	
+	        		 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                     .execute();	
+	                	sendGamerNameService(false);
+	                	
+	                }
 	        	 else if(code.equals("LG"))
 	                {
 //	        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
@@ -774,6 +821,16 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	                {
 	                	result = "resend";
 	                }
+	        	 else if(code.equals("RN")){
+	                	
+	                	result = "request_name";		
+	                	
+	                	
+	                }
+	        	 else if(code.equals("SN")){
+                	opponent = new String (getMessageByteArray(receivedByteArray));
+                	
+                }
                 serverSocket.close();
                 return result;
                 
@@ -872,7 +929,19 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        	  new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                .execute();
 	        	}
-        
+        	 else if(code.equals("RN")){
+             	
+             			
+        		 new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                 .execute();
+        		 sendGamerNameService(true);
+             	
+             }
+        	 else if(code.equals("SN")){
+        		  new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                  .execute();
+              	
+              }
         }
 
         /*
