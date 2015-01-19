@@ -193,7 +193,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
                         .execute();
             	
-                DeviceDetailFragment.sendGamerNameService();
+                DeviceDetailFragment.sendGamerNameService(true);
               //  timer_s.setVisibility(View.VISIBLE);
 //                gracz_1.nazwa_gracza = DeviceDetailFragment.gamer;
 //                gracz_2.is_drawing = true;

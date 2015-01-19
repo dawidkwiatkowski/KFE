@@ -48,6 +48,7 @@ public class FileTransferService extends IntentService {
     public static final String ACTION_END_ROUND= "com.app.kfe.Wifi.END_ROUND";
     public static final String ACTION_LEAVE_GAME= "com.app.kfe.Wifi.LEAVE_GAME";
     public static final String ACTION_CLEAR_SCREEN= "com.app.kfe.Wifi.CLEAR_SCREEN";
+    public static final String ACTION_REQUEST_NAME= "com.app.kfe.Wifi.REQUEST_NAME";
     public static final String EXTRAS_FILE_PATH = "file_url";
     public static final String EXTRAS_GROUP_OWNER_ADDRESS = "go_host";
     public static final String EXTRAS_GROUP_OWNER_PORT = "go_port";
@@ -167,6 +168,11 @@ public class FileTransferService extends IntentService {
         	code = "CS";
         	
         	sendText(code,"clear_screen",intent);
+        }
+        else if(intent.getAction().equals(ACTION_REQUEST_NAME)) {
+        	code = "RN";
+        	
+        	sendText(code,"request_name",intent);
         }
     }
     
