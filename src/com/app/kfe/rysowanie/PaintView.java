@@ -1,25 +1,15 @@
 package com.app.kfe.rysowanie;
 
-import com.app.kfe.R;
-import com.app.kfe.controler.GameManager;
-import com.app.kfe.utils.Logger;
-import com.app.kfe.wifi.DeviceDetailFragment;
-import com.app.kfe.wifi.WiFiDirectActivity;
-import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
-
 import android.content.Context;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.support.v4.view.MotionEventCompat;
+import android.graphics.*;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import org.json.JSONException;
+import com.app.kfe.R;
+import com.app.kfe.wifi.DeviceDetailFragment;
+import com.app.kfe.wifi.DeviceDetailFragment.TextServerAsyncTask;
+import com.app.kfe.wifi.WiFiDirectActivity;
 
 public class PaintView extends View {
 	
@@ -261,7 +251,7 @@ public class PaintView extends View {
 					
 			}
 			
-				int action = MotionEventCompat.getActionMasked(event);
+				int action = event.getActionMasked();
 
 				if(Tablica.isGame && action == event.ACTION_UP){
 					if(czyPrzesylac)
