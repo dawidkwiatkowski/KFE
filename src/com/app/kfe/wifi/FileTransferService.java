@@ -125,7 +125,7 @@ public class FileTransferService extends IntentService {
         	code = "OT";
         	DatabaseHelper db = new DatabaseHelper(this);
         	
-        	sendText(code, DeviceDetailFragment.localIP + ":" + db.getAllGracze().get(0),intent);
+        	sendText(code, DeviceDetailFragment.localIP + ":" + db.getAllGracze().get(0).getName(),intent);
         //	sendText(DeviceDetailFragment.localIP + ":" + "Gracz1", intent);        	
         }
         else if (intent.getAction().equals(ACTION_SEND_CANVAS)) {
@@ -136,7 +136,7 @@ public class FileTransferService extends IntentService {
         else if (intent.getAction().equals(ACTION_SEND_NAME)) {
         	code = "SN";
         	DatabaseHelper db = new DatabaseHelper(this);
-        	sendText(code,db.getAllGracze().get(0).toString(), intent);
+        	sendText(code,db.getAllGracze().get(0).getName(), intent);
         }
         else if (intent.getAction().equals(ACTION_SEND_WORD)) {
         	code = "SW";

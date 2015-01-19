@@ -42,7 +42,7 @@ public class EndGameDialog extends DialogFragment {
         	sprawdz_2 = "nie";
         	
         builder.setTitle("Gracz\t\tPunkty\t\tRysuj¹cy")
-                .setMessage("Gracz1\t\t"+Tablica.gra.lista_graczy.get(0).punkty+"\t\t\t\t\t\t"+ sprawdz_1 +" \nGracz2\t\t" + Tablica.gra.lista_graczy.get(1).punkty+
+                .setMessage(Tablica.gra.lista_graczy.get(0).nazwa_gracza+"\t\t"+Tablica.gra.lista_graczy.get(0).punkty+"\t\t\t\t\t\t"+ sprawdz_1 +" \n"+Tablica.gra.lista_graczy.get(1).nazwa_gracza+"\t\t" + Tablica.gra.lista_graczy.get(1).punkty+
                 		"\t\t\t\t\t\t"+sprawdz_2+ "\n\nCzy chcesz kontynuowac gre?");
         builder.setPositiveButton("YES!", new DialogInterface.OnClickListener() {
 

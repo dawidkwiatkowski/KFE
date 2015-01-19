@@ -126,7 +126,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     public void onClick(View v) {
                         // Allow user to pick an image from Gallery or other
                         // registered apps
-
+                    	new ForClientServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
+                        .execute();
                     	localIP = Utils.getLocalIPAddress();
 
                     	serviceIntent = new Intent(getActivity(), FileTransferService.class);
@@ -543,7 +544,8 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 		                DeviceDetailFragment.pv = ((PaintView) Tablica.tablica.findViewById(R.id.drawing));
 		                if(DeviceDetailFragment.bm == null)
 		                	statusText.setText("null");
-		          
+		                new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+	                     .execute();
 		                DeviceDetailFragment.pv.odbieraj(bm);          
 	        		}
 	                
@@ -551,35 +553,52 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        	else if(code.equals("SW"))
 	        	{
 	        		Tablica.set_haslo(haslo);
+	        		new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                    .execute();
 	        		
 	        	}
 	        	else if(code.equals("RW"))
 	        	{
 	        	  DeviceDetailFragment.sendWordService(false, Tablica.gra.getHaslo());
+	        	  new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                  .execute();
 	        	}
 	        	else if (code.equals("GU"))
 	        	{
-	        		if(Tablica.gra.lista_graczy.get(0).is_drawing)
-	        		{
-	        			Tablica.tablica.cancelTimer();
-	        		}
+//	        		if(Tablica.gra.lista_graczy.get(0).is_drawing)
+//	        		{
+//	        			Tablica.tablica.cdown.cancel();
+//	        		}
+	        		if(Tablica.tablica.cdown!=null)
+        			{
+        				Tablica.tablica.cdown.cancel();
+        			}
 	        		Tablica.gra.nowa_runda(true);
 	        		Tablica.gra.setHaslo(result);
 	        		Tablica.tablica.zmianaGraczy();
 	        		Tablica.tablica.newImage();
 	        		Tablica.tablica.show_endgame();
+	        		new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                    .execute();
 	        	}
 	        	 else if(code.equals("ER"))
                 {
-	        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
-		        		{
-		        			Tablica.tablica.cancelTimer();
-		        		}
+//	        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
+//		        		{
+//	        			 Tablica.tablica.cdown.cancel();
+//		        		}
+	        		 
+	        		 if(Tablica.tablica.cdown!=null)
+	        			{
+	        				Tablica.tablica.cdown.cancel();
+	        			}
 	        		 Tablica.gra.nowa_runda(false);
 	        		 Tablica.gra.setHaslo(result);
 	        		 Tablica.tablica.zmianaGraczy();
 	        		 Tablica.tablica.newImage();
 	        		 Tablica.tablica.show_endgame();
+	        		 new DeviceDetailFragment.ForClientServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                     .execute();
                 }
 	        	 else if(code.equals("SN"))
 	        	 {
@@ -588,10 +607,14 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	        	 }
 	        	 else if(code.equals("LG"))
 	                {
-	        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
-		        		{
-		        			Tablica.tablica.cancelTimer();
-		        		}
+//	        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
+//		        		{
+//	        			 Tablica.tablica.cdown.cancel();
+//		        		}
+	        		 if(Tablica.tablica.cdown!=null)
+	        			{
+	        				Tablica.tablica.cdown.cancel();
+	        			}
 	        		 	Tablica.tablica.zapisz_do_bazy();
 	                	Tablica.tablica.finish();
 	                }
@@ -747,6 +770,10 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
                 {
                 	result = "clear_screen";
                 }
+	        	 else if(code.equals("RW"))
+	                {
+	                	result = "resend";
+	                }
                 serverSocket.close();
                 return result;
                 
@@ -772,7 +799,8 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
 	                DeviceDetailFragment.pv = ((PaintView) Tablica.tablica.findViewById(R.id.drawing));
 	                if(DeviceDetailFragment.bm == null)
 	                	statusText.setText("null");
-	          
+	                new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                    .execute();
 	                DeviceDetailFragment.pv.odbieraj(bm);          
         		}
                 
@@ -780,37 +808,55 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
         	else if(code.equals("SW"))
         	{
         		Tablica.set_haslo(haslo);
+        		new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                .execute();
         	}
         	else if (code.equals("GU"))
         	{
-        		if(Tablica.gra.lista_graczy.get(0).is_drawing)
-        		{
-        			Tablica.tablica.cancelTimer();
-        		}
+//        		if(Tablica.gra.lista_graczy.get(0).is_drawing)
+//        		{
+//        			Tablica.tablica.cdown.cancel();
+//        		}
+        		if(Tablica.tablica.cdown!=null)
+        			{
+        				Tablica.tablica.cdown.cancel();
+        			}
         		Tablica.gra.nowa_runda(true);
         		Tablica.gra.setHaslo(result);
         		Tablica.tablica.zmianaGraczy();
         		Tablica.tablica.newImage();
         		 Tablica.tablica.show_endgame();
+        		 new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                 .execute();
         	}
         	 else if(code.equals("ER"))
              {
-        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
-	        		{
-	        			Tablica.tablica.cancelTimer();
-	        		}
+//        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
+//	        		{
+//        			 Tablica.tablica.cdown.cancel();
+//	        		}
+        		 if(Tablica.tablica.cdown!=null)
+     			{
+     				Tablica.tablica.cdown.cancel();
+     			}
 	        		 Tablica.gra.nowa_runda(false);
 	        		 Tablica.gra.setHaslo(result);
 	        		 Tablica.tablica.zmianaGraczy();
 	        		 Tablica.tablica.newImage();
 	        		 Tablica.tablica.show_endgame();
+	        		 new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+                     .execute();
              }
         	 else if(code.equals("LG"))
              {
-        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
-	        		{
-	        			Tablica.tablica.cancelTimer();
-	        		}
+//        		 if(Tablica.gra.lista_graczy.get(0).is_drawing)
+//	        		{
+//        			 Tablica.tablica.cdown.cancel();
+//	        		}
+        		 if(Tablica.tablica.cdown!=null)
+     			{
+     				Tablica.tablica.cdown.cancel();
+     			}
         		 Tablica.tablica.zapisz_do_bazy();
              	Tablica.tablica.finish();
              }
@@ -820,6 +866,12 @@ public static void sendEndRoundService(boolean is_owner, boolean giveUp ){
              	new TextServerAsyncTask(Tablica.tablica, mContentView.findViewById(R.id.status_text))
             	.execute();
              }
+        	 else if(code.equals("RW"))
+	        	{
+	        	  DeviceDetailFragment.sendWordService(true, Tablica.gra.getHaslo());
+	        	  new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
+               .execute();
+	        	}
         
         }
 

@@ -79,7 +79,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     private Button confirmAnwer;
     private Button drawerGiveUp;
     private EditText answer;
-    private CountDownTimer cdown;
+    public CountDownTimer cdown;
     
     private RelativeLayout forDrawerPanel;
     private Button respondentGiveUp;
@@ -202,7 +202,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 {
                 	gra.getAllHasla(this);
                 }
-                gra.lista_graczy.get(0).nazwa_gracza = gra.db.getAllGracze().get(0).toString();
+                gra.lista_graczy.get(0).nazwa_gracza = gra.db.getAllGracze().get(0).getName();
                 gra.lista_graczy.get(1).is_drawing = true;
                 gra.lista_graczy.get(1).nazwa_gracza =  DeviceDetailFragment.opponent;
                 paintView.setIsEnabled(false);
@@ -238,7 +238,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                     	DeviceDetailFragment.sendWordService(false, gra.getHaslo());
                     }
                 }, 1000);
-                gra.lista_graczy.get(0).nazwa_gracza = gra.db.getAllGracze().get(0).toString();
+                gra.lista_graczy.get(0).nazwa_gracza = gra.db.getAllGracze().get(0).getName();
                 gra.lista_graczy.get(0).is_drawing = true;
                 gra.lista_graczy.get(1).nazwa_gracza =  DeviceDetailFragment.opponent;
 
@@ -333,7 +333,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
          public void onClick(DialogInterface dialog, int which) {
              // TODO Auto-generated method stub
         	if(gra.lista_graczy.get(0).is_drawing)
-        		cancelTimer();
+        		cdown.cancel();
         	gra.losuj_haslo();
          	gra.nowa_runda(true);
          	DeviceDetailFragment.sendEndRoundService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner, true);
@@ -591,6 +591,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
 	                
 	                if(yourAnswer.equalsIgnoreCase(haslo)){
 	                	Toast goodAnswer = Toast.makeText(getApplicationContext(), "Poprawna odpowiedŸ", Toast.LENGTH_SHORT);
+	                	cdown.cancel();
 	                	PaintView.czyOdbierac=false;
 	                    goodAnswer.show();
 	                    gra.losuj_haslo();
@@ -615,7 +616,8 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
                 break;
             case R.id.drawerGiveUp:            	
                 //tutaj obsï¿½uga poddania siï¿½ rysujï¿½cego
-            	cancelTimer();
+            	Tablica.tablica.cdown.cancel();
+            	PaintView.czyPrzesylac=false;
             	PaintView.czyOdbierac=false;
             	giveUpDialog.show();
                 break;
@@ -828,6 +830,7 @@ public class Tablica extends Activity implements OnSeekBarChangeListener, OnClic
     public void onGameRerunAck(DialogFragment dialog) {
         newImage();
         PaintView.czyOdbierac=true;
+        PaintView.czyPrzesylac=true;
         licznik=0;
         if (DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner) {
             new TextServerAsyncTask(Tablica.tablica, DeviceDetailFragment.mContentView.findViewById(R.id.status_text))
