@@ -16,6 +16,7 @@ import com.app.kfe.baza_danych.Statystyki;
 import com.app.kfe.baza_danych.Ustawienia;
 import com.app.kfe.rysowanie.Tablica;
 import sqlite.helper.DatabaseHelper;
+import sqlite.model.Gracz;
 
 public class MainActivity extends Activity {
     private ImageButton draw2_btn;
@@ -133,7 +134,13 @@ public class MainActivity extends Activity {
                 Intent tablica = new Intent(getApplicationContext(), Tablica.class);
                 startActivity(tablica);
             } else if (item.getTitle() == "Multi Player") {
-                Intent dolacz = new Intent(getApplicationContext(), com.app.kfe.wifi.WiFiDirectActivity.class);
+                
+            	if(db.getAllGracze().isEmpty())
+            	{
+            		Gracz player = new Gracz("Player");
+            		db.createGracz(player);
+            	}
+            	Intent dolacz = new Intent(getApplicationContext(), com.app.kfe.wifi.WiFiDirectActivity.class);
                 startActivity(dolacz);
             } else {
                 return false;

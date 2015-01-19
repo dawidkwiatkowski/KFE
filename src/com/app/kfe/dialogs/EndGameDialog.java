@@ -1,6 +1,7 @@
 package com.app.kfe.dialogs;
 
 import com.app.kfe.rysowanie.Tablica;
+import com.app.kfe.wifi.DeviceDetailFragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,6 +9,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 
 /**
  * Created by tobikster on 2015-01-14.
@@ -40,7 +42,22 @@ public class EndGameDialog extends DialogFragment {
         	sprawdz_2 = "tak";
         else
         	sprawdz_2 = "nie";
+        
+        
+        if(Tablica.gra.lista_graczy.get(1).nazwa_gracza == null)
+        {
         	
+        	DeviceDetailFragment.requestGamerNameService(DeviceDetailFragment.info.groupFormed && DeviceDetailFragment.info.isGroupOwner);
+        	 final Handler handler = new Handler();
+             handler.postDelayed(new Runnable() {
+                 @Override
+                 public void run() {
+                     // Do something after 5s = 5000ms
+                	 Tablica.gra.lista_graczy.get(1).nazwa_gracza = DeviceDetailFragment.opponent;
+                 }
+             }, 2000);
+        	
+        }
         builder.setTitle(showOnPosition("Gracz", 10)+showOnPosition("Punkty", 6)+showOnPosition("Rysuj¹cy", 8))
                 .setMessage(Tablica.gra.lista_graczy.get(0).nazwa_gracza+"\t\t"+Tablica.gra.lista_graczy.get(0).punkty+"\t\t\t\t\t\t"+ sprawdz_1 +" \n"+Tablica.gra.lista_graczy.get(1).nazwa_gracza+"\t\t" + Tablica.gra.lista_graczy.get(1).punkty+
                 		"\t\t\t\t\t\t"+sprawdz_2+ "\n\nCzy chcesz kontynuowac gre?");
