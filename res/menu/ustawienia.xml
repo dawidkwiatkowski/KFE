@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/update_database"
+          android:title="@string/update_keystrings_database"/>
+    <item android:id="@+id/tmp_print_key_strings_database"
+          android:title="Print key strings database"/>
+</menu>

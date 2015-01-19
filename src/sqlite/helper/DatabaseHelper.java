@@ -174,6 +174,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		return hasla;
 	}
+
+	public void addHaslo(String keyString) {
+		if(keyString != null && !keyString.isEmpty()) {
+			SQLiteDatabase db = this.getWritableDatabase();
+			String query = String.format("SELECT %s FROM %s WHERE %s='%s'", KEY_ID, HASLA_TABLE, KEY_HASLO, keyString);
+			if (db.rawQuery(query, null).getCount() > 0) {
+				Log.w(LOG, String.format("KeyString \"%s\" exists in database! Skipping", keyString));
+			} else {
+				//TODO: validate keyString
+				ContentValues values = new ContentValues();
+				values.put(KEY_HASLO, keyString);
+				db.insert(HASLA_TABLE, null, values);
+			}
+		}
+		else {
+			Log.w(LOG, "KeyString shouldn't be empty!");
+		}
+	}
 	
 	
 	public long createRozgrywka(Rozgrywka rozgrywka, long[] gracz_ids,int[] punkty) {

@@ -112,5 +112,6 @@
     
     <string name="label_drawer">Narysuj: </string>
     <string name="give_up">Poddaj się</string>
-    
+    <string name="update_keystrings_database">Update database</string>
+
 </resources>
