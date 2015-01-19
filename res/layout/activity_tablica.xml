@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:background="@color/whiteColor"
     android:orientation="horizontal"
-    tools:context="com.app.kfe.Tablica" >
+    tools:context="com.app.kfe.Tablica" 
+    android:keepScreenOn="true">
 
     <com.app.kfe.rysowanie.PaintView
         android:id="@+id/drawing"

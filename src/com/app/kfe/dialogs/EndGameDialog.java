@@ -41,10 +41,10 @@ public class EndGameDialog extends DialogFragment {
         else
         	sprawdz_2 = "nie";
         	
-        builder.setTitle("Gracz\t\tPunkty\t\tRysuj¹cy")
+        builder.setTitle(showOnPosition("Gracz", 10)+showOnPosition("Punkty", 6)+showOnPosition("Rysuj¹cy", 8))
                 .setMessage(Tablica.gra.lista_graczy.get(0).nazwa_gracza+"\t\t"+Tablica.gra.lista_graczy.get(0).punkty+"\t\t\t\t\t\t"+ sprawdz_1 +" \n"+Tablica.gra.lista_graczy.get(1).nazwa_gracza+"\t\t" + Tablica.gra.lista_graczy.get(1).punkty+
                 		"\t\t\t\t\t\t"+sprawdz_2+ "\n\nCzy chcesz kontynuowac gre?");
-        builder.setPositiveButton("YES!", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("TAK", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -52,7 +52,7 @@ public class EndGameDialog extends DialogFragment {
                 mListener.onGameRerunAck(EndGameDialog.this);
             }
         });
-        builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("NIE", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -61,6 +61,15 @@ public class EndGameDialog extends DialogFragment {
         });
         return builder.create();
     }
+    
+    private String showOnPosition(String val, int numberOfPositions){
+		String result = val;
+		while( result.length() < numberOfPositions ){
+			result += " ";
+		}
+		
+		return result;
+	}
 
     public interface EndGameDialogActionsHandler {
         public void onGameRerunAck(DialogFragment dialog);
